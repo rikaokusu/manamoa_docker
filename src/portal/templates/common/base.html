@@ -17,9 +17,7 @@
         <title>{% block title %}{% endblock %}</title>
 
         {% render_bundle 'main' %}
-        <link href="{% static 'common/css/all.css' %}" rel="stylesheet">
-
-        {% comment %} <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet"> {% endcomment %}
+        <link href="{% static 'common/css/all.min.css' %}" rel="stylesheet">
         
         <link href="{% static 'accounts/css/jquery-linedtextarea.css' %}" rel="stylesheet">
         {% comment %} <link href="{% static 'accounts/js/preview.js' %}" rel="stylesheet"> {% endcomment %}

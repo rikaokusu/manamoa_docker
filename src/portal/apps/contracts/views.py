@@ -60,7 +60,8 @@ def new_default(self, obj):
     return old_default(self, obj)
 
 JSONEncoder.default = new_default
-# config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\bin\\wkhtmltopdf.exe')
+# config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+
 # pdfkit.from_url('http://google.com', 'out.pdf')
 
 
@@ -1068,7 +1069,8 @@ class EstimateToPDF(LoginRequiredMixin, DetailView, CommonView):
         #画像ファイルをバイナリで開く
 
         #estimate用
-        with open("static\contracts\img\CL_stamp.png", "rb") as f:
+        with open("portal/static/contracts/img/CL_stamp.png", "rb") as f:
+        # with open("static\contracts\img\CL_stamp.png", "rb") as f:
         # with open("static/accounts/img/barcode2.png", "rb") as f:
             #ファイルの内容を読込み、Base64にエンコードする
             bImgBase64 = base64.b64encode(f.read())

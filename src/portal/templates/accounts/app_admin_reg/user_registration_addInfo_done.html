@@ -5,26 +5,25 @@
 {% block extra_css %}{% endblock %}
 
 {% block content %}
-<!-- ステップ -->
-<ul class="progressbar">
-  <li class="complete">会社情報の登録</li>
-  <li class="complete">会社情報登録<br>完了</li>
-  <li class="complete">管理ユーザーの<br>登録</li>
-  <li class="active">管理ユーザー登録<br>完了</li>
-</ul>
+    <!-- ステップ -->
+    <ul class="progressbar">
+        <li class="complete">会社情報の登録</li>
+        <li class="complete">会社情報登録<br>完了</li>
+        <li class="complete">管理ユーザーの<br>登録</li>
+        <li class="active">管理ユーザー登録<br>完了</li>
+    </ul>
 
-<div class="container p-0 w-100">
-  <div class="card  border-0 pt-5">
-    <h5 class="card-header border-0" >管理ユーザー情報登録完了</h5>
-    <div class="card-body px-0">
-      <h6 class="pt-3">
-        管理ユーザー情報の登録が完了しました。
-        以下のボタンからログインしてください。
-      </h6>
-      <button type="button" class="btn my-btn-w9 text-align-center my-btn-accept pt-2" onfocus="this.blur();" onclick="location.href='{% url 'accounts:login' %}'">ログイン</button>
-
+    <div class="container p-0 w-100">
+        <div class="card  border-0 pt-5">
+            <h5 class="card-header border-0" >管理ユーザー情報登録完了</h5>
+            <div class="card-body px-0">
+                <h6 class="pt-3">
+                    管理ユーザー情報の登録が完了しました。
+                    以下のボタンからログインしてください。
+                </h6>
+                <button type="button" class="btn my-btn-w9 text-align-center my-btn-accept pt-2" onfocus="this.blur();" onclick="location.href='{% url 'accounts:login' %}'">ログイン</button>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
 {% endblock %}
