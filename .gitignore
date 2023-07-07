@@ -1,0 +1,13 @@
+old/
+media/
+*.pyc
+*.pyo
+__pycache__
+__init__.py
+
+node_modules/
+migrations/
+uploads/
+.env
+nginx/log/access.log
+nginx/log/error.log

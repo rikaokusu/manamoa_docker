@@ -1,0 +1,175 @@
+{% extends "common/base.html" %}
+
+{% block title %}会社情報{% endblock title %}
+
+{% block breadcrumbtitle %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+        <li class="breadcrumb-item">契約管理</li>
+        <li class="breadcrumb-item active">会社情報</li>
+    </ol>
+  </nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block content %}
+
+
+{% comment %} <div class="container company_profile mx-auto user"> {% endcomment %}
+
+  {% if current_user.company %}
+    {% comment %} {{ user.company.id }} {% endcomment %}
+    <button type="button" class="btn my-btn-w13 my-btn-accept" onclick="location.href='{% url 'accounts:update_companyonly' user.company.id %}'">会社情報変更</button>
+    {% comment %} <button type="button" class="btn my-btn-w13 my-btn-accept" onclick="location.href='{% url 'accounts:update_companyonly' 1 %}'">会社情報変更</button> {% endcomment %}
+    {% comment %} <button type="button" class="btn my-btn-w13 my-btn-accept ml-2" onclick="location.href='{% url 'accounts:update_companyprofile' 1 %}'">会社・請求先情報変更</button> {% endcomment %}
+    
+    <button type="button" class="btn my-btn-w13 my-btn-accept ml-2" onclick="location.href='{% url 'accounts:update_companyprofile' user.company.id %}'">会社・請求先情報変更</button>
+  
+  {% endif %}
+
+  <div class="row company_profile mx-auto">
+    <div class="col-sm-6 pl-0">
+      <div class="card border-0 mt-0">
+            <div class="card-body company_profile_body">
+                <table class="table table-bordered">
+                  <tbody>
+                    <h6>会社情報</h6>
+                        <tr>
+                          <th scope="row" class="tr_head">会社名</th>
+                          <td>
+                          {% if user.company.pic_corp_class == '1' %}
+                            {% if user.company.pic_legal_personality == '99' or user.company.pic_legal_personality == '' %}
+                              {{ user.company.pic_company_name }}
+                            {% else %}
+                              {% if user.company.pic_legal_person_posi == '1' %}
+                                {{ user.company.get_pic_legal_personality_display }}{{ user.company.pic_company_name }}
+                              {% else %}
+                                {{ user.company.pic_company_name }}{{ user.company.get_pic_legal_personality_display }}
+                              {% endif %}
+                            {% endif %}
+                          {% elif user.company.pic_corp_class == '2' %}
+                              {{ user.company.pic_company_name }}
+                          {% endif  %}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row" class="tr_head">契約部署名</th>
+                          <td>{{ user.company.pic_dept_name|default:"設定なし" }}</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row" class="tr_head">郵便番号</th>
+                          <td>{{ user.company.pic_post_code }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tr_head">都道府県</th>
+                          <td>{{ user.company.get_pic_prefectures_display }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tr_head">市区町村</th>
+                          <td>{{ user.company.pic_municipalities }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tr_head">丁目番地以降</th>
+                          <td>{{ user.company.pic_address }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tr_head">建物名称</th>
+                          <td>{{ user.company.pic_building_name|default:"設定なし" }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tr_head">担当者名</th>
+                          <td>{{ user.company.pic_full_name }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tr_head">担当者電話番号</th>
+                          <td>{{ user.company.pic_tel_number }}</td>
+                        </tr>
+                  </tbody>
+                </table>
+            </div><!-- /.card-body -->
+      </div><!-- /.card -->
+    </div><!-- /.col -->
+
+    <div class="col-sm-6 pr-0">
+      <div class="card border-0 mt-0">
+            <div class="card-body company_profile_body">
+                <table class="table table-bordered">
+                  <tbody>
+                          <h6>請求先情報</h6>
+                        {% if not user.company.invoice_company_name == '' %}
+                          <tr>
+                            <th scope="row" class="tr_head">会社名</th>
+                            <td>
+                              {% if user.company.pic_corp_class == '1' %}
+                                {% if user.company.invoice_legal_personality == '99' or user.company.invoice_legal_personality == '' %}
+                                  {{ user.company.invoice_company_name }}
+                                {% else %}
+                                  {% if user.company.invoice_legal_person_posi == '1' %}
+                                    {{ user.company.get_invoice_legal_personality_display }}{{ user.company.invoice_company_name }}
+                                  {% else %}
+                                    {{ user.company.invoice_company_name }}{{ user.company.get_invoice_legal_personality_display }}
+                                  {% endif %}
+                                {% endif %}
+                              {% elif user.company.pic_corp_class == '2' %}
+                                {{ user.company.invoice_company_name }}
+                            {% endif  %}  
+                          </td>
+                          </tr>
+
+                          <tr>
+                            <th scope="row" class="tr_head">請求先部署名</th>
+                            <td>{{ user.company.invoice_dept_name|default:"設定なし" }}</td>
+                          </tr>
+
+                          <tr>
+                            <th scope="row" class="tr_head">郵便番号</th>
+                            <td>{{ user.company.invoice_post_code }}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row" class="tr_head">都道府県</th>
+                            <td>{{ user.company.get_invoice_prefectures_display }}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row" class="tr_head">市区町村</th>
+                            <td>{{ user.company.invoice_municipalities }}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row" class="tr_head">丁目番地以降</th>
+                            <td>{{ user.company.invoice_address }}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row" class="tr_head">建物名称</th>
+                            <td>{{ user.company.invoice_building_name|default:"設定なし" }}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row" class="tr_head">担当者名</th>
+                            <td>{{ user.company.invoice_full_name }}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row" class="tr_head">担当者電話番号</th>
+                            <td>{{ user.company.invoice_tel_number }}</td>
+                          </tr>
+                        {% else %}
+                          {% comment %} <table class="table table-bordered">
+                            <tbody> {% endcomment %}
+                              {% comment %} <th class="inv_watermark">請求先は現在設定されておりません。<br> {% endcomment %}
+                              <th class="h6">会社情報の宛名と同じ<br>
+                                会社情報と請求先が異なる場合は「会社・請求先情報変更」ボタンより請求先を設定してください。
+                              </th>
+                            {% comment %} </tbody>
+                          </table> {% endcomment %}
+                        {% endif %}
+                      </tbody>
+                </table>
+            </div><!-- /.card-body -->
+      </div><!-- /.card -->
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+
+{% comment %} </div> {% endcomment %}
+
+
+{% endblock %}

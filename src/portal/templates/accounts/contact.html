@@ -1,0 +1,244 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load bootstrap4 %}
+{% load widget_tweaks %}
+
+{% block title %}
+お問い合わせ
+{% endblock title %}
+
+{% block breadcrumbtitle %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-1">
+    <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+    <li class="breadcrumb-item active">お問い合わせ</li>
+  </ol>
+</nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+    <form method="POST" validate data-validate>
+        {% csrf_token %}
+
+        <!-- Form全体のバリデーション時のエラーを表示 -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+          {% for error in form.non_field_errors %}
+            {{ error }}
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <table class="table table-sm table-bordered user" style="margin-bottom:100px;">
+            <h6 class="mb-3">
+                ・よくあるご質問・問い合わせに関しては<a href="{% url 'accounts:help' %}">こちら</a>のヘルプページをご覧ください。<br>
+                ・回答につきましては土日・祝日をのぞく３営業日以内に対応いたします。<br>
+                ・内容によりましては、ご返信いたしかねる場合がございます。あらかじめご了承ください。
+            </h6>
+            <tbody>
+                <tr>
+                    <th class="tr_head">
+                      <div>
+                        <div class="label option_label">メールアドレス</div>
+                      </div>
+                    </th>
+                    <th>
+                        {{ user.email }}
+                    </th>
+                </tr>
+                <tr>
+                  <th class="tr_head">
+                    <div>
+                      <div>会社名</div>
+                    </div>
+                  </th>
+                  <th id="company_info" data-company='["{{user.company.pic_company_name}}","{{user.company.pic_corp_class}}","{{user.company.get_pic_legal_personality_display}}"]'>
+                    {% if user.company.pic_corp_class == '1' %}
+                      {% if user.company.pic_legal_personality == '99' or user.company.pic_legal_personality == '' %}
+                        {{ user.company.pic_company_name }}
+                      {% else %}
+                        {% if user.company.pic_legal_person_posi == '1' %}
+                          {{ user.company.get_pic_legal_personality_display }}{{ user.company.pic_company_name }}
+                        {% else %}
+                          {{ user.company.pic_company_name }}{{ user.company.get_pic_legal_personality_display }}
+                        {% endif %}
+                      {% endif %}
+                    {% elif user.company.pic_corp_class == '2' %}
+                      {{ user.company.pic_company_name }}
+                    {% endif  %}  
+                  </th>
+                </tr>
+                <tr>
+                    <th class="tr_head">
+                      <div>
+                        <div class="label option_label">お名前</div>
+                      </div>
+                    </th>
+                    <th>
+                        {% if user.company.middle_choice == '1' %}
+                            {% if user.middle_name %}
+                                {{ user.first_name }} {{ user.middle_name }} {{user.last_name}}
+                            {% else %}
+                                {{ user.last_name }} {{ user.first_name }}
+                            {% endif %}
+                        {% else %}
+                            {{ user.last_name }} {{ user.first_name }}
+                        {% endif %}
+                    </th>
+                </tr>
+                <tr>
+                    <th class="tr_head">
+                      <div class="required_box">
+                        <div class="label require_label">お問い合わせ種類</div>
+                      </div>
+                    </th>
+                    <th>
+                      <!-- 入力フィールド -->
+                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                        {% if form.c_about.errors %}<!-- エラー時の表示 -->
+                          <small>下記の項目から選択してください。</small>
+                          {% render_field form.c_about class="form-control is-invalid" %}
+                          {% for error in form.c_about.errors %}
+                            <div class="invalid-feedback">
+                              {{ error }}
+                            </div>
+                          {% endfor %}
+                        {% else %}<!-- 正常時の表示 -->
+                          <small>下記の項目から選択してください。</small>
+                          {% render_field form.c_about class="form-control is-valid" %}
+                        {% endif %}
+
+                      {% else %}<!-- 初期表示 -->
+                        <small>下記の項目から選択してください。</small>
+                          {% render_field form.c_about class="form-control" %}
+                      {% endif %}
+                    </th>
+                </tr>
+                <tr>
+                    <th class="tr_head">
+                      <div class="required_box">
+                        <div class="label require_label">件名(50文字以内)</div>
+                      </div>
+                    </th>
+                    <th>
+                      <!-- 入力フィールド -->
+                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                      {% if form.c_subject.errors %}<!-- エラー時の表示 -->
+                        <small>50文字以内で入力してください。</small>
+                        {% render_field form.c_subject class="form-control is-invalid" %}
+                        {% for error in form.c_subject.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+                      {% else %}<!-- 正常時の表示 -->
+                        <small>50文字以内で入力してください。</small>
+                        {% render_field form.c_subject class="form-control is-valid" %}
+                      {% endif %}
+
+                      {% else %}<!-- 初期表示 -->
+                        <small>50文字以内で入力してください。</small>
+                        {% render_field form.c_subject class="form-control" %}
+                      {% endif %}
+                    </th>
+                </tr>
+                <tr>
+                    <th class="tr_head">
+                      <div class="required_box">
+                        <div class="label require_label">お問い合わせ内容</div>
+                      </div>
+                    </th>
+                    <th>
+                      <!-- 入力フィールド -->
+                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                      {% if form.c_message.errors %}<!-- エラー時の表示 -->
+                        {% render_field form.c_message class="form-control is-invalid" %}
+                        {% for error in form.c_message.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+                      {% else %}<!-- 正常時の表示 -->
+                        {% render_field form.c_message class="form-control is-valid" %}
+                      {% endif %}
+
+                      {% else %}<!-- 初期表示 -->
+                        {% render_field form.c_message class="form-control" %}
+                      {% endif %}
+                    </th>
+                </tr>
+              </tbody>
+        </table>
+        <div class="btn-toolbar fixed-bottom p-3 align-middle">  
+            <div class="row mx-auto">
+                <h5 class="align-middle d-block m-2 tool-text">必須項目を入力後、送信ボタンが表示されます。</h5>
+                <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
+                <button type="submit" class="btn my-btn-accept my-btn-w11 mail" id="submit1" disabled>送信&nbsp;</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- キャンセル確認用 -->
+    <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h6>現在の入力した内容は全て破棄されます。</h6>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'accounts:home' %}'">OK</button>
+            <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
+
+          </div><!-- /.modal-footer -->
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(function(){
+  // 戻るボタンで戻った時に値が入っていたらボタンを有効化
+  $('form[data-validate]').each(function(){
+    $(this).find(':submit').prop('disabled', !this.checkValidity());
+  });
+  //  必須項目の入力を確認してボタンを有効化
+  $('form[data-validate]').on('input change',function(){
+    $(this).find(':submit').prop('disabled', !this.checkValidity());
+  });
+  
+
+  //会社名表示
+  var company = $('#company_info').data('company');
+  if(company[1]=='1'){
+    company_name = company[2] + company[0];
+  }else if(company[1]=='2'){
+    company_name = company[0] + company[2];
+  }else{
+    company_name = company[0] 
+  };
+
+  // 登録ボタンをクリックした時は確認画面を表示しないようにする
+  $('#submit1').on("click", function() {
+    loadingView(true);
+    window.removeEventListener('beforeunload', onBeforeunloadHandler);
+  });
+
+  function loadingView(flag) {
+    
+    $('#loading-view').remove();
+    if(!flag) return;
+    $('<div id="loading-view" />').appendTo('body');
+  }
+
+});
+</script>
+{% endblock %}
+

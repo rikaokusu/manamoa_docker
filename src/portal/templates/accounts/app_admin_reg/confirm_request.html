@@ -1,0 +1,172 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load widget_tweaks %}
+{% load mailsepa2 %}
+
+
+{% block title %}会社の登録状況照会{% endblock title %}
+
+{% block content %}
+
+<div class="container user p-0 pb-5">
+
+    <h6 class="pt-3">
+        ・会社の登録状況の結果は以下の通りです。
+    </h6>
+    <table class="table table-sm table-bordered mb-5 mt-4">
+        <tbody>
+            <tr>
+                <th class="tr_head">
+                    <div >確認対象のメールアドレス</div>
+                </th>
+                <th>
+                    {{ email|mailsepa2 }}
+                </th>
+            </tr>
+            <tr>
+                <th class="tr_head">
+                    <div>登録状況結果</div>
+                </th>
+                <th>
+                    {% if result == 1 %}
+                        １お問い合わせ頂いた会社ならびに確認対象のユーザーはすでに登録されています。<br>
+                        ログインページはこちら
+                        <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:login' %}"><i class="fas fa-chevron-circle-right"></i> CloudLabポータルログイン</a></span><br>
+                        パスワードを忘れた場合はこちら
+                        <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:password_reset' %}"><i class="fas fa-chevron-circle-right"></i> パスワードを忘れた方</a></span>
+                    {% elif result == 2 %}
+                        ２お問い合わせ頂いた会社はすでに登録されています。ユーザー登録をリクエストしますか'
+                    {% elif result == 3 %}
+                        ３お問い合わせ頂いた会社ならびに確認対象のユーザーはすでに登録されています。他の部署へユーザー登録をリクエストしますか<br>
+                        ログインページはこちら
+                        <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:login' %}"><i class="fas fa-chevron-circle-right"></i> CloudLabポータルログイン</a></span><br>
+                        パスワードを忘れた場合はこちら
+                        <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:password_reset' %}"><i class="fas fa-chevron-circle-right"></i> パスワードを忘れた方</a></span>
+                    {% elif result == 4 %}
+                        ４お問い合わせ頂いたドメインで複数の組織が登録されています。ユーザー登録をリクエストしますか'
+                    {% else %}
+                        ５お問い合わせ頂いた会社は登録が確認できませんでした。'<br>
+                        会社の新規登録はこちら
+                        <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:user_registration' %}"><i class="fas fa-chevron-circle-right"></i> 新規登録</a></span><br>
+                    {% endif %}
+                </th>
+            </tr>    
+        <tbody>
+    </table>
+    {% if not result == 5 %}
+        <table width="100%" class="table table-striped table-hover row-border" id="dataTables-estimates">
+            <thead>
+                <tr>
+                    <th>会社名</th>
+                    <th>部署名</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in companys %}
+                    <tr>  
+                        <td>
+                            
+                            {% if company.pic_corp_class == '1' %}
+                                {% if company.pic_legal_personality == '99' or company.pic_legal_personality == '' %}
+                                    {{ company.pic_company_name }}
+                                {% else %}
+                                    {% if company.pic_legal_person_posi == '1' %}
+                                        {{ company.get_pic_legal_personality_display }}{{ company.pic_company_name }}
+                                    {% else %}
+                                        {{ company.pic_company_name }}{{ company.get_pic_legal_personality_display }}
+                                    {% endif %}
+                                {% endif %}
+                            {% elif company.pic_corp_class == '2' %}
+                                {{ company.pic_company_name }}
+                            {% endif  %}  
+                        </td>
+                        <td>{{ company.pic_dept_name|default:"設定なし" }}</td>
+                        <td>
+                            {% for user in user_get %}
+                                {% if user.company_id == company.id %}
+                                    ユーザー登録済みです
+                                {% else %}
+                                    <button type="button" class="btn my-btn-sm my-btn-accept my-btn-w13" data-toggle="modal" id="codata" data-target="#req_modal" data-coid="{{ company.id }}">登録リクエストを送る<i class="fab fa-telegram-plane ml-2"></i></button>
+                                {% endif %}
+                            {% empty %}
+                                <button type="button" class="btn my-btn-sm my-btn-accept my-btn-w13" data-toggle="modal" id="codata" data-target="#req_modal" data-coid="{{ company.id }}">登録リクエストを送る<i class="fab fa-telegram-plane ml-2"></i></button>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="modal fade" id="req_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <form method="POST" validate data-validate>
+                            {% csrf_token %}
+                            <p>管理ユーザーへ登録リクエストを送信します。<br>
+                            下記フォームをご入力の上、送信ボタンを押してください。</p>
+                            <div>
+                                <input type="text" class="form-control" id="company_id" name="company_id" value="" hidden>
+                                <input type="text" class="form-control" id="email" name="email" value="{{ email }}" hidden>
+
+                                <div class="form-group">
+                                    <div class="required_box2">
+                                        <div class="label required_label">姓</div>
+                                    </div>
+                                    <input type="text" class="form-control" id="last-name" name="last_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="required_box2">
+                                        <div class="label required_label">名</div>
+                                    </div>
+                                    <input type="text" class="form-control" id="first-name" name="first_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="option_box2">
+                                        <div class="label option_label">メッセージなどあればご記入ください</div>
+                                    </div>
+                                    <textarea class="form-control" id="message" name="message"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn my-btn-accept btn-sm my-btn-w6" >送信</button>
+                                <button type="button" class="btn my-btn-cancel btn-sm my-btn-w6" data-dismiss="modal">キャンセル</button>
+                            </div><!-- /.modal-footer -->
+                        </form>
+                    </div><!--modal-body-->
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(function(){
+
+        var co_id = $('div').data('value')
+
+        // 戻るボタンで戻った時に値が入っていたらボタンを有効化
+        $('form[data-validate]').each(function(){
+            $(this).find(':submit').prop('disabled', !this.checkValidity());
+        });
+        //  必須項目の入力を確認してボタンを有効化
+        $('form[data-validate]').on('input change',function(){
+            console.log('うごいてるよ')
+            $(this).find(':submit').prop('disabled', !this.checkValidity());
+        });
+
+        //会社IDを送信
+        $('#req_modal').on('show.bs.modal', function (event) {
+            var coid = $('#codata').data('coid');
+            $("#company_id").attr('value', coid);
+        });
+
+    });
+
+</script>
+{% endblock %}
+

@@ -1,0 +1,34 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load humanize %}
+
+{% block title %}解約エラー{% endblock title %}
+
+{% block breadcrumbtitle %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-1">
+      <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+      <li class="breadcrumb-item">契約管理</li>
+      <li class="breadcrumb-item"><a href="{% url 'contracts:contract' %}">ご契約状況</a></li>
+      <li class="breadcrumb-item active">解約エラー</li>
+  </ol>
+</nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="card card-register border-0 mt-5">
+    <div class="card-body">
+    <p>{{err_message}}</p>
+    <a href="{% url 'contracts:contract' %}">契約管理へ戻る</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

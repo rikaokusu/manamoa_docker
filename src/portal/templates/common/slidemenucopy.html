@@ -1,0 +1,310 @@
+
+<!--ボタンバージョン-->
+ <div class="row drop-space mx-auto pt-4 pb-2">
+  {% comment %}<div class="col-3 p-0">
+    
+    <div class="pc-nav">
+      <div class="position-relative">
+        {% if url_name == 'home' or url_name == 'user_infomation' or url_name == 'update_userinfomation' or url_name == 'contact' or url_name == 'thanks' or 'password_change' in url_name or url_name == 'infomation' %}
+          <div class="tri-left-flg1"></div>
+        {% else %}
+          <div class="tri-left-flg2"></div>
+        {% endif %}
+      </div>
+      {% if url_name == 'home' or url_name == 'user_infomation' or url_name == 'update_userinfomation' or url_name == 'contact' or url_name == 'thanks' or 'password_change' in url_name or url_name == 'infomation' %}
+        <button type="button" class="btn menu-button1" onclick="location.href='{% url 'accounts:home' %}'"><i class="fas fa-home"></i>&nbsp;ホーム</button>
+      {% else %}
+        <button type="button" class="btn menu-button2" onclick="location.href='{% url 'accounts:home' %}'"><i class="fas fa-home"></i>&nbsp;ホーム</button>
+      {% endif %}
+    </div><!--pc-nav--> 
+  </div>
+
+  <div class="col-3 p-0">
+    <div class="pc-nav">
+      <div class="position-relative">
+        {% if 'companyprofile' in url_name or 'estimate' in url_name or 'card_info' in url_name or 'contract' in url_name  or 'estimate' in url_name or 'offer' in url_name or 'change_contract_1' in url_name %}
+          <div class="tri-left-flg1"></div>
+        {% else %}
+          <div class="tri-left-flg2"></div>
+        {% endif %}
+      </div>
+      <ul>
+        <li>
+          {% if 'companyprofile' in url_name or 'estimate' in url_name or url_name == 'card_info'  or 'contract' in url_name or 'estimate' in url_name or 'offer' in url_name or url_name == 'change_contract_1' %}
+            <button class="btn dropdown-toggle menu-button1 slidetoggle_button1 " type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-file-signature"></i>&nbsp;契約管理</button>
+          {% else %}
+            <button class="btn dropdown-toggle menu-button2 slidetoggle_button1 " type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-file-signature"></i>&nbsp;契約管理</button>
+          {% endif %}
+          <div class="Wrap slidetoggle_menu1 mx-auto"> 
+            <div class="btn-toolbar" margin-left:100px;>
+              <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'contracts:contract' %}'">ご契約状況</button></div>
+              <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'accounts:companyprofile' %}'">会社情報</button></div>
+              <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'contracts:estimate' %}'">見積一覧</button></div>
+              <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'contracts:estimate_step1' %}'">新規見積作成</button></div>
+              <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'payment:card_info' %}'">クレジットカード情報</button></div>
+            </div><!-- /btn-toolbar -->
+          </div><!-- /Wrap --> 
+        </li>
+      </ul>
+    </div><!--pc-nav-->
+  </div>
+
+  <div class="col-3 p-0">
+    <div class="pc-nav">
+      <div class="position-relative">
+        {% if 'test_import' in url_name or 'test_update' in url_name or 'delete' in url_name or 'user_update' in url_name or  url_name == 'user' or url_name == 'user_create' %}
+          <div class="tri-left-flg1"></div>
+        {% else %}
+          <div class="tri-left-flg2"></div>
+        {% endif %}
+        <div class="tri-left-flg"></div>
+      </div>
+      <ul>
+        <li>
+          {% if 'test_import' in url_name or 'test_update' in url_name or 'delete' in url_name or 'user_update' in url_name or  url_name == 'user' or url_name == 'user_create' %}
+            <button class="btn dropdown-toggle menu-button1 slidetoggle_button2 " type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-friends"></i>&nbsp;ユーザー管理</button>
+          {% else %}
+            <button class="btn dropdown-toggle menu-button2 slidetoggle_button2 " type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-friends"></i>&nbsp;ユーザー管理</button>
+          {% endif %}
+          <div class="Wrap slidetoggle_menu2 mx-auto ">
+              <div class="btn-toolbar">
+                <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'accounts:user' %}'">ユーザー一覧</button></div>
+                <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'bulk:test_import' %}'">一括登録</button></div>
+                <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'bulk:test_update' %}'">一括変更</button></div>
+                <div class="btn-group"><button class="btn" type="button" onclick="location.href='{% url 'bulk:delete' %}'">一括削除</button></div>
+              </div><!-- /btn-toolbar -->
+          </div><!-- Wrap --> 
+        </li>
+      </ul>
+    </div><!--pc-nav-->
+  </div>
+
+  <div class="col-3 p-0">
+    <div class="pc-nav">
+      <div class="position-relative">
+        {% if url_name == 'help' %}
+          <div class="tri-left-flg1"></div>
+        {% else %}
+          <div class="tri-left-flg2"></div>
+        {% endif %}
+      </div>
+      {% if url_name == 'help' %}
+        <button type="button" class="btn menu-button1" onclick="location.href='{% url 'accounts:help' %}'"><i class="fas fa-solid fa-heart"></i>&nbsp;ヘルプ</button>
+      {% else %}
+        <button type="button" class="btn menu-button2" onclick="location.href='{% url 'accounts:help' %}'"><i class="fas fa-solid fa-heart"></i>&nbsp;ヘルプ</button>
+      {% endif %}
+    </div><!--pc-nav-->
+  </div><!--mega-dropmenu-->
+</div> {% endcomment %}
+
+<!-- /#header-nav -->
+<nav id="header-nav">
+  <ul class="header-list">
+   
+    <li class="menu-item">
+      <div class="pc-nav">
+        <div class="position-relative">
+          {% if url_name == 'home' or url_name == 'user_infomation' or url_name == 'update_userinfomation' or url_name == 'contact' or url_name == 'thanks' or 'password_change' in url_name or url_name == 'infomation' %}
+            <div class="tri-left-flg1"></div>
+          {% else %}
+            <div class="tri-left-flg2"></div>
+          {% endif %}
+        </div>
+        {% if url_name == 'home' or url_name == 'user_infomation' or url_name == 'update_userinfomation' or url_name == 'contact' or url_name == 'thanks' or 'password_change' in url_name or url_name == 'infomation' %}
+          <button type="button" class="btn menu-button1" onclick="location.href='{% url 'accounts:home' %}'"><i class="fas fa-home"></i>&nbsp;ホーム</button>
+        {% else %}
+          <button type="button" class="btn menu-button2" onclick="location.href='{% url 'accounts:home' %}'"><i class="fas fa-home"></i>&nbsp;ホーム</button>
+        {% endif %}
+      </div><!--pc-nav--> 
+    </li><!-- /.menu-item a -->
+    
+    <li class="menu-item menu-item1">
+      <div class="pc-nav">
+        <div class="position-relative">
+          {% if 'companyprofile' in url_name or 'estimate' in url_name or 'card_info' in url_name or 'contract' in url_name  or 'estimate' in url_name or 'offer' in url_name or 'change_contract_1' in url_name %}
+            <div class="tri-left-flg1"></div>
+          {% else %}
+            <div class="tri-left-flg2"></div>
+          {% endif %}
+        </div>
+          {% if 'companyprofile' in url_name or 'estimate' in url_name or url_name == 'card_info'  or 'contract' in url_name or 'estimate' in url_name or 'offer' in url_name or url_name == 'change_contract_1' %}
+            <button class="btn dropdown-toggle menu-button1 slidetoggle_button1 " type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-file-signature"></i>&nbsp;契約管理</button>
+          {% else %}
+            <button class="btn dropdown-toggle menu-button2 slidetoggle_button1 " type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-file-signature"></i>&nbsp;契約管理</button>
+          {% endif %}
+      </div><!--pc-nav-->
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li class=" a dropdown-item">
+
+      {% comment %} <ul class="sub-menu sub-menu1 dropdown-menu" aria-labelledby="dropdownMenuButton1"> {% endcomment %}
+        {% comment %} <li class="sub-menu-item a dropdown-item"> {% endcomment %}
+          <div class="btn-group w-25 h-50"><button class="btn" type="button" onclick="location.href='{% url 'contracts:contract' %}'">ご契約状況</button></div>
+          <div class="btn-group w-25 h-50"><button class="btn" type="button" onclick="location.href='{% url 'accounts:companyprofile' %}'">会社情報</button></div>
+          <div class="btn-group w-25 h-50"><button class="btn" type="button" onclick="location.href='{% url 'contracts:estimate' %}'">見積一覧</button></div>
+          <div class="btn-group w-25 h-50"><button class="btn" type="button" onclick="location.href='{% url 'contracts:estimate_step1' %}'">新規見積作成</button></div>
+          <div class="btn-group w-25 h-50"><button class="btn" type="button" onclick="location.href='{% url 'payment:card_info' %}'">クレジットカード情報</button></div>
+        </li>
+      </ul><!-- /.sub-menu -->
+    </li><!-- /.menu-item b -->
+    
+    <li class="menu-item menu-item2">
+      <div class="pc-nav">
+        <div class="position-relative">
+          {% if 'test_import' in url_name or 'test_update' in url_name or 'delete' in url_name or 'user_update' in url_name or  url_name == 'user' or url_name == 'user_create' %}
+            <div class="tri-left-flg1"></div>
+          {% else %}
+            <div class="tri-left-flg2"></div>
+          {% endif %}
+        </div>
+        {% if 'test_import' in url_name or 'test_update' in url_name or 'delete' in url_name or 'user_update' in url_name or  url_name == 'user' or url_name == 'user_create' %}
+          <button class="btn dropdown-toggle menu-button1 slidetoggle_button2 " type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-friends"></i>&nbsp;ユーザー管理</button>
+        {% else %}
+          <button class="btn dropdown-toggle menu-button2 slidetoggle_button2 " type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-friends"></i>&nbsp;ユーザー管理</button>
+        {% endif %}
+      </div><!--pc-nav-->
+      <ul class="sub-menu sub-menu2">
+        <li class="sub-menu-item sub-menu-item2 a" aria-labelledby="dropdownMenuButton2">
+          <div class="btn-group w-25 h-100"><button class="btn" type="button" onclick="location.href='{% url 'accounts:user' %}'">ユーザー一覧</button></div>
+          <div class="btn-group w-25 h-100"><button class="btn" type="button" onclick="location.href='{% url 'bulk:test_import' %}'">一括登録</button></div>
+          <div class="btn-group w-25 h-100"><button class="btn" type="button" onclick="location.href='{% url 'bulk:test_update' %}'">一括変更</button></div>
+          <div class="btn-group w-25 h-100"><button class="btn" type="button" onclick="location.href='{% url 'bulk:delete' %}'">一括削除</button></div>
+        </li>
+      </ul><!-- /.sub-menu -->
+    </li><!-- /.menu-item c-->
+    
+    <li class="menu-item">
+      <div class="pc-nav">
+        <div class="position-relative">
+          {% if url_name == 'help' %}
+            <div class="tri-left-flg1"></div>
+          {% else %}
+            <div class="tri-left-flg2"></div>
+          {% endif %}
+        </div>
+        {% if url_name == 'help' %}
+          <button type="button" class="btn menu-button1" onclick="location.href='{% url 'accounts:help' %}'"><i class="fas fa-solid fa-heart"></i>&nbsp;ヘルプ</button>
+        {% else %}
+          <button type="button" class="btn menu-button2" onclick="location.href='{% url 'accounts:help' %}'"><i class="fas fa-solid fa-heart"></i>&nbsp;ヘルプ</button>
+        {% endif %}
+      </div><!--pc-nav-->
+    </li><!-- /.menu-item d -->  
+  </ul><!-- /.header-nav-list -->
+</nav><!-- /#header-nav -->
+</div>
+
+
+{% comment %} <nav class="global_menu">
+  <ul>
+    <li class="menu">
+      <div class="pc-nav">
+        <div class="position-relative">
+          {% if url_name == 'home' or url_name == 'user_infomation' or url_name == 'update_userinfomation' or url_name == 'contact' or url_name == 'thanks' or 'password_change' in url_name or url_name == 'infomation' %}
+            <div class="tri-left-flg1"></div>
+          {% else %}
+            <div class="tri-left-flg2"></div>
+          {% endif %}
+        </div>
+        {% if url_name == 'home' or url_name == 'user_infomation' or url_name == 'update_userinfomation' or url_name == 'contact' or url_name == 'thanks' or 'password_change' in url_name or url_name == 'infomation' %}
+          <button type="button" class="btn menu-button1" onclick="location.href='{% url 'accounts:home' %}'"><i class="fas fa-home"></i>&nbsp;ホーム</button>
+        {% else %}
+          <button type="button" class="btn menu-button2" onclick="location.href='{% url 'accounts:home' %}'"><i class="fas fa-home"></i>&nbsp;ホーム</button>
+        {% endif %}
+      </div><!--pc-nav--> 
+      
+    </li>
+    <li class="menu">
+      <div class="pc-nav">
+        <div class="position-relative">
+          {% if 'companyprofile' in url_name or 'estimate' in url_name or 'card_info' in url_name or 'contract' in url_name  or 'estimate' in url_name or 'offer' in url_name or 'change_contract_1' in url_name %}
+            <div class="tri-left-flg1"></div>
+          {% else %}
+            <div class="tri-left-flg2"></div>
+          {% endif %}
+        </div>
+          {% if 'companyprofile' in url_name or 'estimate' in url_name or url_name == 'card_info'  or 'contract' in url_name or 'estimate' in url_name or 'offer' in url_name or url_name == 'change_contract_1' %}
+            <button class="btn dropdown-toggle menu-button1 slidetoggle_button1 " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-file-signature"></i>&nbsp;契約管理</button>
+          {% else %}
+            <button class="btn dropdown-toggle menu-button2 slidetoggle_button1 " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-file-signature"></i>&nbsp;契約管理</button>
+          {% endif %}
+      </div><!--pc-nav-->
+      <ul class="child_menu child_menu1">
+        <li><a href="#">Child Menu</a></li>
+        <li><a href="#">Child Menu</a></li>
+        <li><a href="#">Child Menu</a></li>
+        <li><a href="#">Child Menu</a></li>
+      </ul>
+    </li>
+
+    <li class="menu">
+      <div class="pc-nav">
+        <div class="position-relative">
+          {% if 'test_import' in url_name or 'test_update' in url_name or 'delete' in url_name or 'user_update' in url_name or  url_name == 'user' or url_name == 'user_create' %}
+            <div class="tri-left-flg1"></div>
+          {% else %}
+            <div class="tri-left-flg2"></div>
+          {% endif %}
+        </div>
+        {% if 'test_import' in url_name or 'test_update' in url_name or 'delete' in url_name or 'user_update' in url_name or  url_name == 'user' or url_name == 'user_create' %}
+          <button class="btn dropdown-toggle menu-button1 slidetoggle_button2 " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-friends"></i>&nbsp;ユーザー管理</button>
+        {% else %}
+          <button class="btn dropdown-toggle menu-button2 slidetoggle_button2 " type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-friends"></i>&nbsp;ユーザー管理</button>
+        {% endif %}
+      </div><!--pc-nav-->
+      <ul class="child_menu child_menu2">
+        <li><a href="#">aaa Menu</a></li>
+        <li><a href="#">aaa Menu</a></li>
+        <li><a href="#">Child Menu</a></li>
+        <li><a href="#">Child Menu</a></li>
+      </ul>
+    </li>
+
+    <li class="menu">
+      <div class="pc-nav">
+        <div class="position-relative">
+          {% if url_name == 'help' %}
+            <div class="tri-left-flg1"></div>
+          {% else %}
+            <div class="tri-left-flg2"></div>
+          {% endif %}
+        </div>
+        {% if url_name == 'help' %}
+          <button type="button" class="btn menu-button1" onclick="location.href='{% url 'accounts:help' %}'"><i class="fas fa-solid fa-heart"></i>&nbsp;ヘルプ</button>
+        {% else %}
+          <button type="button" class="btn menu-button2" onclick="location.href='{% url 'accounts:help' %}'"><i class="fas fa-solid fa-heart"></i>&nbsp;ヘルプ</button>
+        {% endif %}
+      </div><!--pc-nav-->
+    </li>
+
+  </ul>
+</nav> {% endcomment %}
+
+
+<script>
+ $(function(){
+    {% comment %} let target1=$('.slidetoggle_button1');
+    let target2=$('.slidetoggle_button2');
+    target1.click((event)=>{
+      // 契約管理：指定対象要素のクリックイベント
+      $('.sub-menu1').show();
+      $('.sub-menu2').hide();
+    });
+    $(document).on("click", (e) => {
+      if ($(e.target).closest(target1).length<1) { 
+      // 指定要素外のクリックイベント
+        $('.child_menu1').hide();
+      }
+    });
+
+    target2.click((event)=>{
+      // ユーザー管理：指定対象要素のクリックイベント
+      $('.sub-menu2').slideToggle(700);
+      $('.sub-menu1').hide();
+    });
+    $(document).on("click", (e) => {
+      if ($(e.target).closest(target2).length<1) { 
+        // 指定要素外のクリックイベント
+        $('.sub-menu2').hide();
+      }
+    }); {% endcomment %}
+  });
+</script>

@@ -1,0 +1,83 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %}会社の登録状況確認{% endblock title %}
+
+{% block content %}
+
+<div class="container user p-0 pb-5">
+    <form method="POST" validate data-validate>
+        {% csrf_token %}
+
+        <!-- Form全体のバリデーション時のエラーを表示 -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+            </div>
+        {% endif %}
+
+        <table class="table table-sm table-bordered mb-5">
+            <h6 class="mb-4 mt-4">
+                ・当フォームにてご入力いただいたメールアドレスへ会社・部署の登録状況照会ページのリンクをお送りします。<br>
+                ・入力するメールアドレスのドメインは確認対象の会社の独自ドメインを使用してください。
+            </h6>
+            <tbody>
+                <tr>
+                    <th class="tr_head">
+                        <div class="required_box">
+                            <div class="label required_label">メールアドレス</div>
+                        </div>
+                    </th>
+                    <th>
+                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                            {% if form.confirm_email.errors %}<!-- エラー時の表示 -->
+                                <small>会社の独自ドメインを使用してください。例：abc@yui.okinawa</small>
+                            {% render_field form.confirm_email class="form-control is-invalid" id='confirm_email' %}
+                            {% for error in form.confirm_email.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                            {% else %}<!-- 正常時の表示 -->
+                                <small>会社の独自ドメインを使用してください。例：abc@yui.okinawa</small>
+                                {% render_field form.confirm_email class="form-control is-valid" id='confirm_email' %}
+                            {% endif %}
+                        {% else %}<!-- 初期表示 -->
+                            <small>会社の独自ドメインを使用してください。例：abc@yui.okinawa</small>
+                            {% render_field form.confirm_email class="form-control" id='confirm_email' %}
+                        {% endif %}
+                    </th>
+                </tr>
+            <tbody>
+        </table>
+        <div class="btn-toolbar fixed-bottom p-3 align-middle">  
+            <div class="row mx-auto">
+                <h5 class="align-middle d-block m-2 tool-text">必須項目を入力後、送信ボタンが表示されます。</h5>
+                <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" onclick="location.href='{% url 'accounts:login' %}'">キャンセル　</button>
+                <button type="submit" class="btn my-btn-accept my-btn-w11 check" disabled>送信　</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(function(){
+            // 戻るボタンで戻った時に値が入っていたらボタンを有効化
+            $('form[data-validate]').each(function(){
+                $(this).find(':submit').prop('disabled', !this.checkValidity());
+            });
+            //  必須項目の入力を確認してボタンを有効化
+            $('form[data-validate]').on('input change',function(){
+                $(this).find(':submit').prop('disabled', !this.checkValidity());
+            });
+        });
+    </script>
+{% endblock %}
+

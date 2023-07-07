@@ -1,0 +1,31 @@
+<div class="table table-striped" class="files" id="previews">
+    <div id="template" class="file-row">
+      <!-- This is used as the file preview template -->
+      <div>
+          <p class="name preview-text" data-dz-name></p>
+          <strong class="error text-danger" data-dz-errormessage></strong>
+      </div>
+
+      <div>
+          <p class="size preview-text" data-dz-size></p>
+          
+      </div>
+      <div>
+        <span class="text-right">データ照合状況</span>
+      </div>
+      <div>
+       
+        <div class="progress progress-striped active preview-text" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-bar progress-bar-success progress-text" style="width:0%;" data-dz-uploadprogress></div>
+        </div>
+      </div>
+
+      <div class="preview-button preview-text">
+        <button data-dz-remove class="btn btn-secondary cancel">
+            <i class="glyphicon glyphicon-ban-circle"></i>
+            <span>キャンセル</span>
+        </button>
+
+      </div>
+    </div>
+  </div>

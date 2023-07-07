@@ -1,0 +1,23 @@
+{% extends "common/base.html" %}
+
+{% block title %}自動更新有効化完了{% endblock title %}
+
+{% block breadcrumbtitle %}
+
+  <span>
+    自動更新有効化完了
+  </span>
+
+{% endblock breadcrumbtitle %}
+
+{% block content %}
+<div class="container">
+  <div class="card card-register border-0 mt-2">
+    <div class="card-body">
+    <p>自動更新の有効化が完了しました。</p>
+    <a href="{% url 'contracts:contract' %}">契約管理へ戻る</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

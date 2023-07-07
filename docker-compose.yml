@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+    nginx:
+        container_name: web
+        image: nginx:1.16
+        ports:
+            - "8000:8000"
+        volumes:
+            - ./nginx/conf:/etc/nginx/conf.d
+            - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
+            - ./nginx/log:/var/log/nginx
+            - ./static:/static
+            # mediaファイルはローカルと同期を取るためにバインドマウントとする
+            - ./media:/media
+        depends_on:
+            - python
+        environment:
+            TZ: 'Asia/Tokyo'
+
+    db:
+      container_name: mysql8
+      image: mysql:8.0.30
+      volumes:
+        - db-store:/var/lib/mysql
+        - ./logs:/var/log/mysql
+        - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      environment:
+        - MYSQL_DATABASE=${DB_NAME}
+        - MYSQL_USER=${DB_USER}
+        - MYSQL_PASSWORD=${DB_PASS}
+        - MYSQL_ROOT_PASSWORD=${DB_PASS}
+        - TZ=${TZ}
+      ports:
+        - ${DB_PORT}:3306
+
+    db-testing:
+      image: mysql:8.0.30
+      volumes:
+        - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      tmpfs:
+        - /var/lib/mysql
+        - /var/log/mysql
+      environment:
+        - MYSQL_DATABASE=${DB_NAME}
+        - MYSQL_USER=${DB_USER}
+        - MYSQL_PASSWORD=${DB_PASS}
+        - MYSQL_ROOT_PASSWORD=${DB_PASS}
+        - TZ=${TZ}
+
+    python:
+        container_name: django
+        # build: ./python
+        build:
+          context: .
+          dockerfile: python/Dockerfile
+        command: gunicorn -b 0.0.0.0:8001 --env DJANGO_SETTINGS_MODULE=portal.config.settings.production portal.config.wsgi
+        volumes:
+            - ./src:/code
+            - ./static:/static
+            # mediaファイルはローカルと同期を取るためにバインドマウントとする
+            - ./media:/media
+        expose:
+            - "8001"
+        depends_on:
+            - db
+        environment:
+            TZ: 'Asia/Tokyo'
+volumes:
+  db-store:

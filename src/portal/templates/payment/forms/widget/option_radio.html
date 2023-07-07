@@ -1,0 +1,97 @@
+{% load index %}
+
+{% load get_list_3 %}
+
+{% load get_list_2 %}
+
+{% load get_list %}
+
+{% load get_cat %}
+
+{% load humanize %}
+
+{% for group, options, index in widget.optgroups %}
+    {% comment %} {{ options }} {% endcomment %}
+    {% for option in options %}
+
+    <div class="row" data-rowval={{option.value}}>
+
+        {% comment %} <div class="col-sm-6">
+            <div class="form-check check_row">
+
+                <!--カテゴリ名をクラス名として設定-->
+
+                {% with category=plan_price_dict|get_cat:option.value %}
+
+                    <input  class="form-check-input {{ plan_price_dict|get_cat:option.value }}" type="{{ option.type }}" 
+                        name="{{ option.name }}" id="{{ option.attrs.id }}" value="{{ option.value }}" data-row_index="{{ option.index }}"
+                        data-service_name="{{ option.label }}"
+                        {% if option.attrs.checked %}checked{% endif %}
+                        {% if option.attrs.required %}required{% endif %}
+                        {% if c_options_dict|get_list_2:category > plan_price_dict|get_list:option.value %}disabled
+                        {% elif option.label == 'なし' and c_options_dict|get_list_3:option.name == 1  %}disabled{% endif %}>
+                    <label class="form-check-label service_checkbox_label" for="{{ option.attrs.id }}" data-price="{{ plan_price_dict|get_list:option.value|intcomma }}" >
+                        {{ option.label }} 
+                    </label>
+                {% endwith %}
+
+            </div>
+        </div> {% endcomment %}
+        <div class="col-sm-6">
+            <div class="form-check check_row">
+
+                <!--カテゴリ名をクラス名として設定-->
+
+                {% with category=plan_price_dict|get_cat:option.value %}
+
+                    <input  class="form-check-input {{ plan_price_dict|get_cat:option.value }}" type="{{ option.type }}" 
+                        name="{{ option.name }}" id="{{ option.attrs.id }}" value="{{ option.value }}" data-row_index="{{ option.index }}"
+                        data-service_name="{{ option.label }}"
+                        {% if option.attrs.checked %}checked{% endif %}
+                        {% if option.attrs.required %}required{% endif %}>
+                    <label class="form-check-label service_checkbox_label" for="{{ option.attrs.id }}" data-price="{{ plan_price_dict|get_list:option.value|intcomma }}" >
+                        {{ option.label }} 
+                    </label>
+                {% endwith %}
+
+            </div>
+        </div>
+
+        {% comment %}6/8コメントイン {% if option.index != "0" %}
+            <div class="col-sm-6">
+                <div class="form-check check_row text-right pr-3">
+                {% with value=option.value %}
+                {% with category=plan_price_dict|get_cat:option.value %}
+
+                    <span {% if c_options_dict|get_list_2:category > plan_price_dict|get_list:option.value %}
+                        class="form-check-label service_checkbox_label text-black-50"
+                    {% elif option.label == 'なし' and c_options_dict|get_list_3:option.name == 1  %}
+                        class="form-check-label service_checkbox_label text-black-50"
+                    {% else %}
+                        class="form-check-label service_checkbox_label"
+                    {% endif %}>
+                    {{ plan_price_dict|get_list:value|intcomma }}/年</span>
+                {% endwith %}
+                {% endwith %}
+
+                </div>
+            </div>
+        {% endif %} {% endcomment %}
+        {% if option.index != "0" %}
+            <div class="col-sm-6">
+                <div class="form-check check_row text-right pr-3">
+                {% with value=option.value %}
+                {% with category=plan_price_dict|get_cat:option.value %}
+
+                    <span class="form-check-label service_checkbox_label">
+                    {{ plan_price_dict|get_list:value|intcomma }}/年</span>
+                {% endwith %}
+                {% endwith %}
+
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% endfor %}
+{% endfor %}

@@ -1,0 +1,963 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load humanize %}
+{% load sort_by %}
+{% load check_date %}
+{% load is_onemonthago %} 
+
+{% block title %}ご契約状況{% endblock title %}
+
+{% block breadcrumbtitle %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+        <li class="breadcrumb-item">契約管理</li>
+        <li class="breadcrumb-item active">ご契約状況</li>
+    </ol>
+  </nav>
+
+
+  {% comment %} <a class="help_icon" href="{% url 'help:contract' %}" target="_blank"><i class="fas fa-question-circle"></i></a> {% endcomment %}
+
+{% endblock breadcrumbtitle %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+
+    <div class="card border-0 mt-0">
+            <div class="card-body contract_list_body px-0">
+                <table width="100%" class="table row-border">
+                    <thead >
+                        <tr >
+                            <th>サービス</th>
+                            <th>プラン</th>
+                            <th>契約期間</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {% if not contracts %}
+                        <tr class="">
+                          <td colspan="4" class="text-center">
+                            契約中のサービスはありません。
+                          </td>
+                        </tr>
+                      {% else %}
+
+                        {% for contract in contracts %}
+
+                          <tr class="display_row">
+
+                            <!-- サービスカラム -->
+                            <td class="service_td" style="width:280px;">
+                              {% if contract.status == "1" %} <!-- 1は試用 -->
+                              <div class="square size_xxs service-c1">
+                                <div class="letter_one_service_s">{{ contract.service.initial }}</div>
+                              </div>
+
+                                {{ contract.service }}
+
+                                <span class="label">試用</span>
+
+                              {% elif contract.status == "2" %} <!-- 2は本番 -->
+                              <div class="square size_xxs service-c1">
+                                <div class="letter_one_service_s">{{ contract.service.initial }}</div>
+                              </div>
+
+                                <span>{{ contract.service }}(契約中)</span>
+
+                              {% elif contract.status == "3" %} <!-- 3は解約 -->
+                                <span>{{ contract.service }}(解約)</span>
+                              {% elif contract.status == "4" %}
+                                <span>{{ contract.service }}(更新済)</span>
+                              {% else %}
+                                <span>{{ contract.service }}</span>
+                              {% endif %}
+                            </td>
+
+                            <!-- プランカラム -->
+                            <td class="plan_td">
+                                  <span>{{ contract.plan }}</span>
+                            </td>
+
+                              <!-- 契約期間カラム -->
+                              <td class="period_td">
+                                <div class="period_box">
+                                  {{ contract.contract_start_date|date:'Y/m/d' }}
+                                </div>
+
+                                <div class="period_box period_kara">
+                                〜
+                                </div>
+
+                                <div class="period_box">
+                                  {{ contract.contract_end_date.date|date:'Y/m/d' }}
+                                </div>
+
+                              </td>
+
+                              <!-- 各種ボタン用カラム -->
+                              <td class="btn_td">
+                                {% if contract.status == "1" %} <!-- 1は試用 -->
+                                  {% comment %} 試用期間終了前の場合 {% endcomment %}
+                                  {% if contract.contract_end_date.date|check_date %}
+                                    <button data-toggle="modal" data-target="#trial_date_check_modal" onfocus="this.blur();" data-value={{contract.id}} class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6">申し込み</button>
+                                  {% comment %} 試用期間終了後の場合 {% endcomment %}
+                                  {% else %}
+                                    <a href="{% url 'contracts:offer_description' contract.id %}" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6">申し込み</a>
+                                  {% endif %}
+                                {% elif contract.status == "2" %}
+                                  {% if not contract.is_manualcheckout %}
+                                  {% else %}
+                                  {% endif %}
+                                  <a href="{% url 'payment:change_contract_1' contract.id %}" class="my-btn my-btn-sm my-btn-w6 contract-item">プラン変更</a>
+
+                                  {% if contract.is_autocheckout %} <!-- 自動更新ONの場合 -->
+                                    <button type="button" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6" data-toggle="modal" data-target="#contract_update_modal" data-value={{contract.id}} data-service={{contract.service.id}} onfocus="this.blur();" disabled>更新手続</button>
+                                  {% else %}<!-- 自動更新OFFの場合 -->
+                                    {% if contract.contract_end_date|is_onemonthago %} <!-- 1ヶ月前の場合 -->
+                                      <button type="button" class="my-btn my-btn-sm my-btn-w6 contract-item" data-toggle="modal" data-target="#contract_update_modal" data-value={{contract.id}} data-service={{contract.service.id}} onfocus="this.blur();">更新手続</button>
+                                    {% else %}<!-- １ヶ月前ではない場合 -->
+                                      <button type="button" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6" data-toggle="modal" data-target="#contract_update_modal" data-value={{contract.id}} data-service={{contract.service.id}} onfocus="this.blur();" disabled>更新手続</button>
+                                    {% endif %}
+                                  {% endif %}
+
+                                  <button data-toggle="modal" data-target="#cancellation_date_check_modal" onfocus="this.blur();" data-value={{contract.id}} data-date={{contract.contract_end_date.date|check_date}} data-service={{contract.service}} class="my-btn  contract-item my-btn-sm my-btn-w6">解約</button>
+
+                                {% elif contract.status == "3" %}
+                                  <span class="mr-4 h6 text-danger">契約期間終了日までご利用いただけます</span>
+
+                                {% endif %}
+
+                                <!-- 展開用アイコン -->
+                                <i class="fas fa-plus-circle open" data-roop="{{ forloop.counter }}"></i>
+                                <i class="fas fa-minus-circle close" data-roop="{{ forloop.counter }}"></i>
+                              </td>
+
+                          </tr>
+
+                          <!--
+                          --------------------------
+                          詳細行
+                          --------------------------
+                          -->
+
+                          <tr id="hidden_row{{ forloop.counter }}" class="hidden_row">
+
+                            {% comment %} <td class="">
+                              <div class=option_box>
+
+                                  <div class="detail_label"><span class="detail_label_txt">オプション契約</span></div>
+
+                                  {% if contract.option.all|length_is:"0" %}
+                                    <div class="detail_label_value">
+                                      <span>契約しているオプションはありません。</span>
+                                    </div>
+                                  {% else %}
+                                    {% for option in contract.option.all|sort_by:"category" %}
+                                    <div class="detail_label_value">
+                                      <div class="row no-gutters">
+                                        <div class="col-sm-5">
+                                          {{ option.category }}
+                                        </div>
+                                        <div class="col-sm-7">
+                                          {{ option.name|default_if_none:"契約なし" }}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% comment %} {{ contract.option.all }}
+                                    {% for option in contract.option.all|sort_by:"category" %}
+                                    <div class="detail_label_value">
+                                      <div class="row no-gutters">
+                                        <div class="col-sm-5">
+                                          {{ option.category }}
+                                        </div>
+                                        <div class="col-sm-7">
+                                          {{ option.name|default_if_none:"契約なし" }}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    {% endfor %}  {% endcomment %}
+
+                                  {% comment %} {% endif %}
+
+                              </div> 
+
+                            </td> {% endcomment %}
+
+                            <td colspan="2" class="">
+                              <div class="price_box">
+
+                                  <div class="detail_label"><span class="detail_label_txt">費用・決済方法</span></div>
+
+                                  <div class="price_sub_box">
+
+                                      <div class="detail_label_value cell">
+                                        <span class="">年額 </span><span class="price">¥{{ contract.total|intcomma }}</span><span>(税込)</span>
+                                      </div>
+
+                                  </div>
+
+                                  <hr>
+                                  <div class="price_sub_box">
+
+                                      <div class="detail_label_value cell">
+                                        {% if contract.status == "1" %}
+                                        {% comment %} 何も表示しない {% endcomment %}
+                                        {% elif contract.status == "2" %} {% comment %} 2が本番{% endcomment %}
+                                          {% if contract.payment.method_payment.id == 2 %} {% comment %} 2が銀行振込{% endcomment %}
+                                              <span>銀行振込</span>
+
+                                              {% if contract.payment.is_paymented == 0 %}
+                                                <span class="red">(入金未確認)</span>
+                                              {% else %}
+                                                <span class="">(入金確認済)</span>
+                                              {% endif %}
+
+                                              <div>請求書原本郵送：{{contract.is_invoice_need|yesno:"する,しない,不明"  }}</div>
+                                          {% else %}
+                                              <div>クレジットカード</div>
+                                              <div>
+                                                <span>自動更新</span>
+
+                                                <div class="switchArea">
+                                                  <input type="checkbox" id="switch1" data-contract_id="{{ contract.id }}" data-contract_end_date="{{ contract.contract_end_date|date:'Y/m/d H:i:s' }}" {% if contract.is_autocheckout %}checked{% endif %}>
+                                                  <label for="switch1"><span></span></label>
+                                                  <div id="swImg"></div>
+                                                </div>
+
+                                              </div>
+                                          {% endif %}
+                                        {% elif contract.status == "3" %}
+                                            解約
+                                        {% elif contract.status == "4" %}
+                                            更新済
+                                        {% else %}
+                                          ---
+                                        {% endif %}
+                                      </div>
+                                  </div>
+
+                              </div>
+
+                            </td>
+
+
+                            <td colspan="1" class="">
+                              <div class=option_box>
+
+                                  <div class="detail_label"><span class="detail_label_txt">オプション契約</span></div>
+
+                                  {% comment %} {% if contract.option.all|length_is:"0" %}
+                                    <div class="detail_label_value">
+                                      <span>契約しているオプションはありません。</span>
+                                    </div>
+                                  {% else %} 
+
+                                    {% for option in contract.option.all|sort_by:"category" %}
+                                    <div class="detail_label_value">
+                                      <div class="row no-gutters">
+                                        <div class="col-sm-5">
+                                          {{ option.category }}
+                                        </div>
+                                        <div class="col-sm-7">
+                                          {{ option.name|default_if_none:"契約なし" }}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  {% endfor %}
+
+                                  {% endif %} {% endcomment %}
+
+                                    <div class="detail_label_value">
+                                        <div class="pt-2">
+                                          {% if contract.option1 %}
+                                            {{ contract.option1.name }}<br>
+                                          {% endif %}
+                                          {% if contract.option2 %}
+                                            {{ contract.option2.name }}<br>
+                                          {% endif %}
+                                          {% if contract.option3 %}
+                                            {{ contract.option3.name }}<br>
+                                          {% endif %}
+                                          {% if contract.option4 %}
+                                            {{ contract.option4.name }}<br>
+                                          {% endif %}
+                                          {% if contract.option5 %}
+                                            {{ contract.option5.name }}
+                                          {% endif %}
+                                        </div>
+                                    </div>
+
+                              </div>
+
+                            </td>
+
+
+                            <td colspan="1">
+                              <div class="estimate_box">
+
+                                  <div class="detail_label"><span class="detail_label_txt">見積書(申込時・更新時)</span></div>
+
+                                    <div class="estimate_sub_box">
+
+                                      <div class="initial_estimate_box">
+                                          <!-- <a href="#" class="estimate_font"><i class="fas fa-file-download"></i></a> -->
+
+                                          <div class="estimate_slider_box">
+                                            {% if contract.status == "1" %}
+
+                                            <div class="initial_slider" dir="rtl">
+                                                <div class="estimate_icon">
+                                                  <a href="#" class="disabled"><i class="far fa-file-alt"></i></a>
+                                                </div>
+                                            </div>
+
+                                            {% elif contract.status == "2" or contract.status == "4" %}
+
+                                              <div class="initial_slider" dir="rtl">
+                                                {% for estimate in contract.estimate.all|dictsortreversed:"created_date" %}
+                                                  <div class="estimate_icon">
+                                                    <a href="{% url 'contracts:estimateToPdf' estimate.id %}"><i class="far fa-file-alt"></i></a>
+                                                    <div class="estimate_date">{{estimate.created_date|date:'Y/m/d'}}</div>
+                                                  </div>
+                                                {% endfor %}
+                                              </div>
+
+                                            {% endif %}
+                                          </div>
+
+                                          <div class="initial_estimate_text">申込時の見積</div>
+
+                                      </div>
+
+                                      <div class="center_estimate_box">
+                                      </div>
+
+                                      <div class="update_estimate_box">
+                                        <div class="estimate_slider_box">
+                                          {% if contract.status == "1" %}
+
+                                          <div class="update_slider">
+                                              <div class=estimate_icon>
+                                                <a href="#" class="disabled"><i class="far fa-file-alt"></i></a>
+                                              </div>
+                                          </div>
+
+                                          {% elif contract.status == "2" %}
+
+                                            <div class="update_slider">
+                                              {% for estimate in estimates_is_update %}
+                                                <div class=estimate_icon>
+                                                  <a href="{% url 'contracts:estimateToPdf' estimate.id %}"><i class="far fa-file-alt"></i></a>
+                                                  <div class="estimate_date">{{estimate.created_date|date:'Y/m/d'}}</div>
+                                                </div>
+                                              {% endfor %}
+                                            </div>
+
+                                          {% endif %}
+
+                                        </div>
+
+                                        <div class="update_estimate_text">更新用の見積</div>
+
+                                      </div>
+
+                                    </div>
+
+
+                              </div>
+                            </td>
+
+                          {% comment %} </tr> {% endcomment %}
+
+
+                          <!--
+                          --------------------------
+                          詳細行2
+                          --------------------------
+                          -->
+
+                          {% comment %} <tr id="hidden_childe_row{{ forloop.counter }}" class="hidden_row"> {% endcomment %}
+
+                            
+
+                          </tr>
+
+                        {% endfor %}
+                      {% endif %}
+                    </tbody>
+                </table>
+            </div>
+    </div><!-- /.card -->
+
+<!-- 試用期間注意モーダル用 -->
+<div class="modal fade" id="trial_date_check_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>試用期間中です。申込みを開始しますか？</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn my-btn-accept btn-sm my-btn-w6" id="trial_date_check_modal_link">申し込む</a>
+        <button type="button" class="btn my-btn-cancel btn-sm my-btn-w6" data-dismiss="modal">キャンセル</button>
+
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- 解約注意モーダル用 -->
+<div class="modal fade" id="cancellation_date_check_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>まだ契約期間内です。解約しますか？</p>
+      </div>
+      <div class="modal-footer">
+        <!-- <a href="#" class="btn btn-primary btn-sm my-btn-w6" id="cancellation_date_check_modal_link">解約</a> -->
+        <button type="button" class="btn my-btn-accept btn-sm my-btn-w6" id="cancellation_date_check_modal_link">解約</button>
+        <button type="button" class="btn my-btn-cancel btn-sm my-btn-w6" data-dismiss="modal">キャンセル</button>
+      
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- レスポンス用 -->
+<div class="modal fade" id="result_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>XXX</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6" data-dismiss="modal" id="result_modal_link">OK</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- 契約更新モーダル用 -->
+<div class="modal fade" id="contract_update_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>更新を開始します。プランの変更有無を選択してください。</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <a href="#" id="contract_update_modal_change_link" class="my-btn my-btn-accept my-btn-sm my-btn-w8">変更あり</a>
+        <a href="#" id="contract_update_modal_nochange_link" class="my-btn my-btn-outline-accept-1 my-btn-sm my-btn-w8">変更なし</a>
+        <a href="#" class="btn my-btn-cancel btn-sm my-btn-w8" data-dismiss="modal">キャンセル</a>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- 自動更新実行不可用 -->
+<div class="modal fade" id="auto_check_change_prohibition_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>契約終了日まで1ヶ月を切っているため、自動更新への切り替えはできません。<br>
+          更新手続きから同一条件のプラン、または変更したいプランで次年度分の申込みをしてください。</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" data-dismiss="modal" id="result_modal_link">OK</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<input id="acd-check1" class="acd-check" type="checkbox">
+<label class="acd-label" for="acd-check1">クリックで開く1</label>
+<div class="acd-content">
+    <p>hello.world!</p>
+</div>
+<input id="acd-check2" class="acd-check" type="checkbox">
+<label class="acd-label" for="acd-check2">クリックで開く2</label>
+<div class="acd-content">
+    <p>hello.world2!</p>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  $(document).ready(function() {
+
+    function loadingView(flag) {
+        $('#loading-view').remove();
+        if(!flag) return;
+        $('<div id="loading-view" />').appendTo('body');
+      }
+
+
+    $('#trial_date_check_modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) //モーダルを呼び出すときに使われたボタンを取得
+        var contract_id = button.data('value') //値を取得
+        console.log('contract_id',contract_id)
+        $("#trial_date_check_modal_link").attr("href", "/contracts/offer_description/" + contract_id)
+    });
+
+    ///////////////////
+    // 解約モーダル表示 //
+    ///////////////////
+    $('#cancellation_date_check_modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) //モーダルを呼び出すときに使われたボタンを取得
+        var contract_id = button.data('value') //値を取得
+        var date_check = button.data('date') //値を取得
+        var service = button.data('service') //値を取得
+
+        var modal = $(this);
+
+        // 契約期間内の場合
+        if (date_check) {
+          modal.find('.modal-body').text("契約期間内ですが解約しますか？");
+        // 契約期間外の場合
+        } else {
+          modal.find('.modal-body').text("解約する？");
+        }
+
+        // ストレージサービスの場合のメッセージ
+        switch( service ) {
+          case "ストレージサービス":
+            modal.find('.modal-body').append("<br>ストレージ上のデータが全て消去されますがよろしいですか？");
+            break;
+
+          case "講義支援サービス":
+            modal.find('.modal-body').append("<br>講義支援サービス上のデータが全て消去されます。");
+            break;
+        }
+
+
+        $("#cancellation_date_check_modal_link").on("click", function (event) {
+
+          $('#cancellation_date_check_modal').modal('hide');
+
+          // 処理前に Loading 画像を表示
+          loadingView(true);
+
+          $.post("{% url 'payment:cancellation'%}",
+            {"contract_id" : contract_id}
+
+          ).done(function(data){
+            // モーダルの表示
+            $('#result_modal').on('show.bs.modal', function (e) {
+            var modal = $(this);
+            modal.find('.modal-body').text(data.message);
+            })
+            $('#result_modal').modal('show')
+            $("#result_modal_link").attr("onclick", "window.location.reload();")
+
+          }).always(function(data){
+            // 処理後に Loading 画像を削除
+            loadingView(false);
+
+          });
+
+        });
+
+    });
+
+
+    /////////////////////////
+    // 契約更新表示        //
+    ////////////////////////
+    $('#contract_update_modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) //モーダルを呼び出すときに使われたボタンを取得
+        var contract_id = button.data('value') //値を取得
+        var service_id = button.data('service') //値を取得
+        console.log(contract_id)
+        $("#contract_update_modal_nochange_link").attr("href", "/cont_update_nochange_step1_1/" + contract_id);
+        $("#contract_update_modal_change_link").attr("href", "/cont_update_change_step1_1/" + contract_id)
+    });
+
+
+
+
+    ///////////////////
+    // 自動更新SW //
+    ///////////////////
+    $('#switch1').on('change', function() {
+      var is_checked = $(this).prop("checked")
+      var contract_id = $(this).data('contract_id')
+      var _contract_end_date = $(this).data('contract_end_date')
+
+      // 送信データとして保存
+      var data = { 'is_checked' : is_checked, 'contract_id' : contract_id};
+
+      // StringをDate型に変換
+      var contract_end_date = new Date(_contract_end_date);
+
+      // 終了日付の一ヶ月前を取得
+      var contract_end_date_last_month = contract_end_date.setMonth(contract_end_date.getMonth() -1);
+
+      // 一ヶ月前を取得
+      var today = new Date();
+
+      // 手動→自動へ切り替える
+      if (is_checked) {
+        // 一ヶ月を切ったら自動支払いへの切り替え禁止
+        if (contract_end_date_last_month < today) {
+            console.log('いっかげつきってた')
+            // 自動支払いのモーダル表示
+            $('#auto_check_change_prohibition_modal').modal('show')
+            $(this).prop('checked', false);
+        } else {
+            // 処理前に Loading 画像を表示
+            loadingView(true);
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'payment:autocheckchange' %}",
+                data: data,
+                dataType: 'json',
+            }).done(function(data){
+              // モーダルの表示
+              $('#result_modal').on('show.bs.modal', function (e) {
+              var modal = $(this);
+              modal.find('.modal-body').text(data.message);
+              })
+              $('#result_modal').modal('show')
+              $("#result_modal_link").attr("onclick", "window.location.reload();")
+
+
+            }).fail(function(data){
+              // モーダルの表示
+              $('#result_modal').on('show.bs.modal', function (e) {
+              var modal = $(this);
+              modal.find('.modal-body').text(data.message);
+              })
+              $('#result_modal').modal('show')
+              $("#result_modal_link").attr("onclick", "window.location.reload();")
+
+            }).always(function(data){
+              // 処理後に Loading 画像を削除
+              loadingView(false);
+            });
+        }
+      // 自動→手動へ切り替える
+      } else {
+        // 処理前に Loading 画像を表示
+        loadingView(true);
+
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'payment:autocheckchange' %}",
+            data: data,
+            dataType: 'json',
+        }).done(function(data){
+          // モーダルの表示
+          $('#result_modal').on('show.bs.modal', function (e) {
+          var modal = $(this);
+          modal.find('.modal-body').text(data.message);
+          })
+          $('#result_modal').modal('show')
+          $("#result_modal_link").attr("onclick", "window.location.reload();")
+
+
+        }).fail(function(data){
+          // モーダルの表示
+          $('#result_modal').on('show.bs.modal', function (e) {
+          var modal = $(this);
+          modal.find('.modal-body').text(data.message);
+          })
+          $('#result_modal').modal('show')
+          $("#result_modal_link").attr("onclick", "window.location.reload();")
+
+        }).always(function(data){
+          // 処理後に Loading 画像を削除
+          loadingView(false);
+        });
+      }
+    });
+
+    console.log('オープン推した！')
+    // プラスマイナスボタンで行の展開
+    $(".open").on("click", function() {
+      console.log('オープン推した！')
+      roop_num = $(this).data('roop');
+      $('#hidden_row' + roop_num).toggle();
+      $('#hidden_childe_row' + roop_num).toggle();
+      $(this).hide();
+      $(this).next().show();
+    });
+    $(".close").on("click", function() {
+      console.log('クローズ推した！')
+      roop_num = $(this).data('roop');
+      $('#hidden_row' + roop_num).toggle();
+      $('#hidden_childe_row' + roop_num).toggle();
+      $(this).hide();
+      $(this).prev().show();
+    });
+
+
+    // 表示・非表示のタイミングでスライダーを正しく表示するイベントをセット
+    $(".open").on("click", function() {
+        $('.update_slider').slick('setPosition');
+        $('.initial_slider').slick('setPosition');
+    });
+
+    // 見積もりスライダー
+    $('.initial_slider').slick({
+      infinite: false,
+      dots:false,
+      slidesToShow:1,
+      slidesToScroll:1,
+      rtl:true,
+      draggable:false,
+    });
+
+    // 見積もりスライダー
+    $('.update_slider').slick({
+      infinite: false,
+      dots:false,
+      slidesToShow:1,
+      slidesToScroll:1,
+      draggable:false,
+    });
+
+
+    $('#dataTables-contract').DataTable({
+      // 件数切替機能 無効
+      lengthChange: false,
+      // 検索機能 無効
+      searching: false,
+      // ソート機能 無効
+      ordering: false,
+      // 情報表示 無効
+      info: false,
+      // ページング機能 無効
+      paging: false,
+      columnDefs: [
+        // 利用期間カラムのサイズ調整
+        {
+          orderable: false,
+          width: 200,
+          targets: 2
+        },
+        // 決済方法カラムのサイズ調整
+        {
+          orderable: false,
+          width: 80,
+          targets: 3
+        },
+        // 自動更新カラムのサイズ調整
+        {
+          orderable: false,
+          width: 120,
+          targets: 4
+        }
+      ],
+      order: [[ 1, 'asc' ]],
+      colResize: true,
+      autoWidth: false,
+      orderCellsTop: false,
+      searchDelay: 2000,// 2秒の遅延
+      language: {
+          "decimal": ".",
+          "thousands": ",",
+          "sProcessing": "処理中...",
+          "sLengthMenu": "_MENU_ 件表示",
+          "sZeroRecords": "データはありません。",
+          "sInfo": " _TOTAL_ 件中 _START_ から _END_ まで表示",
+          "sInfoEmpty": " 0 件中 0 から 0 まで表示",
+          "sInfoFiltered": "（全 _MAX_ 件より抽出）",
+          "sInfoPostFix": "",
+          "sSearch": "検索:",
+          "sUrl": "",
+          "oPaginate": {
+            "sFirst": "先頭",
+            "sPrevious": "前",
+            "sNext": "次",
+            "sLast": "最終"
+          }
+      },
+    });
+    $('#dataTables-estimates').DataTable({
+      // 件数切替機能 無効
+      lengthChange: false,
+      // 検索機能 無効
+      searching: false,
+      // ソート機能 無効
+      ordering: false,
+      // 情報表示 無効
+      info: false,
+      // ページング機能 無効
+      paging: false,
+      columnDefs: [
+      // チェックボックスカラムのサイズ調整
+        {
+          orderable: false,
+          width: 65,
+          className:'text-center',
+          searchable: false,
+          targets:   0
+        },
+        // 見積もり・購入カラムのサイズ調整
+        {
+          orderable: false,
+          width: 150,
+          targets: 6
+        }
+      ],
+      order: [[ 1, 'asc' ]],
+      colResize: true,
+      autoWidth: false,
+      orderCellsTop: false,
+      searchDelay: 2000,// 2秒の遅延
+      language: {
+          "decimal": ".",
+          "thousands": ",",
+          "sProcessing": "処理中...",
+          "sLengthMenu": "_MENU_ 件表示",
+          "sZeroRecords": "データはありません。",
+          "sInfo": " _TOTAL_ 件中 _START_ から _END_ まで表示",
+          "sInfoEmpty": " 0 件中 0 から 0 まで表示",
+          "sInfoFiltered": "（全 _MAX_ 件より抽出）",
+          "sInfoPostFix": "",
+          "sSearch": "検索:",
+          "sUrl": "",
+          "oPaginate": {
+            "sFirst": "先頭",
+            "sPrevious": "前",
+            "sNext": "次",
+            "sLast": "最終"
+          }
+      },
+    });
+
+    // 手動ボタンの有効化判断(契約終了日の１ヶ月前になったら有効化)
+    {% for contract in contracts %}
+
+      if ("{{ contract.service }}" == "転送サービス")
+        // 終了日をDBから取得
+        var end_date = "{{contract.contract_end_date.date|date:'Y/m/d' }}";
+
+        // 文字列日付をDate型に変換
+        var end_date_obj = new Date( end_date );
+
+        // 1ヶ月前の日付(タイムスタンプ)を取得
+        previous_one_month_timestamp = end_date_obj.setMonth(end_date_obj.getMonth() - 1);
+
+        // 本日日付を取得
+        var today = new Date();
+        // 時間をすべて0にセット
+        today.setHours(0, 0, 0, 0);
+        // 本日日付のタイムスタンプを取得
+        today_timestamp = today.getTime();
+
+        // 日付を比較してボタンの有効化
+        // if (today_timestamp == previous_one_month_timestamp) {
+        if (today_timestamp == today_timestamp) {
+            // $('#btn-manualcheckout').prop("disabled", false);
+            $('#btn-manualcheckout').removeClass('disabled');
+        }
+
+    {% endfor %}
+
+
+    //ウィンドウサイズを変更した場合はユーザー一覧を再描画する。
+    var update_size = function() {
+      $('#dataTables-contract').css({ width: $('#dataTables-contract').parent().width() });
+      $('#dataTables-estimates').css({ width: $('#dataTables-estimates').parent().width() });
+      var cTable = $('#dataTables-contract').dataTable();
+      var eTable = $('#dataTables-estimates').dataTable();
+      cTable.fnAdjustColumnSizing();
+      eTable.fnAdjustColumnSizing();
+    }
+    $(window).resize(function() {
+      clearTimeout(window.refresh_size);
+      window.refresh_size = setTimeout(function() { update_size(); }, 250); // 250ミリ秒
+    });
+
+    // チェックボックスの全選択
+    $('#checkall').on('change', function() {
+      // console.log("全てチェック")
+      $("input[name='check[]']").prop('checked', this.checked);
+    });
+
+    // チェックボックスにチェックで削除ボタン活性化
+    $("[name='check[]'] , #checkall").change(function(){
+      // console.log("チェック")
+      var checks=[];
+      $("[name='check[]']:checked").each(function(){
+          checks.push(this.value);
+          console.log(checks.length)
+      });
+
+      // チェックされている場合は有効、チェックされていない場合は無効化
+      if (checks.length > 0) {
+        console.log("ture")
+        $('#delbutton').prop("disabled", false);
+      } else {
+        console.log("false")
+        $('#delbutton').prop("disabled", true);
+      }
+
+
+    });
+
+
+    // 見積もり削除モーダルの表示
+    $('#estimate_del_modal').on('show.bs.modal', function (event) {
+
+      // チェックボックスの値を取得
+      var checks=[];
+      $("[name='check[]']:checked").each(function(){
+          checks.push(this.value);
+      });
+
+      if (checks.length == 0) {
+        // チェックボックスに値がない場合は単体削除の見積りIDを取得
+        delete_id = $("#delicon").attr('data-value');
+        checks.push(delete_id);
+      }
+
+      // モーダル上に件数を表示
+      var modal = $(this);
+      modal.find('.modal-body').text("選択した" + checks.length + "個を削除しますか？");
+
+      // 削除ボタンを押下した場合、Ajaxで送信
+      $('#estimate_del_modal').on('click', '.modal-footer .my-btn-primary', function() {
+        $('#estimate_del_modal').modal('hide');
+        $.ajax({
+          type: "POST",
+          url: 'delete_estimate/',
+          data: {
+            'checks': checks
+          },
+          dataType: 'json',
+          success: function (data) {
+            if (data.is_exist) {
+
+              // モーダルの表示
+              $('#result_modal').on('show.bs.modal', function (e) {
+                var modal = $(this);
+                modal.find('.modal-body').text(data.error_message);
+              })
+              $('#result_modal').modal('show')
+
+              window.location.href = "./";
+            }
+          }
+        });
+
+      });
+    });
+        $("span:contains('解約')").parent('td').parent('tr').css('background',"#d8d5d1")
+        $("span:contains('更新')").parent('td').parent('tr').css('background',"#d8d5d1")
+  });
+
+</script>
+{% endblock %}

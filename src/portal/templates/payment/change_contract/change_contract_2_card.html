@@ -1,0 +1,266 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load humanize %}
+{% load multiply %}
+{% load gen_index %}
+
+{% block title %}プラン・オプション変更の確認{% endblock title %}
+
+{% block breadcrumbtitle %}
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+        <li class="breadcrumb-item">契約管理</li>
+        <li class="breadcrumb-item"><a href="{% url 'contracts:contract' %}">ご契約状況</a></li>  
+        <li class="breadcrumb-item active">プラン・オプション変更の確認</li>
+    </ol>
+  </nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block content %}
+
+  <div class="row pb-5 mb-5 mt-3 estimate">
+    <div class="col-6">
+      <div class="card border-0 mt-0">
+        
+            <div class="card-body company_profile_body">
+                <table class="table table-bordered">
+                  
+                  <tbody>
+                    <h6 class="text-center py-1 px-0">変更内容　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　単位：円</h6>
+                    <colgroup>
+                      <col>
+                      <col>
+                      <col>
+                    </colgroup>
+                        <tr>
+                          <th scope="row" class="tr_head">サービス利用期間</th>
+                          <td colspan="2">{{ estimate.start_day|date:"Y年m月d日" }}〜{{ estimate.end_day|date:"Y年m月d日" }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tr_head">サービス名</th>
+                          <td colspan="2">{{ estimate.service.name }}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row" class="tr_head">プラン</th>
+                          {% if estimate.plan == contract.plan %}
+                            <td>{{ estimate.plan }}</td>
+                            <td class="text-right">{{ estimate.plan.price|intcomma }}/年</td>
+                          {% else %}
+                            <td class="text-danger font-weight-bold">{{ estimate.plan }}</td>
+                            <td class="text-danger text-right font-weight-bold">{{ estimate.plan.price|intcomma }}/年</td>
+                          {% endif %}
+                        </tr>
+                        
+                        <tr>
+                          <th scope="row"  class="tr_head">オプション</th>
+                          {% if estimate.option1 or estimate.option2 or estimate.option3 or estimate.option4 or estimate.option5 %}
+                            <td>
+                              {% if estimate.option1 %}
+                                {% if estimate.option1 == contract.option1 %}
+                                  {{ estimate.option1.name }}<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option1.name }}</span><br>
+                                {% endif %}
+                              {% endif %}
+                              {% if estimate.option2 %}
+                                {% if estimate.option2 == contract.option2 %}
+                                  {{ estimate.option2.name }}<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option2.name }}</span><br>
+                                {% endif %}
+                              {% endif %}
+                              {% if estimate.option3 %}
+                                {% if estimate.option3 == contract.option3 %}
+                                  {{ estimate.option3.name }}<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option3.name }}</span><br>
+                                {% endif %}
+                              {% endif %}
+                              {% if estimate.option4 %}
+                                {% if estimate.option4 == contract.option4 %}
+                                  {{ estimate.option4.name }}<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option4.name }}</span><br>
+                                {% endif %}
+                              {% endif %}
+                              {% if estimate.option5 %}
+                                {% if estimate.option5 == contract.option5 %}
+                                  {{ estimate.option5.name }}<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option5.name }}</span><br>
+                                {% endif %}
+                              {% endif %}
+                            </td>
+                            <td class="text-right">
+                              {% if estimate.option1 %}
+                                {% if estimate.option1 == contract.option1 %}
+                                  {{ estimate.option1.price|intcomma }}/年<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option1.price|intcomma }}/年</span><br>
+                                {% endif %}
+                              {% endif %}
+                              {% if estimate.option2 %}
+                                {% if estimate.option2 == contract.option2 %}
+                                  {{ estimate.option2.price|intcomma }}/年<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option2.price|intcomma }}/年</span><br>
+                                {% endif %}
+                              {% endif %}
+                              {% if estimate.option3 %}
+                                {% if estimate.option3 == contract.option3 %}
+                                  {{ estimate.option3.price|intcomma }}/年<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option3.price|intcomma }}/年</span><br>
+                                {% endif %}
+                              {% endif %}
+                              {% if estimate.option4 %}
+                                {% if estimate.option4 == contract.option4 %}
+                                  {{ estimate.option4.price|intcomma }}/年<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option4.price|intcomma }}/年</span><br>
+                                {% endif %}
+                              {% endif %}
+                              {% if estimate.option5 %}
+                                {% if estimate.option5 == contract.option5 %}
+                                  {{ estimate.option5.price|intcomma }}/年<br>
+                                {% else %}
+                                  <span class="text-danger font-weight-bold">{{ estimate.option5.price|intcomma }}/年</span><br>
+                                {% endif %}
+                              {% endif %}
+                            </td>
+                          {% else %}
+                            <td colspan="2">なし</td>
+                          {% endif %}
+                        </tr>
+                        <tr>
+                          <th scope="row"  class="tr_head">割引</th>
+                          {% if estimate.method_payment_id == 1 and estimate.unit_total >= 30000 %}
+                              <td>クレジットカード支払割引</td>
+                              <td class="text-right">-{{ estimate.method_payment.payment_discount|intcomma }}</td>
+                          {% else %}
+                              <td colspan="2">なし</td>
+                          {% endif %}
+                          {% comment %} {% if estimate.discount and estimate.method_payment_id == 1 %}
+                              {% if estimate.unit_total >= 30000 %}
+                                <td>クレジットカード決済割引<br>
+                                  {{ estimate.discount.name }}</td>
+                                <td class="text-right">-{{ estimate.method_payment.payment_discount|intcomma }}<br>
+                                -{{ estimate.discount.discount_rate|intcomma }}</td>
+                              {% else %}
+                                <td>{{ estimate.discount.name }}</td>
+                                <td class="text-right">-{{ estimate.discount.discount_rate|intcomma }}</td>
+                              {% endif %}
+                          {% elif estimate.method_payment_id == 1 and estimate.unit_total >= 30000 %}
+                              <td>クレジットカード決済割引</td>
+                              <td class="text-right">-{{ estimate.method_payment.payment_discount|intcomma }}</td>
+                          {% elif estimate.discount %}
+                              <td>{{ estimate.discount.name }}</td>
+                              <td class="text-right">-{{ estimate.discount.discount_rate|intcomma }}</td>
+                          {% else %}
+                              <td colspan="2">なし</td>
+                          {% endif %} {% endcomment %}
+                        </tr>
+                  </tbody>
+                </table>
+                <table class="table">
+                  <tbody>
+                        <tr>
+                          <th class="table-blank border-0"></th>
+                          <th scope="row" class="tr_head tr_gray h6 border">年額利用料</th>
+                          <td colspan="2" class="text-right h6 border">{{ estimate.unit_total|intcomma }}&nbsp;({{ estimate.unit_minor_total|intcomma }}/月)</td>
+                        </tr>
+                        <tr>
+                          <th class="table-blank border-0"></th>
+                          <th scope="row" class="tr_head tr_gray h6 border">小計</th>
+                          <td colspan="2" class="text-right h6 border">{{ estimate.minor_total|intcomma }}</td>
+                        </tr>
+                        <tr>
+                          <th class="table-blank border-0"></th>
+                          <th scope="row" class="tr_head tr_gray h6 border">消費税(<span class="tax-rate">10</span>%)</th>
+                          <td colspan="2" class="text-right h6 border">{{ estimate.tax|intcomma }}</td>
+                        </tr>
+                        <tr>
+                          <th class="table-blank border-0"></th>
+                          <th scope="row" class="tr_head h6 tr_gray font-weight-bold border">合計</th>
+                          <td colspan="2" class="text-right font-weight-bold h5 border">{{ estimate.total|intcomma }}</td>
+                        </tr>
+                        <tr>
+                          <th class="table-blank border-0"></th>
+                          <th scope="row" class="tr_head h6 tr_gray font-weight-bold border">現在のプランとの差額</th>
+                          <td colspan="2" class="text-right text-danger font-weight-bold h5 border">{{ estimate.difference|intcomma }}</td>
+                        </tr>
+                  </tbody>
+                </table>
+            </div><!-- /.card-body -->
+      </div><!-- /.card -->
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+ 
+  <form action="" method="post" id="form_payment">{% csrf_token %}
+
+    <div class="btn-toolbar fixed-bottom p-3">  
+
+      <div class="row mx-auto">
+          <button type="button" class="btn my-btn-w11 ml-1 my-btn-cancel cancel mr-5" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
+          <h5 class="align-middle d-block m-2 tool-text">変更内容をご確認の上、「確認」ボタンを押してください。</h5>
+          <button type="button" class="btn my-btn-w11 mr-2 my-btn-accept text-center" onclick="location.href='{% url 'payment:payment_return' %}'"><span class="return2"></span>戻る</button>
+          <button type="button" class="btn my-btn-w11 ml-2 my-btn-accept text-center" data-toggle="modal" data-target="#payment_confirm" onfocus="this.blur();">確認<span class="check"></span></button>
+      </div>
+    </div>
+  </form>
+  <!-- 振込支払い確認用モーダル用 -->
+  <div class="modal fade" id="payment_confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>事前にご登録頂いたクレジットカードを利用して支払いを行います。<br>
+            「変更」ボタンをクリックすると契約が締結します。</p>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="autocheckoutcheckout_button" form="form_payment" class="my-btn my-btn-accept my-btn-sm my-btn-w6">変更</button>
+          <button type="button" class="btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">キャンセル</button>
+        
+        </div><!-- /.modal-footer -->
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <!-- キャンセル確認用 -->
+ <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h6>現在の入力した内容は全て破棄されます。</h6>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'payment:contract_cancel' %}'">OK</button>
+        <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->    
+
+{% endblock %}
+{% block extra_js %}
+<script>
+  $(document).ready(function() {
+
+  function loadingView(flag) {
+    $('#loading-view').remove();
+    if(!flag) return;
+    $('<div id="loading-view" />').appendTo('body');
+  }
+
+  $("#autocheckoutcheckout_button").click( function() {
+    // 処理前に Loading 画像を表示
+    loadingView(true);
+  });
+
+});
+
+</script>
+{% endblock %}

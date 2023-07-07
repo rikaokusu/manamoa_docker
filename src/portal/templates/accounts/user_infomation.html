@@ -1,0 +1,73 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %}管理ユーザー情報{% endblock title %}
+
+{% block breadcrumbtitle %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+        <li class="breadcrumb-item active">管理ユーザー情報</li>
+    </ol>
+  </nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+{% comment %} <div class="container company_profile p-0"> {% endcomment %}
+
+  {% if current_user %}
+    <button type="button" class="btn my-btn-w13 my-btn-accept" onclick="location.href='{% url 'accounts:update_userinfomation' user.id %}'">管理ユーザー情報変更</button>
+  {% endif %}
+
+  <div class="row company_profile">
+    <div class="col-5">
+      <div class="card border-0 mt-0">
+        <div class="card-body company_profile_body p-0 pt-3">
+          <table class="table table-bordered">
+            <tbody>
+              <h6>管理ユーザー情報</h6>
+              <tr>
+                <th scope="row" class="tr_head">メールアドレス</th>
+                <td>{{ user.email }}</td>
+              </tr>
+              <tr>
+                <th scope="row" class="tr_head">ユーザー名</th>
+                <td>
+                  {% if user.company.middle_choice %}
+                    {% if user.middle_name %}
+                      {{ user.first_name }} {{ user.middle_name }} {{user.last_name}}
+                    {% else %}
+                      {{ user.last_name }} {{ user.first_name }}
+                    {% endif %}
+                  {% else %}
+                    {{ user.last_name }} {{ user.first_name }}
+                  {% endif %}
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" class="tr_head">利用サービス</th>
+                <td>
+                  {{ user.service }}
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" class="tr_head">メモ</th>
+                <td>
+                  {{ user.description }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div><!-- /.card-body -->
+      </div><!-- /.card -->
+    </div><!-- /.col -->
+  </div><!-- /.row -->
+{% comment %} </div><!--container--> {% endcomment %}
+
+
+{% endblock %}

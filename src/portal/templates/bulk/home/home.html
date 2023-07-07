@@ -1,0 +1,62 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+
+{% block title %}
+ {% trans 'BULK OPERATION' %}
+{% endblock title %}
+
+{% block breadcrumbtitle %}
+
+  <span>
+   {% trans 'BULK OPERATION' %}
+  </span>
+
+{% endblock breadcrumbtitle %}
+
+{% block content %}
+
+<div class="container bulk">
+  <div class="row">
+
+      <div class="col-sm-6 col-md-3">
+        <a href="{% url 'bulk:import' %}" class="button">
+          <div class="card text-center">
+            <div class="card-body">
+              <i class="fas fa-user-plus fa-5x"></i>
+              <p class="card-title">{% trans 'REDISTRATION' %}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <a href="{% url 'bulk:delete' %}" class="button">
+          <div class="card text-center">
+            <div class="card-body">
+              <i class="fas fa-user-times fa-5x"></i>
+              <p class="card-title">{% trans 'DELETE' %}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-sm-6 col-md-3">
+        <a href="{% url 'bulk:update' %}" class="button">
+          <div class="card text-center">
+            <div class="card-body">
+              <i class="fas fa-user-edit fa-5x"></i>
+              <p class="card-title">{% trans 'UPDATE' %}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+  </div><!-- end row -->
+
+</div> <!-- end container -->
+
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

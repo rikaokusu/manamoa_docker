@@ -1,0 +1,51 @@
+{% load index %}
+{% load get_list %}
+{% load get_cat %}
+{% comment %} {% load get_cat_list %} {% endcomment %}
+
+{% load humanize %}
+
+{% for group, options, index in widget.optgroups %}
+    {% for option in options %}
+
+
+    {% comment %} {% with category=plans_cat_list|get_cat_list:forloop.parentloop.counter0%}
+    {% if category != plan_price_dict|get_cat:option.value %}
+    <hr>
+    {% endif %}
+    {% endwith %} {% endcomment %}
+
+    <div class="row" data-rowval={{option.value}}>
+
+      {% comment %} {{plans_cat_list}} {% endcomment %}
+
+      <div class="col-sm-6">
+        <div class="form-check check_row">
+          {% comment %} カテゴリ名をクラス名として設定 {% endcomment %}
+            <input class="form-check-input {{ plan_price_dict|get_cat:option.value }}" type="{{ option.type }}" name="{{ option.name }}"
+                    id="{{ option.attrs.id }}" value="{{ option.value }}" data-row_index="{{ option.index }}" data-service_name="{{ option.label }}" {% if option.attrs.checked %}checked{% endif %}>
+            <label class="form-check-label service_checkbox_label" for="{{ option.attrs.id }}" data-price="{{ plan_price_dict|get_list:option.value|intcomma }}">
+                {{ option.label }}
+            </label>
+
+        </div>
+      </div>
+
+
+      {% comment %} {% if option.index != "0" %} {% endcomment %}
+      <div class="col-sm-6">
+        <div class="form-check check_row text-right pr-3">
+          {% comment %} {{plan_price_dict}} {% endcomment %}
+          {% with value=option.value %}
+            <span class="form-check-label service_checkbox_label">{{ plan_price_dict|get_list:value|intcomma }}/年</span>
+          {% endwith %}
+        </div>
+      </div>
+      {% comment %} {% endif %} {% endcomment %}
+
+    </div>
+
+
+
+    {% endfor %}
+{% endfor %}

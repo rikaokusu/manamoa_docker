@@ -1,0 +1,46 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load humanize %}
+{% load sort_by %}
+
+{% block title %}申し込み完了{% endblock title %}
+
+{% block breadcrumbtitle %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+        <li class="breadcrumb-item">契約管理</li>
+        <li class="breadcrumb-item"><a href="{% url 'contracts:contract' %}">ご契約状況</a></li>
+        <li class="breadcrumb-item active">申し込み完了</li>
+    </ol>
+  </nav>
+  {% comment %} <a class="help_icon" href="{% url 'help:checkout' %}" target="_blank"><i class="fas fa-question-circle"></i></a> {% endcomment %}
+{% endblock breadcrumbtitle %}
+
+{% block content %}
+
+<!-- ステップ -->
+  
+
+  <div class="container mx-auto py-0 text-center pt-5">
+    <h6 class="py-3">お申込み手続きが完了しました。<br>
+      
+      {% if contract.payment.method_payment.id == 1 %}
+        引き続きサービスをご利用ください。<br>
+        お申込みいただきありがとうございます。
+      {% else %}
+        お申し込みのサービスはお振込を確認次第ご利用いただけます。<br>
+        お手数ではございますが、お振込みが完了した際はCloudLabポータルの右上部にございます、<br>
+       「振込完了」ボタンを押していただき、口座と振込日を選択後、「通知」ボタンを押してください。<br>
+        お客様が振込完了通知を送信後、3営業日以内に利用手続きを行います。
+      {% endif %}
+    </h6>
+    <button type="button" class="btn my-btn-w11 mr-3 my-btn-accept text-align-center" onclick="location.href='{% url 'accounts:home' %}'">ホームに戻る</button>
+  </div>
+  {% endblock %}
+  
+  {% block extra_js %}
+
+  {% endblock %}
+  

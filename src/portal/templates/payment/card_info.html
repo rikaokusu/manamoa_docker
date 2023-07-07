@@ -1,0 +1,159 @@
+{% extends "common/base.html" %}
+{% load i18n static %}
+
+{% block title %}クレジットカード情報{% endblock title %}
+
+{% block breadcrumbtitle %}
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+            <li class="breadcrumb-item">契約管理</li>
+            <li class="breadcrumb-item active">クレジットカード情報</li>
+        </ol>
+    </nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block content %}
+
+    {% if not company.stripe.stripe_card_id %}
+        <div class="card card-register border-0 mt-0">
+            <div class="card-body">
+                <h6>カード情報が登録されていません。<br>
+                    クレジットカード支払いをご希望の場合はクレジットカード情報を登録してください。<br>
+                    なお、ご利用いただけるカードブランドは下記の通りです。<br><br>
+                    ・VISA<br>
+                    ・Mastercard<br>
+                    ・アメリカン・エキスプレス<br>
+                </h6>
+                <!-- inputタグでclient_secretを渡す→JavaScriptで値（value）を取得する -->
+                <input type="hidden" id="client_secret" value="{{ client_secret }}">
+                <!--フォームが読み込まれたら、Payment Elementのインスタンスを作成して、それをコンテナーのDOMノードにマウントする-->
+                <form id="payment-form">
+                    <div id="card-element">
+                    <!-- クレジットカード入力フォームが挿入される部分 -->
+                    </div>
+                    <div id="error-message">
+                    <!-- エラーが起こった場合のメッセージ -->
+                    </div>
+                    <button id="create" class="my-btn my-btn-accept mt-2">登録する</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        {% for c in card_list %}
+            <div class="card card-register border-0 mt-0">
+                <div class="card-body">
+
+                    <h6>クレジットカード情報を更新したい場合は「カード情報を更新する」より新しい<br>
+                        クレジットカード情報を入力してください。<br>
+                        なお、ご利用いただけるカードブランドは下記の通りです。<br><br>
+                        ・Visa<br>
+                        ・Mastercard<br>
+                        ・アメリカン・エキスプレス<br><br>
+                    </h6>
+
+                    <h6 class="font-weight-bold">現在ご利用中のカード情報</h6>
+
+                    <table class="table mb-0 credit-table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th scope="row">カードブランド</th>
+                                <td class="text-right">
+                                    {% if c.card.brand == 'visa' %}
+                                        <i class="fab fa-cc-visa" style="color: #2a5298;"></i>&nbsp;Visa
+                                    {% elif c.card.brand == 'mastercard' %}
+                                        <i class="fab fa-cc-mastercard" style="color: #e62d2d;"></i>&nbsp;Mastercard
+                                    {% else %}
+                                        <i class="fab fa-cc-amex" style="color: #3169c9;"></i>&nbsp;American&nbsp;Express
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">クレジットカード番号</th>
+                                <td class="text-right">XXXX XXXX XXXX {{ c.card.last4 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">有効期限(月/年)</th>
+                                <td class="text-right">{{ c.card.exp_month }}/{{ c.card.exp_year }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table>
+                        <div class="accordion pt-4" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="card">
+                                <div class="card-header header-color" role="tab" id="headingOne">
+                                    <h5 class="mb-0">
+                                        <button type="button" class="btn h-item" data-toggle="collapse" data-target="#update-card" aria-expanded="false" aria-controls="collapseExample">カード情報を更新する</button>
+                                    </h5>
+                                </div><!-- /.card-header -->
+                                <div class="collapse" id="update-card">
+                                    <div class="card-body">
+                                        <!-- inputタグでclient_secretを渡す→JavaScriptで値（value）を取得する -->
+                                        <input type="hidden" id="client_secret" value="{{ client_secret }}">
+                                        <!--フォームが読み込まれたら、Payment Elementのインスタンスを作成して、それをコンテナーのDOMノードにマウントする-->
+                                        <form id="payment-form">
+                                            {% csrf_token %}
+                                            <div id="card-element">
+                                            <!-- クレジットカード入力フォームが挿入される部分 -->
+                                            </div>
+                                            <div id="error-message">
+                                            <!-- エラーが起こった場合のメッセージ -->
+                                            </div>
+                                            <button id="update" class="my-btn my-btn-accept mt-4" disabled>更新する</button>
+                                        </form>
+                                    </div><!-- /.card-body -->
+                                </div><!-- /.collapse -->
+                            </div><!-- /.card -->
+                        </div><!-- /#accordion -->
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif%}
+
+
+    <div class="card card-register border-0 mt-5">
+        <h6 class="card-header border-0">カード情報の取扱について</h6>
+        <div class="card-body">
+            <h6>当サイトはクレジットカード支払い代行サービスの「Stripe」を使用し、支払い処理を行っております。<br>
+                そのためクレジットカード情報は当サイトには保持しておりません。<br>
+                Stripeのセキュリティ情報については<a href="https://stripe.com/en-jp/privacy" target="_blank">こちら</a>を御覧ください。
+            </h6>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script src="{% static 'payment/js/stripe.js' %}"></script>
+
+    <script>
+    
+
+        $(function() {
+            $('#update_button').click(function(){
+                $('.update-card').toggleClass();
+            });
+
+            // 値が入ったらボタンを有効化
+            $('#card-element').on('change', function () {
+                //$('#update').prop('disabled',false);
+                console.log('ka-don')
+                var c_num = $("input[name='cardnumber']").val()
+                console.log('bangou',c_num)
+            });
+            $('#card-element').on('change', function(event) {
+                var displayError = $('error-message');
+                if (event.error) {
+                    displayError.text('event.error.message;');
+                } else {
+                    displayError.text('');
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,3 @@
+GRANT ALL PRIVILEGES ON CLportal_db TO 'yuitech'@'%';
+
+FLUSH PRIVILEGES;

@@ -1,0 +1,353 @@
+{% extends "common/base.html" %}
+{% load i18n static %}
+{% load humanize %}
+
+{% block title %}見積書選択{% endblock title %}
+
+{% block breadcrumbtitle %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+        <li class="breadcrumb-item">申し込み</li>
+        <li class="breadcrumb-item active">見積書選択</li>
+    </ol>
+  </nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+
+
+
+{% comment %} <div class="container user"> {% endcomment %}
+
+  <div class="card border-0 mx-auto mt-0">
+    <div class="card-body user_list_body mx-0 px-0">
+      <table width="100%" class="table table-striped table-hover row-border" id="dataTables-estimates">
+        <thead>
+          <tr>
+            <th></th>
+
+            {% comment %} <th><input type="checkbox" id="checkall"></th> {% endcomment %}
+            <th>サービス<br>プラン</th>
+            <th>オプション<br>　</th>
+            <th>初期費用＋<br>年額費用(税抜)</th>
+            <th>支払い方法<br>　</th>
+            <th>見積り有効期限<br>　</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for estimate in estimates %}
+            <tr class="odd gradeX">
+              <!-- チェックボックスカラム -->
+                <td>
+                </td>
+                
+                <td>{{ estimate.service }}<br>{{ estimate.plan }}</td>
+
+                <td>
+                    {% if estimate.option1 %}
+                      {{ estimate.option1.name }}<br />
+                    {% endif %}
+                    {% if estimate.option2 %}
+                      {{ estimate.option2.name }}<br />
+                    {% endif %}
+                    {% if estimate.option3 %}
+                      {{ estimate.option3.name }}<br />
+                    {% endif %}
+                    {% if estimate.option4 %}
+                      {{ estimate.option4.name }}<br />
+                    {% endif %}
+                    {% if estimate.option5 %}
+                      {{ estimate.option5.name }}<br />
+                    {% endif %}
+                    
+                  {% if estimate.method_payment_id == 1 %}
+                    クレジットカード支払割引
+                  {% endif %}
+                </td>
+                <td class="estimate_td price">{{ estimate.minor_total|intcomma }}　({{ estimate.unit_minor_total|intcomma }}/月)</td>
+                <td>{{ estimate.method_payment.name }}</td>
+                <td>
+                  <div class="new" data-created_time="{{ estimate.created_date|date:'Y/m/d H:i' }}">NEW</div>
+                  {{ estimate.expiration_date|date:'Y/m/d' }}
+                </td>
+                <!-- 見積もり・申し込みボタンカラム -->
+                <td>
+                  <!--一時的にオフ-->
+                  {% if estimate.method_payment.id == 1 %}  <!-- 1がクレジット -->
+                    {% comment %} <a href="{% url 'payment:checkout' estimate.id %}" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6">申し込み！</a> {% endcomment %}
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'payment:checkout' estimate.id %}'"><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                  {% else %}
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'"><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                    {% comment %} <a href="{% url 'payment:checkout_bank' estimate.id %}" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6">申し込み</a> {% endcomment %}
+                  {% endif %}
+                </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table><!-- /.table-responsive -->
+    </div><!-- /.card-body -->
+  </div><!-- /.card -->
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  $(document).ready(function() {
+
+    ///////////////////
+    // Newラベルの表示 //
+    ///////////////////
+    $('.new').each(function(){
+      // 現在日時
+      var current = new Date();
+      // 6時間前のミリ秒を取得
+      var range = current - (6 * 60 * 60 * 1000);
+      // 作成日時(文字列)
+      created_date_str = $(this).data('created_time')
+      console.log(created_date_str)
+      // 作成日時
+      var created_date = new Date( created_date_str )
+      // 作成日時ミリ秒
+      var created_date_ms = created_date.getTime();
+      console.log(created_date_ms)
+      // 作成日が、６時間前の時間を超えたら非表示
+      if (range < created_date_ms){
+        $(this).css("display", "inline-block");
+      }else{
+        $(this).css("display", "none");
+      }
+    });
+
+
+    $('#switch1').on('change', function() {
+      var is_checed = $(this).prop("checked")
+      var contract_id = $(this).data('contract_id')
+      console.log(is_checed)
+      console.log(contract_id)
+
+      // 送信データとして保存
+      var data = { 'is_checked' : is_checed, 'contract_id': contract_id};
+
+      $.ajax({
+          type: 'POST',
+          url: "{% url 'payment:autocheckchange' %}",
+          data: data,
+          dataType: 'json',
+          success: function(data){
+            if(data.status=='ok'){
+
+              // モーダルの表示
+              $('#result_modal').on('show.bs.modal', function (e) {
+                var modal = $(this);
+                modal.find('.modal-body').text(data.message);
+              })
+              $('#result_modal').modal('show')
+
+            }else{
+
+              // モーダルの表示
+              $('#result_modal').on('show.bs.modal', function (e) {
+                var modal = $(this);
+                modal.find('.modal-body').text(data.message);
+              })
+              $('#result_modal').modal('show')
+            }
+          }
+      });
+
+
+    });
+
+
+    // プラスマイナスボタンで行の展開
+    $(".open").on("click", function() {
+      roop_num = $(this).data('roop');
+      $('#hidden_row' + roop_num).toggle();
+      $(this).hide();
+      $(this).next().show();
+    });
+    $(".close").on("click", function() {
+      roop_num = $(this).data('roop');
+      $('#hidden_row' + roop_num).toggle();
+      $(this).hide();
+      $(this).prev().show();
+    });
+
+
+    // 表示・非表示のタイミングでスライダーを正しく表示するイベントをセット
+    $(".open").on("click", function() {
+        $('.update_slider').slick('setPosition');
+        $('.initial_slider').slick('setPosition');
+    });
+
+    // 見積もりスライダー
+    $('.initial_slider').slick({
+      infinite: false,
+      dots:false,
+      slidesToShow:1,
+      slidesToScroll:1,
+      rtl:true,
+      draggable:false,
+    });
+
+    // 見積もりスライダー
+    $('.update_slider').slick({
+      infinite: false,
+      dots:false,
+      slidesToShow:1,
+      slidesToScroll:1,
+      draggable:false,
+    });
+
+
+
+    $('#dataTables-estimates').DataTable({
+      // 件数切替機能 無効
+      lengthChange: false,
+      // 検索機能 無効
+      searching: false,
+      // ソート機能 無効
+      ordering: false,
+      // 情報表示 無効
+      info: false,
+      // ページング機能 無効
+      paging: false,
+      columnDefs: [
+      // チェックボックスカラムのサイズ調整
+      {
+        orderable: false,
+        width: 400,
+        className:'text-center',
+        searchable: false,
+        targets: 0
+      },
+      // 見積もり・購入カラムのサイズ調整
+      {
+        orderable: false,
+        width: 900,
+        searchable: false,
+        targets: 1
+      },
+      {
+        orderable: false,
+        width: 900,
+        searchable: false,
+        targets: 2
+      },
+      {
+        orderable: false,
+        width: 900,
+        searchable: false,
+        targets: 3
+      },
+      {
+        orderable: false,
+        width: 800,
+        searchable: false,
+        targets: 4
+      },
+      {
+        orderable: false,
+        width: 700,
+        searchable: false,
+        targets: 5
+      },
+      {
+        orderable: false,
+        width: 200,
+        targets: 6
+      }
+      ],
+      order: [[ 1, 'asc' ]],
+      colResize: true,
+      autoWidth: false,
+      orderCellsTop: false,
+      searchDelay: 2000,// 2秒の遅延
+      language: {
+           "decimal": ".",
+           "thousands": ",",
+           "sProcessing": "処理中...",
+           "sLengthMenu": "_MENU_ 件表示",
+           "sZeroRecords": "データはありません。",
+           "sInfo": " _TOTAL_ 件中 _START_ から _END_ まで表示",
+           "sInfoEmpty": " 0 件中 0 から 0 まで表示",
+           "sInfoFiltered": "（全 _MAX_ 件より抽出）",
+           "sInfoPostFix": "",
+           "sSearch": "検索:",
+           "sUrl": "",
+           "oPaginate": {
+             "sFirst": "先頭",
+             "sPrevious": "前",
+             "sNext": "次",
+             "sLast": "最終"
+           }
+      },
+    });
+
+    // 手動ボタンの有効化判断(契約終了日の１ヶ月前になったら有効化)
+    {% for contract in contracts %}
+
+      if ("{{ contract.service }}" == "転送サービス")
+        // 終了日をDBから取得
+        var end_date = "{{contract.contract_end_date.date|date:'Y/m/d' }}";
+
+        // 文字列日付をDate型に変換
+        var end_date_obj = new Date( end_date );
+
+        // 1ヶ月前の日付(タイムスタンプ)を取得
+        previous_one_month_timestamp = end_date_obj.setMonth(end_date_obj.getMonth() - 1);
+
+        // 本日日付を取得
+        var today = new Date();
+        // 時間をすべて0にセット
+        today.setHours(0, 0, 0, 0);
+        // 本日日付のタイムスタンプを取得
+        today_timestamp = today.getTime();
+
+        // 日付を比較してボタンの有効化
+        // if (today_timestamp == previous_one_month_timestamp) {
+        if (today_timestamp == today_timestamp) {
+            // $('#btn-manualcheckout').prop("disabled", false);
+            $('#btn-manualcheckout').removeClass('disabled');
+        }
+
+    {% endfor %}
+
+
+    //ウィンドウサイズを変更した場合はユーザー一覧を再描画する。
+    var update_size = function() {
+      $('#dataTables-contract').css({ width: $('#dataTables-contract').parent().width() });
+      $('#dataTables-estimates').css({ width: $('#dataTables-estimates').parent().width() });
+      var cTable = $('#dataTables-contract').dataTable();
+      var eTable = $('#dataTables-estimates').dataTable();
+      cTable.fnAdjustColumnSizing();
+      eTable.fnAdjustColumnSizing();
+    }
+    $(window).resize(function() {
+       clearTimeout(window.refresh_size);
+       window.refresh_size = setTimeout(function() { update_size(); }, 250); // 250ミリ秒
+    });
+
+   
+
+
+    {% comment %} $('#makequotebutton').click(function(){
+      //サービス番号をステップ1へ送る
+      var service = 0;
+
+      window.location.href = '/estimate_step1/'+ service +'/';
+    }); {% endcomment %}
+
+  });
+
+
+
+
+</script>
+{% endblock %}

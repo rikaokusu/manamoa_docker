@@ -1,0 +1,64 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load humanize %}
+
+{% block title %}自動更新有効{% endblock title %}
+
+{% block breadcrumbtitle %}自動更新有効{% endblock breadcrumbtitle %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <div class="card border-0 card-register mt-0">
+    <div class="card-body">
+      <p>自動更新を有効にしますか？</p>
+      <table class="table">
+        <tbody>
+          <tr>
+            <th>サービス</th>
+            <td>{{ contract.service }}</td>
+          </tr>
+          <tr>
+            <th>プラン</th>
+            <td>{{ contract.estimate.plan }}</td>
+          </tr>
+          {% if contract.estimate.disksize %}
+          <tr>
+            <th>ディスクサイズオプション</th>
+            <td>{{ contract.estimate.disksize }}</td>
+          </tr>
+          {% endif %}
+          {% if contract.estimate.usernum %}
+          <tr>
+            <th>ユーザー数オプション</th>
+            <td>{{ contract.estimate.usernum }}</td>
+          </tr>
+          {% endif %}
+          <tr>
+            <th>合計(税抜)</th>
+            <td>{{ contract.estimate.minor_total|intcomma }}</td>
+          </tr>
+        </tbody>
+      </table>
+    <hr />
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <div class="row">
+          <div class="col-sm-6">
+            <button type="submit" class="btn btn-primary btn-block" onfocus="this.blur();">有効</button>
+          </div>
+          <div class="col-sm-6">
+            <a href="{% url 'contracts:contract' %}" class="btn btn-secondary btn-block" onfocus="this.blur();">キャンセル</a>
+          </div>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

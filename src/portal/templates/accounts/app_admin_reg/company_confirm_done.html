@@ -1,0 +1,17 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load bootstrap4 %}
+{% load widget_tweaks %}
+
+{% block title %}
+    会社の登録状況確認完了
+{% endblock title %}
+{% block extra_css %}{% endblock %}
+{% block content %}
+    <div class="container mx-auto py-0 text-center pt-5">
+        <h6 class="py-3">{{ message }}</h6>
+        <button type="button" class="btn my-btn-w13 mr-3 my-btn-accept text-align-center" onclick="location.href='{% url 'accounts:login' %}'">ログイン画面に戻る</button>
+    </div>
+{% endblock %}
+{% block extra_js %}{% endblock %}

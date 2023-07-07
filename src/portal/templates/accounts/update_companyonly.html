@@ -1,0 +1,371 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %}会社情報変更{% endblock title %}
+
+{% block breadcrumbtitle %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+        <li class="breadcrumb-item">契約管理</li>
+        <li class="breadcrumb-item"><a href="{% url 'accounts:companyprofile' %}">会社情報</a></li>
+        <li class="breadcrumb-item active">会社情報変更</li>
+    </ol>
+  </nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+{% comment %} <div class="container company_profile pb-5"> {% endcomment %}
+  <h6>会社名を変更したい場合は、お手数ですが<a href="{% url 'accounts:contact' %}">こちら</a>からお問い合わせください。</h6>
+  <form action="" method="post" enctype="multipart/form-data" validate data-validate>
+
+    <div class="row company_profile pb-5">
+      <div class="col-sm-5">
+        <div class="card border-0  mt-0">
+          <div class="card-body company_profile_body h-adr" data-company="{{company.id}}">
+            <h6>会社情報</h6>
+
+              {% csrf_token %}
+
+              <!-- messages.succes や messages.errorにて利用 -->
+              {% if messages %}
+                <div class="messages">
+                  {% for message in messages %}
+                  <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+              <!-- Form全体のバリデーション時のエラーを表示 -->
+              {% if form.non_field_errors %}
+                <div class="alert alert-danger" role="alert">
+                  {% for error in form.non_field_errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+
+            <table class="table table-sm table-bordered">
+
+              <!-- 郵便番号の自動入力用のクラス指定 -->
+              <span class="p-country-name">Japan</span>
+              <tbody>
+                <tr style="height:116px;">
+                  <th class="tr_head">
+                    会社名
+                  </th>
+
+                  <th class="company_name_aria">
+                    {% if user.company.pic_corp_class == '1' %}
+                      {% if user.company.pic_legal_personality == '99' or user.company.pic_legal_personality == '' %}
+                        {{ user.company.pic_company_name }}
+                      {% else %}
+                        {% if user.company.pic_legal_person_posi == '1' %}
+                          {{ user.company.get_pic_legal_personality_display }}{{ user.company.pic_company_name }}
+                        {% else %}
+                          {{ user.company.pic_company_name }}{{ user.company.get_pic_legal_personality_display }}
+                        {% endif %}
+                      {% endif %}
+                    {% elif user.company.pic_corp_class == '2' %}
+                      {{ user.company.pic_company_name }}
+                    {% endif  %}  <br>
+                  </th>
+
+                </tr>
+
+                <tr>
+                  <th class="tr_head">
+                    <div>
+                      <div class="label">契約部署名</div>
+                    </div>
+                  </th>
+
+                  <th id="dept_aria">
+                    {{ user.company.pic_dept_name|default:"設定なし" }}<br>
+                  </th>
+                </tr>
+
+                <tr>
+                  <th class="tr_head">
+                    <div class="required_box">
+                      <div class="label required_label">郵便番号</div>
+                    </div>
+                  </th>
+
+                  <th>
+                    <!-- 入力フィールド -->
+                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                      {% if form.pic_post_code.errors %}<!-- エラー時の表示 -->
+                        <small class="form-text text-muted">郵便番号を入力すると住所が自動的に表示されます。記入例：9011414</small>
+                        {% render_field form.pic_post_code class="form-control p-postal-code is-invalid"  id="pic_post_code" %}
+
+                        {% for error in form.pic_post_code.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+
+                      {% else %}<!-- 正常時の表示 -->
+                        <small class="form-text text-muted">郵便番号を入力すると住所が自動的に表示されます。例：9011414</small>
+                        {% render_field form.pic_post_code class="form-control p-postal-code is-valid"  id="pic_post_code" %}
+                      {% endif %}
+
+                    {% else %}<!-- 初期表示 -->
+                      <small class="form-text text-muted">郵便番号を入力すると住所が自動的に表示されます。例：9011414</small>
+                      {% render_field form.pic_post_code class="form-control p-postal-code"  id="pic_post_code" %}
+                    {% endif %}
+                  </th>
+                </tr>
+
+                <tr>
+                  <th class="tr_head">
+                    <div class="required_box">
+                      <div class="label required_label">都道府県</div>
+                    </div>
+                  </th>
+
+                  <th>
+                    <!-- 入力フィールド -->
+                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+                      {% if form.pic_prefectures.errors %}<!-- エラー時の表示 -->
+                        <small>例:沖縄県</small>
+                        {% render_field form.pic_prefectures class="form-control p-region-id is-invalid" id="pic_prefectures" %}
+                        {% for error in form.pic_prefectures.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+
+                      {% else %}<!-- 正常時の表示 -->
+                        <small>例:沖縄県</small>
+                        {% render_field form.pic_prefectures class="form-control p-region-id is-valid" id="pic_prefectures" %}
+                      {% endif %}
+
+                    {% else %}<!-- 初期表示 -->
+                      <small>例:沖縄県</small>
+                      {% render_field form.pic_prefectures class="form-control p-region-id" id="pic_prefectures" %}
+                    {% endif %}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="tr_head">
+                    <div class="required_box">
+                      <div class="label required_label">市区町村</div>
+                    </div>
+                  </th>
+                  <th>
+                    <!-- 入力フィールド -->
+                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->  
+                      {% if form.pic_municipalities.errors %}<!-- エラー時の表示 -->
+                        <small>例：南城市佐敷津波古</small>
+                        {% render_field form.pic_municipalities class="form-control p-locality p-street-address p-extended-address is-invalid" id="pic_municipalities" %}
+                        {% for error in form.pic_municipalities.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+                      {% else %}<!-- 正常時の表示 -->
+                        <small>例：南城市佐敷津波古</small>
+                        {% render_field form.pic_municipalities class="form-control p-locality p-street-address p-extended-address is-valid" id="pic_municipalities" %}
+                      {% endif %}
+                    {% else %}<!-- 初期表示 -->
+                      <small>例：南城市佐敷津波古</small>
+                      {% render_field form.pic_municipalities class="form-control p-locality p-street-address p-extended-address" id="pic_municipalities" %}
+                    {% endif %}
+                  </th>
+                </tr>
+                <tr>
+                  <th class="tr_head">
+                    <div class="required_box">
+                      <div class="label required_label">丁目番地以降</div>
+                    </div>
+                  </th>
+                  <th>
+                    <!-- 入力フィールド -->
+                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+                      {% if form.pic_address.errors %}<!-- エラー時の表示 -->
+                        <small>例：1丁目234番地5</small>
+                        {% render_field form.pic_address class="form-control is-invalid" id="pic_address" %}
+                        {% for error in form.pic_address.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+                      {% else %}<!-- 正常時の表示 -->
+                        <small>例：1丁目234番地5</small>
+                        {% render_field form.pic_address class="form-control is-valid" id="pic_address" %}
+                      {% endif %}
+                    {% else %}<!-- 初期表示 -->
+                      <small>例：1丁目234番地5</small>
+                      {% render_field form.pic_address class="form-control" id="pic_address" %}
+                    {% endif %}
+                  </th>
+                </tr>
+
+                <tr>
+                  <th class="tr_head">
+                    <div class="option_box">
+                      <div class="label option_label">建物名称</div>
+                    </div>
+                  </th>
+
+                  <th>
+                    <!-- 入力フィールド -->
+                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+                      {% if form.pic_building_name.errors %}<!-- エラー時の表示 -->
+                        <small>例:〇〇ビル３階</small>
+                        {% render_field form.pic_building_name class="form-control is-invalid" id="pic_building_name" %}
+                        {% for error in form.pic_building_name.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+                      {% else %}<!-- 正常時の表示 -->
+                        <small>例:〇〇ビル３階</small>
+                        {% render_field form.pic_building_name class="form-control is-valid" id="pic_building_name" %}
+                      {% endif %}
+
+                    {% else %}<!-- 初期表示 -->
+                      <small>例:〇〇ビル３階</small>
+                      {% render_field form.pic_building_name class="form-control" id="pic_building_name" %}
+                    {% endif %}
+                  </th>
+                </tr>
+
+                <tr>
+                  <th class="tr_head">
+                    <div class="required_box">
+                      <div class="label required_label">担当者名</div>
+                    </div>
+                  </th>
+
+                  <th>
+                    <!-- 入力フィールド -->
+                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+                      {% if form.pic_full_name.errors %}<!-- エラー時の表示 -->
+                        <small>例:津波古　ゆい(名字と名前の間にスペース)</small>
+                        {% render_field form.pic_full_name class="form-control is-invalid" id="pic_full_name" %}
+                        {% for error in form.pic_full_name.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+                      {% else %}<!-- 正常時の表示 -->
+                        <small>例:津波古　ゆい(名字と名前の間にスペース)</small>
+                        {% render_field form.pic_full_name class="form-control is-valid" id="pic_full_name" %}
+                      {% endif %}
+                    {% else %}<!-- 初期表示 -->
+                      <small>例:津波古　ゆい(名字と名前の間にスペース)</small>
+                      {% render_field form.pic_full_name class="form-control" id="pic_full_name" %}
+                    {% endif %}
+                  </th>
+                </tr>
+
+                <tr>
+                  <th class="tr_head">
+                    <div class="required_box">
+                      <div class="label required_label">担当者電話番号</div>
+                    </div>
+                  </th>
+
+                  <th>
+                    <!-- 入力フィールド -->
+                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+                      {% if form.pic_tel_number.errors %}<!-- エラー時の表示 -->
+                        <small>例:01234567890(ハイフンなし)</small>
+                        {% render_field form.pic_tel_number class="form-control is-invalid" id="pic_tel_number" %}
+
+                        {% for error in form.pic_tel_number.errors %}
+                          <div class="invalid-feedback">
+                            {{ error }}
+                          </div>
+                        {% endfor %}
+                      {% else %}<!-- 正常時の表示 -->
+                        <small>例:01234567890(ハイフンなし)</small>
+                        {% render_field form.pic_tel_number class="form-control is-valid" id="pic_tel_number" %}
+                      {% endif %}
+
+                    {% else %}<!-- 初期表示 -->
+                      <small>例:01234567890(ハイフンなし)</small>
+                      {% render_field form.pic_tel_number class="form-control" id="pic_tel_number" %}
+                    {% endif %}
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+
+          </div> <!--.card-body -->
+        </div> <!--.card -->
+      </div> <!-- /.col -->
+
+
+    <div class="btn-toolbar fixed-bottom p-3 align-middle">
+      <div class="row mx-auto">
+          <h5 class="align-middle d-block m-2 tool-text">会社情報を入力し、変更ボタンを押してください。</h5>
+          <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
+          <button type="submit" class="btn my-btn-w11 mr-1 my-btn-accept change" onfocus="this.blur();" disabled>変更&nbsp;</button>
+      </div>
+    </div>
+  </form>
+{% comment %} </div><!--container--> {% endcomment %}
+
+<!-- レスポンス用 -->
+<div class="modal fade" id="result_modal" tabindex="-1" role="dialog" aria-labelledby="ResoltModalLabel">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn my-btn-cnl btn-sm my-btn-w8" data-dismiss="modal">閉じる</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+ <!-- キャンセル確認用 -->
+ <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h6>現在の入力した内容は全て破棄されます。</h6>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" id="cancel_btn">OK</button>
+        <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+
+$(function(){
+
+  // 戻るボタンで戻った時に値が入ったらボタンを有効化
+  $('form[data-validate]').each(function(){
+    $(this).find(':submit').prop('disabled', !this.checkValidity());
+  });
+
+  // 値が入ったらボタンを有効化
+  $('form[data-validate]').on('input change', function () {
+    $(this).find(':submit').prop('disabled', !this.checkValidity());
+  });
+  //キャンセル処理
+  $('#cancel_btn').click(function(){
+    var company_id = $('.h-adr').data('company');
+    window.location.href = '/cancel/'+ company_id +'/update_profile';
+  });
+
+
+});
+</script>
+{% endblock %}

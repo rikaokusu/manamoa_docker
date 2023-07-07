@@ -1,0 +1,725 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+{% load widget_tweaks %}
+
+{% block title %}会社情報の登録{% endblock title %}
+
+{% block breadcrumbtitle %}会社情報の登録{% endblock breadcrumbtitle %}
+
+{% block content %}
+<!-- ステップ -->
+<ul class="progressbar">
+  <li class="complete">会社情報の登録</li>
+  <li>会社情報登録完了</li>
+  <li>管理ユーザー情報の<br>登録</li>
+  <li>管理ユーザー情報<br>登録完了</li>
+</ul>
+
+
+<div class="container registration_user mb-5 p-0">
+  <div class="card  border-0  mt-5 h-adr">
+    <h6 class="card-header border-0">会社情報の登録</h6>
+        
+        <div class="card-body registration_user_body">
+          <form action="" method="POST" validate data-validate id="my_form" class="password_form">
+              {% csrf_token %}
+
+              <!-- messages.succes や messages.errorにて利用 -->
+              {% if messages %}
+              <div class="messages">
+                  {% for message in messages %}
+                  <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                  {% endfor %}
+              </div>
+              {% endif %}
+
+
+              <!-- Form全体のバリデーション時のエラーを表示 -->
+              {% if form.non_field_errors %}
+                  <div class="alert alert-danger" role="alert">
+                      {% for error in form.non_field_errors %}
+                          {{ error }}
+                      {% endfor %}
+                  </div>
+              {% endif %}
+
+              <table class="table table-sm table-bordered registration_user_table">
+                <!-- 郵便番号の自動入力用のクラス指定 -->
+                <span class="p-country-name">Japan</span>
+                <h6>・会社情報を入力してください<br>
+                  ・会社情報登録後、指定する別ページにて管理ユーザー情報の登録を行います。<br>
+                  ・ご自身の会社の登録状況を確認したい場合は<a href="{% url 'accounts:company_confirm' %}">こちら</a>からご確認ください。
+                </h6>
+                <tbody>
+                  <tr>
+                    <th class="tr_head">
+                      <div class="required_box">
+                        <div class="label require_label">法人区分</div>
+                      </div>
+                    </th>
+
+                    <td style="padding:12px;">
+                      <!-- 入力フィールド -->
+                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                          {% if form.company.pic_corp_class.errors %}<!-- エラー時の表示 -->
+                            {% render_field form.company.pic_corp_class class=" is-invalid" %}
+                            
+                            {% for error in form.company.pic_corp_class.errors %}
+                                {{ error }}
+                            {% endfor %}
+
+                          {% else %}<!-- 正常時の表示 -->
+                            {% render_field form.company.pic_corp_class class=" is-valid" %}
+                            
+                          {% endif %}
+
+                      {% else %}<!-- 初期表示 -->
+                        {% render_field form.company.pic_corp_class class="" %}
+                        
+                      {% endif %}
+
+
+                      <!-- 法人格 -->
+
+                      <!-- <div class="col-sm-8"> -->
+                      <div class="row legal_person">
+                          <!-- 入力ラベル -->
+                          <label for="id_company-pic_legal_personality" class="col-sm-2 col-form-label">
+                            法人格
+                          </label>
+
+                          <!-- 入力フィールド -->
+                          <div class="col-sm-10">
+                              {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                  {% if form.company.pic_legal_personality.errors %}<!-- エラー時の表示 -->
+                                    {% render_field form.company.pic_legal_personality class="form-control is-invalid" %}
+                                    <small class="form-text text-muted">その他の場合は会社名に直接法人格を入力してください</small>
+
+                                    {% for error in form.company.pic_legal_personality.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+
+                                  {% else %}<!-- 正常時の表示 -->
+                                    {% render_field form.company.pic_legal_personality class="form-control is-valid" %}
+                                    <small class="form-text text-muted">その他の場合は会社名に直接法人格を入力してください</small>
+                                  {% endif %}
+
+                              {% else %}<!-- 初期表示 -->
+                                {% render_field form.company.pic_legal_personality class="form-control" %}
+                                <small class="form-text text-muted">その他の場合は会社名に直接法人格を入力してください</small>
+
+                              {% endif %}
+                          </div>
+                      </div>
+
+
+                      <!-- 法人格位置 -->
+
+                      <div class="row legal_person">
+                          <!-- 入力ラベル -->
+                          <label for="id_company-pic_legal_personality" class="col-sm-2 col-form-label">
+                            法人格位置
+                          </label>
+
+                          <div class="col-sm-10">
+                            <!-- 入力フィールド -->
+                            {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                {% if form.company.pic_legal_person_posi.errors %}<!-- エラー時の表示 -->
+                                  {% render_field form.company.pic_legal_person_posi class=" is-invalid" %}
+
+                                  {% for error in form.company.pic_company_name.errors %}
+                                    <div class="invalid-feedback">
+                                      {{ error }}
+                                    </div>
+                                  {% endfor %}
+
+                                {% else %}<!-- 正常時の表示 -->
+                                  {% render_field form.company.pic_legal_person_posi class=" is-valid" %}
+                                {% endif %}
+
+                            {% else %}<!-- 初期表示 -->
+                              {% render_field form.company.pic_legal_person_posi class="" %}
+                            {% endif %}
+
+                          </div>
+                      </div>
+                      <!-- </div> -->
+
+                    </td>
+
+                  </tr>
+                  <tr>
+                    <th class="tr_head">
+                      <div class="required_box">
+                        <div class="label require_label">会社名</div>
+                      </div>
+                    </th>
+
+                    <th>
+                      <!-- 入力フィールド -->
+                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                          {% if form.company.pic_company_name.errors %}<!-- エラー時の表示 -->
+                            {% render_field form.company.pic_company_name class="form-control is-invalid" id="company-pic_company_name"%}
+                            <div class="gen_company_name"></div>
+                            <small class="form-text text-muted">個人事業者の方は屋号を入力してください</small>
+
+                            {% for error in form.company.pic_company_name.errors %}
+                              <div class="invalid-feedback">
+                                {{ error }}
+                              </div>
+                            {% endfor %}
+
+                          {% else %}<!-- 正常時の表示 -->
+                            {% render_field form.company.pic_company_name class="form-control is-valid" id="company-pic_company_name" %}
+                            <div class="gen_company_name_text"><div class="gen_company_name"></div></div>
+                            <small class="form-text text-muted">個人事業者の方は屋号を入力してください</small>
+                          {% endif %}
+
+                      {% else %}<!-- 初期表示 -->
+                        {% render_field form.company.pic_company_name class="form-control" id="company-pic_company_name" %}
+                        <div class="gen_company_name_text"><div class="gen_company_name"></div></div>
+                        <small class="form-text text-muted">個人事業者の方は屋号を入力してください</small>
+                      {% endif %}
+
+                    </th>
+
+                  </tr>
+
+                  <tr>
+                    <th class="tr_head">
+                      <div class="option_box">
+                        <div class="label option_label">契約部署名</div>
+                      </div>
+                    </th>
+
+                    <th>
+
+                      <!-- 入力フィールド -->
+                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                          {% if form.company.pic_dept_name.errors %}<!-- エラー時の表示 -->
+                            <small>契約部署の登録についてはこちら<!-- 切り替えボタンの設定 -->
+                              <button type="button" class="btn my-btn-circle mb-1" data-toggle="modal" data-target="#dept_info">
+                              ?</button>
+                            </small>
+                            {% render_field form.company.pic_dept_name class="form-control is-invalid" id="company-pic_dept_name" %}
+
+                            {% for error in form.company.pic_dept_name.errors %}
+                              <div class="invalid-feedback">
+                                {{ error }}
+                              </div>
+                            {% endfor %}
+
+                          {% else %}<!-- 正常時の表示 -->
+                            <small>契約部署の登録についてはこちら
+                              <button type="button" class="btn my-btn-circle mb-1" data-toggle="modal" data-target="#dept_info">
+                              ?</button>
+                            </small>
+                            {% render_field form.company.pic_dept_name class="form-control is-valid" id="company-pic_dept_name" %}
+                          {% endif %}
+
+                      {% else %}<!-- 初期表示 -->
+                        <small>契約部署の登録についてはこちら
+                          <button type="button" class="btn my-btn-circle mb-1" data-toggle="modal" data-target="#dept_info">
+                          ?</button>
+                        </small>
+                        {% render_field form.company.pic_dept_name class="form-control" id="company-pic_dept_name" %}
+                      {% endif %}
+
+                    </th>
+
+                  </tr>
+
+                  <tr>
+                      <th class="tr_head">
+                        <div class="required_box">
+                          <div class="label require_label">郵便番号</div>
+                        </div>
+                      </th>
+
+                      <th>
+                        <!-- 入力フィールド -->
+                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                            {% if form.company.pic_post_code.errors %}<!-- エラー時の表示 -->
+                              <small class="form-text text-muted">郵便番号を入力すると住所が自動的に表示されます。例：9011414</small>
+                              {% render_field form.company.pic_post_code class="form-control p-postal-code is-invalid"  id="company-pic_post_code" %}
+
+                              {% for error in form.company.pic_post_code.errors %}
+                                <div class="invalid-feedback">
+                                  {{ error }}
+                                </div>
+                              {% endfor %}
+
+                            {% else %}<!-- 正常時の表示 -->
+                              <small class="form-text text-muted">郵便番号を入力すると住所が自動的に表示されます。例：9011414</small>
+                              {% render_field form.company.pic_post_code class="form-control p-postal-code is-valid"  id="company-pic_post_code" %}
+                            {% endif %}
+
+                        {% else %}<!-- 初期表示 -->
+                          <small class="form-text text-muted">郵便番号を入力すると住所が自動的に表示されます。例：9011414</small>
+                          {% render_field form.company.pic_post_code class="form-control p-postal-code"  id="company-pic_post_code" %}
+                        {% endif %}
+
+                      </th>
+
+                    </tr>
+
+                    <tr>
+                      <th class="tr_head">
+                        <div class="required_box">
+                          <div class="label require_label">都道府県</div>
+                        </div>
+                      </th>
+
+                      <th>
+                        <!-- 入力フィールド -->
+                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                            {% if form.company.pic_prefectures.errors %}<!-- エラー時の表示 -->
+                              <small>例:沖縄県</small>
+                              {% render_field form.company.pic_prefectures class="form-control p-region-id is-invalid" id="company-pic_prefectures" %}
+
+                              {% for error in form.company.pic_prefectures.errors %}
+                                <div class="invalid-feedback">
+                                  {{ error }}
+                                </div>
+                              {% endfor %}
+
+                            {% else %}<!-- 正常時の表示 -->
+                              <small>例:沖縄県</small>
+                              {% render_field form.company.pic_prefectures class="form-control p-region-id is-valid" id="company-pic_prefectures" %}
+                            {% endif %}
+
+                        {% else %}<!-- 初期表示 -->
+                          <small>例:沖縄県</small>
+                          {% render_field form.company.pic_prefectures class="form-control p-region-id" id="company-pic_prefectures" %}
+                        {% endif %}
+
+                      </th>
+
+                    </tr>
+                    
+                    <tr>
+                      <th class="tr_head">
+                        <div class="required_box">
+                          <div class="label require_label">市区町村</div>
+                        </div>
+                      </th>
+
+                      <th>
+                        <!-- 入力フィールド -->
+                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                            {% if form.company.pic_municipalities.errors %}<!-- エラー時の表示 -->
+                              <small>例：南城市佐敷津波古</small>
+                              {% render_field form.company.pic_municipalities class="form-control p-locality p-street-address p-extended-address is-invalid" id="company-pic_municipalities" %}
+
+                              {% for error in form.company.pic_municipalities.errors %}
+                                <div class="invalid-feedback">
+                                  {{ error }}
+                                </div>
+                              {% endfor %}
+
+                            {% else %}<!-- 正常時の表示 -->
+                              <small>例：南城市佐敷津波古</small>
+                              {% render_field form.company.pic_municipalities class="form-control p-locality p-street-address p-extended-address is-valid" id="company-pic_municipalities" %}
+                            {% endif %}
+
+                        {% else %}<!-- 初期表示 -->
+                          <small>例：南城市佐敷津波古</small>
+                          {% render_field form.company.pic_municipalities class="form-control p-locality p-street-address p-extended-address" id="company-pic_municipalities" %}
+                        {% endif %}
+
+                      </th>
+
+                    </tr>
+
+                    <tr>
+                      <th class="tr_head">
+                        <div class="required_box">
+                          <div class="label require_label">丁目番地以降</div>
+                        </div>
+                      </th>
+
+                      <th>
+                        <!-- 入力フィールド -->
+                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                            {% if form.company.pic_address.errors %}<!-- エラー時の表示 -->
+                              <small>例：1丁目234番地5</small>
+                              {% render_field form.company.pic_address class="form-control is-invalid" id="company-pic_address" %}
+
+                              {% for error in form.company.pic_address.errors %}
+                                <div class="invalid-feedback">
+                                  {{ error }}
+                                </div>
+                              {% endfor %}
+
+                            {% else %}<!-- 正常時の表示 -->
+                              <small>例：1丁目234番地5</small>
+                              {% render_field form.company.pic_address class="form-control is-valid" id="company-pic_address" %}
+                            {% endif %}
+
+                        {% else %}<!-- 初期表示 -->
+                          <small>例：1丁目234番地5</small>
+                          {% render_field form.company.pic_address class="form-control" id="company-pic_address" %}
+                        {% endif %}
+
+                      </th>
+
+                    </tr>
+
+                    <tr>
+                      <th class="tr_head">
+                        <div class="option_box">
+                          <div class="label option_label">建物名称</div>
+                        </div>
+                      </th>
+
+                      <th>
+                        <!-- 入力フィールド -->
+                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                            {% if form.company.pic_building_name.errors %}<!-- エラー時の表示 -->
+                              <small>例:〇〇ビル３階</small>
+                              {% render_field form.company.pic_building_name class="form-control is-invalid" id="company-pic_building_name" %}
+
+                              {% for error in form.company.pic_building_name.errors %}
+                                <div class="invalid-feedback">
+                                  {{ error }}
+                                </div>
+                              {% endfor %}
+
+                            {% else %}<!-- 正常時の表示 -->
+                              <small>例:〇〇ビル３階</small>
+                              {% render_field form.company.pic_building_name class="form-control is-valid" id="company-pic_building_name" %}
+                            {% endif %}
+
+                        {% else %}<!-- 初期表示 -->
+                          <small>例:〇〇ビル３階</small>
+                          {% render_field form.company.pic_building_name class="form-control" id="company-pic_building_name" %}
+                        {% endif %}
+
+                      </th>
+
+                    </tr>
+                  </tbody>
+                </table>
+                <table class="table table-sm table-bordered registration_user_table">
+                  <h6>
+                  ・下記メールアドレスの所有者を、当サービスの管理ユーザーとして登録します。<br>
+                  ・一般ユーザーは管理ユーザー登録後、ユーザー管理画面にて登録することができます。<br>
+                  　詳しくはこちら<button type="button" class="btn my-btn-circle" data-toggle="modal" data-target="#mail_info">
+                    ?</button>
+                  </h6>
+                  <tbody>
+                    <tr>
+                      <th class="tr_head" style="width:220px;">
+                        <div class="required_box">
+                          <div class="label require_label">メールアドレス</div>
+                        </div>
+                      </th>
+                      <th>
+                        <!-- 入力フィールド -->
+                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                            {% if form.user.email.errors %}<!-- エラー時の表示 -->
+                              <small>会社の独自ドメインを使用してください。例：abc@yui.okinawa</small>
+                              {% render_field form.user.email class="form-control is-invalid"  id="user-email" %}
+
+                              {% for error in form.user.email.errors %}
+                                <div class="invalid-feedback">
+                                  {{ error }}
+                                </div>
+                              {% endfor %}
+
+                            {% else %}<!-- 正常時の表示 -->
+                              <small>会社の独自ドメインを使用してください。例：abc@yui.okinawa</small>
+                              {% render_field form.user.email class="form-control is-valid"  id="user-email" %}
+                            {% endif %}
+
+                        {% else %}<!-- 初期表示 -->
+                          <small>会社の独自ドメインを使用してください。例：abc@yui.okinawa</small>
+                          {% render_field form.user.email class="form-control"  id="user-email" %}
+                        {% endif %}
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+
+              <div class="btn-toolbar fixed-bottom p-3 align-middle">  
+
+                <div class="row mx-auto">
+                    <h5 class="align-middle d-block m-2 tool-text">会社情報を入力し、登録ボタンを押してください。</h5>
+                    <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
+                    <button type="button" class="btn my-btn-w11 mr-1 my-btn-accept" id="send" data-toggle="modal" data-target="#registration_info" disabled>登録&nbsp;&nbsp;&nbsp;<i class="fas fa-user-check"></i></button>
+                
+                </div>
+              </div>
+
+          </form>
+        </div> <!-- end card -->
+    </div>
+</div>
+
+<!-- 部署説明モーダルの設定 -->
+<div class="modal fade" id="dept_info" tabindex="-1" aria-labelledby="dept_info_title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold" id="dept_info_title">契約部署の登録について</h5>
+        <button type="button" class="close my-btn-cancel" data-dismiss="modal" aria-label="閉じる">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>こちらの登録画面では会社や団体(以下、会社とします)に対して、会社登録を行います。<br>
+          会社アカウントは最初のメールアドレス登録時に自動的に作成されます。<br>
+          1つの会社で1つの登録となり、当社システムでは1社で複数の会社登録はできません。<br>
+          企業規模や支社や部門単位で管理を分けたい場合は、以下の例を参考にご登録ください。<br>
+        <hr></h6>
+
+          <h6 class="font-weight-bold">例「CloudLab合同会社」の場合　※部署名やメールアドレスは実在しません</h6>
+
+          <div class="font-weight-bold dept-text">・全社で1つの管理とする場合</div>
+          <p>　組織名　CloudLab合同会社<br>
+          　契約部署名　なし<br>
+          　メールアドレス　cloudlab-okinawa.co.jpドメイン　<br>
+          「CloudLab合同会社」として会社登録が行われます。</p>
+
+          <div class="font-weight-bold dept-text">・支社・支店・営業所単位で管理とする場合</div>
+          <p>　組織名　CloudLab合同会社<br>
+          　契約部署名　沖縄支店<br>
+          　メールアドレス　cloudlab-okinawa.co.jpドメイン　<br>
+          「CloudLab合同会社 沖縄支店」として会社登録が行われます。</p>
+
+          <div class="font-weight-bold dept-text">・部門単位で管理とする場合</div>
+          <p>　組織名　CloudLab合同会社<br>
+          　契約部署名　沖縄支店 営業部<br>
+          　メールアドレス　cloudlab-okinawa.co.jpドメイン　<br>
+          「CloudLab合同会社 沖縄支店 営業部」として会社登録が行われます。</p>
+
+          <p>ここでは支店と部の組み合わせとしていますが、部のみで「CloudLab合同会社 営業部」とすることが可能です。<br>
+          会社登録時の名称は、重複した登録はできません。「沖縄支店 営業部」と「東京支店 営業部」がある場合に、支店名を省くとどちらも「CloudLab合同会社 営業部」となるため、後から登録する組織は重複しない名称に変更する必要があります。</p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn my-btn-cancel" data-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="mail_info" tabindex="-1" aria-labelledby="mail_info_title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold" id="mail_info_title">管理ユーザーについて</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>管理ユーザーは当サービスにおける管理権限を有します。<br>
+          管理ユーザーの権限：サービスの申し込み、解約、会社情報変更、一般ユーザー登録、削除、変更など<br>
+          管理ユーザーは一般ユーザーに対して管理権限を付与することもできます。<br>
+          一般ユーザーとして登録したい場合は、管理ユーザー権限を有する担当者へ登録を依頼してください。
+        </h6>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn my-btn-cancel" data-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="first_info" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="first_info_title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold" id="first_info_title">新規登録について</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>当ページは、企業・組織として初めてCloudLabが提供するサービスを利用するための登録フォームです。<br>
+          すでに登録がお済みの企業・組織の一般ユーザーとして登録したい場合は、管理ユーザー権限を有する担当者へ登録を依頼してください。<br>
+          所属する企業・組織の登録有無の確認をしたい場合は、<a href="{% url 'accounts:company_confirm' %}">こちら</a>から確認フォームへお進みください。
+        </h6>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn my-btn-cancel" data-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="registration_info" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="registration_info_title" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold" id="registration_info_title">ご登録前にご一読ください。</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6>
+          ・当フォームにて会社登録後、登録されたメールアドレスへ管理ユーザー登録用のURLを送付します。<br>
+          ・管理ユーザー登録用URL送付後、24時間以内に管理ユーザー登録がない場合、登録された会社情報は削除されますので予めご了承ください。<br>
+          ・会社登録後、30分以内に管理ユーザー登録用URLが届かない場合は再度手続きを行ってください。
+        </h6>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" id="reg_btn" class="btn mr-1 my-btn-accept">登録する</button>
+        <button type="button" class="btn my-btn-cancel cancel" data-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- キャンセル確認用 -->
+<div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h6>現在の入力した内容は全て破棄されます。</h6>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'accounts:login' %}'">OK</button>
+        <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+$(function(){  
+    setTimeout(function(){
+      $('#first_info').modal('show');
+    }, 2000);
+
+    // 戻るボタンで戻った時に値が入ったらボタンを有効化
+    $('form[data-validate]').each(function(){
+      // $(this).find(':submit').prop('disabled', !this.checkValidity());
+      $(this).find('#send').prop('disabled', !this.checkValidity());
+    });
+
+    // 値が入ったらボタンを有効化
+    $('form[data-validate]').on('input', function () {
+      // $(this).find(':submit').prop('disabled', !this.checkValidity());
+      $(this).find('#send').prop('disabled', !this.checkValidity());
+    });
+
+
+    $('[name=company-pic_corp_class]').on('change', function () {
+      var val = $(this).val();
+
+      if (val == 2) {
+        $('.legal_person').css('display', 'none')
+      } else {
+        $('.legal_person').css('display', 'flex')
+      }
+
+    });
+
+    //エラー時に法人区分を保管し、その状態で読み込む用
+    $('[name=company-pic_corp_class]').ready(function () {
+      var val = $('[name=company-pic_corp_class]:checked').val();
+      if (val == 2) {
+        $('.legal_person').css('display', 'none')
+      } else {
+        $('.legal_person').css('display', 'flex')
+      }
+
+    });
+
+    // 会社名を表示する
+    $('#id_company-pic_corp_class_0').on('change', function(){
+
+        $('#company-pic_company_name, #id_company-pic_legal_person_posi_0, #id_company-pic_legal_person_posi_1 ,[name=company-pic_legal_personality]').on('change, input', function(){
+          company_name = $('#company-pic_company_name').val()
+          posi = $('[name=company-pic_legal_person_posi]:checked').val()
+          legal_person = $('[name=company-pic_legal_personality] option:selected').text();
+
+          if (legal_person == '---------' || legal_person == 'その他') {
+            legal_person = "";
+          }
+
+          if (posi == 1) { //前株
+            gen_company_name = legal_person + company_name
+          }else if(posi == 2) {
+            gen_company_name = company_name + legal_person
+          }else{
+            gen_company_name = company_name
+          }
+
+         $(".gen_company_name").text(gen_company_name)
+
+        });
+
+    });
+
+    $('#id_company-pic_corp_class_1').on('change', function(){
+      $(".gen_company_name").text("")
+      $('#company-pic_company_name, #id_company-pic_legal_person_posi_0, #id_company-pic_legal_person_posi_1 ,[name=company-pic_legal_personality]').off('change, input')
+    });
+    $('#reg_btn').on('click', function() {
+      loadingView(true);
+
+      $('#my_form').submit();
+    });
+    /*$('#submit').on('click', function() {
+      
+      // 処理前に Loading 画像を表示
+      loadingView(true);
+      //Ajax処理
+      $.ajax({
+        url: "/user_registration/",
+        type: "POST",
+        //dataType: "text",
+        data: $('#my_form').serialize(),
+      
+        //success: function() {
+          // 処理後に Loading 画像を削除
+          //loadingView(false);
+          //window.location.href = '/user_registration/done';
+        //},
+        //error: function () {
+          // 処理後に Loading 画像を削除
+          //loadingView(false);
+          //$('#errorModal').show();
+        //}
+      }).done(function(data){
+        console.log('仮登録せいこう')
+        window.location.href = '/user_registration/done';
+      }).fail(function(data){
+        loadingView(false);
+      });
+    }); */
+
+    function loadingView(flag) {
+      
+      $('#loading-view').remove();
+      if(!flag) return;
+      $('<div id="loading-view" />').appendTo('body');
+    }
+  
+});
+
+
+</script>
+{% endblock %}

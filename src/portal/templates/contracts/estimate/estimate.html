@@ -1,0 +1,566 @@
+{% extends "common/base.html" %}
+{% load i18n static %}
+{% load humanize %}
+{% load get_estimate_id %}
+{% load is_oneweekago %} 
+{% load get_contract_status %}
+{% load get_contract_status2 %}
+{% load check_date %}
+
+
+
+
+{% block title %}見積一覧{% endblock title %}
+
+{% block breadcrumbtitle %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-1">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+        <li class="breadcrumb-item">契約管理</li>
+        <li class="breadcrumb-item active">見積一覧</li>
+    </ol>
+  </nav>
+
+{% endblock breadcrumbtitle %}
+
+{% block extra_css %}{% endblock %}
+
+{% block content %}
+
+  <div class="card card-login border-0 mt-0">
+    <div class="row p-0" style="width:650px;">
+      <div class="col-4">
+        <button type="button" id="makequotebutton" class="btn my-btn-primary my-btn-w13" onclick="location.href='{% url 'contracts:estimate_step1' %}'">見積書作成</button>
+      </div>
+      <div class="col-4">
+        <button type="button" id="delbutton"  class="btn my-btn-accept my-btn-w13" data-toggle="modal" data-target="#estimate_del_modal" disabled onfocus="this.blur();">削除</button>
+      </div>
+      <div class="col-4">
+        <button type="submit" id="copybutton"  class="btn my-btn-accept my-btn-w13" disabled>見積書複製</button>
+      </div>
+    </div><!--row-->
+  </div><!--card-->
+
+  <div class="card border-0 mx-auto mt-0">
+    <div class="card-body user_list_body mx-0 px-0">
+      {% if not estimates %}
+        <div class=" h6">
+          現在、有効な見積もりはありません。
+        </div>
+      {% else %}
+      <table width="100%" class="table table-striped table-hover row-border" id="dataTables-estimates">
+        <thead>
+          <tr>
+            <th class="align-middle"><input type="checkbox" id="checkall"></th>
+            <th class="align-middle">契約状態<br>　</th>
+            <th class="align-middle">サービス<br>プラン</th>
+            <th class="align-middle">オプション<br>　</th>
+            <th class="align-middle">初期費用＋<br>年額費用(税抜)</th>
+            <th class="align-middle">支払い方法<br>　</th>
+            <th class="align-middle">見積り有効期限<br>　</th>          
+          <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for estimate in estimates %}
+            
+            <tr class="odd gradeX py-3">
+              <!-- チェックボックスカラム -->
+                <td>
+                  {% if estimate.is_use and estimate.contract_set.all|get_contract_status:current_user == "2" %}
+                    <span data-toggle="tooltip" title="複製" data-placement="top">
+                    <input type="checkbox" class="copy" value="{{ estimate.pk }}" name="check[]">
+                    <a id="copyicon" data-value={{estimate.id}}><i class="fas fa-lg fa-copy"></i></a>
+
+                    </span>
+                    <!-- 何も表示しない -->
+                  {% else %}
+                    <input type="checkbox" value="{{ estimate.pk }}" name="check[]">
+                    <span data-toggle="tooltip" title="削除" data-placement="top">
+                    <a id="delicon" data-value={{estimate.id}} data-toggle="modal" data-target="#estimate_del_modal"><i class="fas fa-trash-alt"></i></a>
+                    </span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if estimate.is_use and estimate.contract_set.all|get_contract_status:current_user == "2" %}
+                    契約中
+                  {% elif estimate.contract_set.all|get_contract_status:current_user == "3" %}
+                    解約済
+                  {% elif estimate.contract_set.all|get_contract_status:current_user == "4" %}
+                    更新済
+                  {% elif estimate.is_change == 1 %}
+                    {% comment %} プラン変更用 {% endcomment %}
+                  {% endif %}
+                </td>
+                <td>{{ estimate.service }}<br>{{ estimate.plan }}</td>
+
+                <td>
+                  {% if estimate.option1 or estimate.option2 or estimate.option3 or estimate.option4 or estimate.option5 %}
+                    {% if estimate.option1 %}
+                      {{ estimate.option1.name }}
+                    {% endif %}
+                    {% if estimate.option2 %}
+                      <br>{{ estimate.option2.name }}
+                    {% endif %}
+                    {% if estimate.option3 %}
+                      <br>{{ estimate.option3.name }}
+                    {% endif %}
+                    {% if estimate.option4 %}
+                      <br>{{ estimate.option4.name }}
+                    {% endif %}
+                    {% if estimate.option5 %}
+                      <br>{{ estimate.option5.name }}
+                    {% endif %}
+                  {% else %}
+                  なし
+                  {% endif %}
+                </td>
+                {% if estimate.difference > 0 %}
+                  <td class="estimate_td price">￥{{ estimate.minor_total|intcomma }}　({{ estimate.unit_minor_total|intcomma }}/月)<br>
+                    <span class="text-danger">支払い時の差額￥{{ estimate.difference|intcomma }}</span>
+                  </td>
+                {% else %}
+                  <td class="estimate_td price">{{ estimate.minor_total|intcomma }}　({{ estimate.unit_minor_total|intcomma }}/月)</td>
+                {% endif %}  
+                <td>{{ estimate.method_payment.name }}</td>
+                <td>
+                  {% if not estimate.is_use %}
+                    {% if estimate.expiration_date|is_oneweekago and estimate.contract_set.all|get_contract_status:current_user != "3" %}
+                      <div class="text-danger font-weight-bold">有効期限間近！</div>
+                      {{ estimate.expiration_date|date:'Y/m/d' }}
+                    {% elif estimate.contract_set.all|get_contract_status:current_user != "3" and estimate.contract_set.all|get_contract_status:current_user != "4" %}
+                      <div class="new" data-created_time="{{ estimate.created_date|date:'Y/m/d H:i' }}">NEW</div>
+                      {{ estimate.expiration_date|date:'Y/m/d' }}
+                    {% endif %}
+                  {% endif %}
+                </td>
+                <!-- 見積もり・申し込みボタンカラム -->
+                <td class="text-center">
+                  {% comment %} <div class="my-btn my-btn-gray-2 my-btn-sm my-btn-w10-2 mb-2" onclick="location.href='{% url 'contracts:estimateToPdf' estimate.id %}'; return false;"><span>見積書ダウンロード  </span><i class="fas fa-file-download"></i></div><br> {% endcomment %}
+                  <div class="my-btn my-btn-gray-2 my-btn-sm my-btn-w10-2 mb-2" onclick="location.href='{% url 'contracts:estimateToPdf' estimate.id %}'; return false;"><span>見積書ダウンロード  </span><i class="fas fa-file-download"></i></div><br>
+                  
+                  {% if estimate.is_use and estimate.contract_set.all|get_contract_status:current_user == "2" %}
+                    <div class="using-comment" data-toggle="tooltip" title="すでに契約中です" data-placement="top">契約中</div>
+                  {% elif estimate.contract_set.all|get_contract_status:current_user == "3" %}
+                    {% if estimate.end_day.date|check_date %}
+                      <div class="using-comment text-danger" data-toggle="tooltip" title="{{ estimate.end_day|date:'Y年m月d日' }}までご利用いただけます" data-placement="top">{{ estimate.end_day|date:'Y年m月d日' }}まで</div>
+                    {% else %}
+                      <div class="using-comment text-dark" data-toggle="tooltip" title="解約済みです" data-placement="top">解約済み</div>
+                    {% endif %}
+                  {% elif estimate.is_change == 1 %}
+                    {% if estimate.method_payment.id == 1 %}  <!-- 1がクレジット -->
+                      <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout' estimate.id %}'"><span>プラン変更&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                    {% else %}
+                      <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'"><span>プラン変更&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                    {% endif %}
+                  {% elif estimate.service_id in estimate.contract_set.all|get_estimate_id:current_user %}
+                    <div class="using-comment" data-toggle="tooltip" title="同サービス契約中のため使用出来ません" data-placement="top">使用不可</div>
+                  {% elif estimate.contract_set.all|get_contract_status:current_user == "4" %}
+                    <div class="using-comment" data-toggle="tooltip" title="プラン変更済みのため使用出来ません" data-placement="top">使用不可</div>
+
+                  {% else %}
+
+                    {% if estimate.method_payment.id == 1 %}  <!-- 1がクレジット -->
+                      {% comment %} <a href="{% url 'payment:checkout' estimate.id %}" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6">申し込み！</a> {% endcomment %}
+                      <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout' estimate.id %}'"><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                    {% else %}
+                      <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'"><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                      {% comment %} <a href="{% url 'payment:checkout_bank' estimate.id %}" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6">申し込み</a> {% endcomment %}
+                    {% endif %}
+                  {% endif %}
+                </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table><!-- /.table-responsive -->
+      {% endif %}
+    </div><!-- /.card-body -->
+  </div><!-- /card -->
+
+<!-- 見積もり削除用モーダル用 -->
+<div class="modal fade" id="estimate_del_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>モーダルのコンテンツ文。</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn my-btn-accept btn-sm my-btn-w6">削除</button>
+        <button type="button" class="btn my-btn-cancel btn-sm my-btn-w6" data-dismiss="modal">キャンセル</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  $(document).ready(function() {
+    var contract_list = [];
+    var estimate_list = [];
+    {% for estimate in estimates %}
+      estimate_list.push("{{ estimate.service_id }}");
+      //console.log('estimatelistttt',estimate_list)
+    {% endfor %}
+    //console.log('そとestimatelistttt',estimate_list)
+
+    {% for is_use in estimates_is_use %}
+      contract_list.push("{{ is_use.service_id }}");
+      //console.log('contracttelistttt',contract_list)
+    {% endfor %}
+    //console.log('そとcontracttelistttt',contract_list)
+
+
+    ///////////////////
+    // Newラベルの表示 //
+    ///////////////////
+    $('.new').each(function(){
+      // 現在日時
+      var current = new Date();
+      // 6時間前のミリ秒を取得
+      var range = current - (6 * 60 * 60 * 1000);
+      // 作成日時(文字列)
+      created_date_str = $(this).data('created_time')
+      console.log(created_date_str)
+      // 作成日時
+      var created_date = new Date( created_date_str )
+      // 作成日時ミリ秒
+      var created_date_ms = created_date.getTime();
+      console.log(created_date_ms)
+      // 作成日が、６時間前の時間を超えたら非表示
+      if (range < created_date_ms){
+        $(this).css("display", "inline-block");
+      }else{
+        $(this).css("display", "none");
+      }
+    });
+
+
+    $('#switch1').on('change', function() {
+      var is_checed = $(this).prop("checked")
+      var contract_id = $(this).data('contract_id')
+      console.log(is_checed)
+      console.log(contract_id)
+
+      // 送信データとして保存
+      var data = { 'is_checked' : is_checed, 'contract_id': contract_id};
+
+      $.ajax({
+          type: 'POST',
+          url: "{% url 'payment:autocheckchange' %}",
+          data: data,
+          dataType: 'json',
+          success: function(data){
+            if(data.status=='ok'){
+
+              // モーダルの表示
+              $('#result_modal').on('show.bs.modal', function (e) {
+                var modal = $(this);
+                modal.find('.modal-body').text(data.message);
+              })
+              $('#result_modal').modal('show')
+
+            }else{
+
+              // モーダルの表示
+              $('#result_modal').on('show.bs.modal', function (e) {
+                var modal = $(this);
+                modal.find('.modal-body').text(data.message);
+              })
+              $('#result_modal').modal('show')
+            }
+          }
+      });
+
+
+    });
+
+
+    // プラスマイナスボタンで行の展開
+    $(".open").on("click", function() {
+      roop_num = $(this).data('roop');
+      $('#hidden_row' + roop_num).toggle();
+      $(this).hide();
+      $(this).next().show();
+    });
+    $(".close").on("click", function() {
+      roop_num = $(this).data('roop');
+      $('#hidden_row' + roop_num).toggle();
+      $(this).hide();
+      $(this).prev().show();
+    });
+
+
+    // 表示・非表示のタイミングでスライダーを正しく表示するイベントをセット
+    $(".open").on("click", function() {
+        $('.update_slider').slick('setPosition');
+        $('.initial_slider').slick('setPosition');
+    });
+
+    // 見積もりスライダー
+    $('.initial_slider').slick({
+      infinite: false,
+      dots:false,
+      slidesToShow:1,
+      slidesToScroll:1,
+      rtl:true,
+      draggable:false,
+    });
+
+    // 見積もりスライダー
+    $('.update_slider').slick({
+      infinite: false,
+      dots:false,
+      slidesToShow:1,
+      slidesToScroll:1,
+      draggable:false,
+    });
+
+
+
+    $('#dataTables-estimates').DataTable({
+      // 件数切替機能 無効
+      lengthChange: false,
+      // 検索機能 無効
+      searching: false,
+      // ソート機能 無効
+      ordering: true,
+      // 情報表示 無効
+      info: false,
+      // ページング機能 無効
+      paging: false,
+      columnDefs: [
+      // チェックボックスカラムのサイズ調整
+        {
+          orderable: false,
+          width: 250,
+          className:'text-center',
+          searchable: false,
+          targets: 0
+        },
+        // 見積もり・購入カラムのサイズ調整
+        {
+          orderable: false,
+          width: 400,
+          searchable: false,
+          targets: 1
+        },
+        {
+          orderable: false,
+          width: 900,
+          searchable: false,
+          targets: 2
+        },
+        {
+          orderable: false,
+          width: 900,
+          searchable: false,
+          targets: 3
+        },
+        {
+          orderable: false,
+          width: 700,
+          searchable: false,
+          targets: 4
+        },
+        {
+          orderable: false,
+          width: 800,
+          searchable: false,
+          targets: 5
+        },
+        {
+          orderable: false,
+          width: 700,
+          targets: 6
+        },
+        {
+          orderable: false,
+          width: 400,
+          targets: 7
+        }
+      ],
+      order: [[ 1, 'asc' ]],
+      colResize: true,
+      autoWidth: false,
+      orderCellsTop: false,
+      searchDelay: 2000,// 2秒の遅延
+      language: {
+           "decimal": ".",
+           "thousands": ",",
+           "sProcessing": "処理中...",
+           "sLengthMenu": "_MENU_ 件表示",
+           "sZeroRecords": "現在、有効な見積りはありません。",
+           "sInfo": " _TOTAL_ 件中 _START_ から _END_ まで表示",
+           "sInfoEmpty": " 0 件中 0 から 0 まで表示",
+           "sInfoFiltered": "（全 _MAX_ 件より抽出）",
+           "sInfoPostFix": "",
+           "sSearch": "検索:",
+           "sUrl": "",
+           "oPaginate": {
+             "sFirst": "先頭",
+             "sPrevious": "前",
+             "sNext": "次",
+             "sLast": "最終"
+           }
+      },
+    });
+
+    // ソートを好きなようにカスタマイズ
+    $.fn.dataTable.ext.order['custom']=function  (settings,col){
+      returnthis.api().column(col,{order:'index'}).nodes().map(function(td,i){
+        var row=$(td).parent("tr");
+        var cells=$(row).children("td");
+        var status=cells[1].innerText;
+        var text=td.innerText;
+        if(status=="契約中"){
+          return"1"+text
+        }
+        return"0"+text;
+      });
+    };
+
+    // 手動ボタンの有効化判断(契約終了日の１ヶ月前になったら有効化)
+    {% for contract in contracts %}
+
+      if ("{{ contract.service }}" == "転送サービス")
+        // 終了日をDBから取得
+        var end_date = "{{contract.contract_end_date.date|date:'Y/m/d' }}";
+
+        // 文字列日付をDate型に変換
+        var end_date_obj = new Date( end_date );
+
+        // 1ヶ月前の日付(タイムスタンプ)を取得
+        previous_one_month_timestamp = end_date_obj.setMonth(end_date_obj.getMonth() - 1);
+
+        // 本日日付を取得
+        var today = new Date();
+        // 時間をすべて0にセット
+        today.setHours(0, 0, 0, 0);
+        // 本日日付のタイムスタンプを取得
+        today_timestamp = today.getTime();
+
+        // 日付を比較してボタンの有効化
+        // if (today_timestamp == previous_one_month_timestamp) {
+        if (today_timestamp == today_timestamp) {
+            // $('#btn-manualcheckout').prop("disabled", false);
+            $('#btn-manualcheckout').removeClass('disabled');
+        }
+
+    {% endfor %}
+
+
+    //ウィンドウサイズを変更した場合はユーザー一覧を再描画する。
+    var update_size = function() {
+      $('#dataTables-contract').css({ width: $('#dataTables-contract').parent().width() });
+      $('#dataTables-estimates').css({ width: $('#dataTables-estimates').parent().width() });
+      var cTable = $('#dataTables-contract').dataTable();
+      var eTable = $('#dataTables-estimates').dataTable();
+      cTable.fnAdjustColumnSizing();
+      eTable.fnAdjustColumnSizing();
+    }
+    $(window).resize(function() {
+       clearTimeout(window.refresh_size);
+       window.refresh_size = setTimeout(function() { update_size(); }, 250); // 250ミリ秒
+    });
+
+    // チェックボックスの全選択
+    $('#checkall').on('change', function() {
+      // console.log("全てチェック")
+      $("input[name='check[]']").prop('checked', this.checked);
+    });
+
+    // チェックボックスにチェックで削除ボタン活性化
+    $("[name='check[]'] , #checkall").change(function(){
+      // console.log("チェック")
+      var checks=[];
+      $("[name='check[]']:checked").each(function(){
+          checks.push(this.value);
+          console.log(checks.length)
+      });
+
+      // チェックされている場合は有効、チェックされていない場合は無効化
+      if (checks.length > 0) {
+        console.log("ture")
+        
+        if(checks.length > 1){  
+          if($("[name='check[]']:checked").hasClass('copy')){
+            $('#delbutton').prop("disabled", true);
+          }else{
+            $('#delbutton').prop("disabled", false);
+          }
+          $('#copybutton').prop("disabled", true);
+        }else{
+          var cont_number = $("[name='check[]']:checked").val();
+          console.log('けいやくしょばんごう')
+          if($("[name='check[]']:checked").hasClass('copy')){
+            $('#delbutton').prop("disabled", true);
+          }else{
+            $('#delbutton').prop("disabled", false);
+          }
+          $('#copybutton').prop("disabled", false);
+        }
+      } else {
+        console.log("false")
+        $('#delbutton').prop("disabled", true);
+        $('#copybutton').prop("disabled", true);
+
+      }
+    });
+
+
+    // 見積もり削除モーダルの表示
+    $('#estimate_del_modal').on('show.bs.modal', function (event) {
+
+      // チェックボックスの値を取得
+      var checks=[];
+      $("[name='check[]']:checked").each(function(){
+          checks.push(this.value);
+      });
+
+      if (checks.length == 0) {
+        // チェックボックスに値がない場合は単体削除の見積りIDを取得
+        var button = $(event.relatedTarget) //モーダルを呼び出すときに使われたボタンを取得
+        var delete_id = button.data('value') //値を取得
+        checks.push(delete_id);
+      }
+
+      // モーダル上に件数を表示
+      var modal = $(this);
+      modal.find('.modal-body').text("選択した見積書を削除しますか？");
+
+      // 削除ボタンを押下した場合、Ajaxで送信
+      $('#estimate_del_modal').off('click', '.modal-footer .my-btn-accept') //onイベントの重複イベントを削除
+      $('#estimate_del_modal').on('click', '.modal-footer .my-btn-accept', function() {
+        $('#estimate_del_modal').modal('hide');
+
+        $.ajax({
+          type: "POST",
+          url: '{% url "contracts:delete_estimate" %}',
+          data: {
+            'checks': checks
+          },
+          dataType: 'json',
+          success: function (data) {
+            if (data.is_exist) {
+              window.location.href = '{% url "contracts:estimate" %}';
+            }
+          }
+        });
+
+      });
+    });
+
+    
+    $('#copybutton').click(function(){
+        var estimate_id = $("[name='check[]']:checked").val();
+        console.log('estimate_id',estimate_id)
+        window.location.href = '/estimate_copy1/' + estimate_id;
+    });
+
+  });
+
+
+</script>
+{% endblock %}

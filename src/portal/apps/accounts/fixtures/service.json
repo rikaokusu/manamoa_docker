@@ -1,0 +1,13 @@
+[
+    {
+    "model": "accounts.service",
+    "pk": 1,
+        "fields": {
+            "name": "授業支援システム",
+            "description": "授業支援システム",
+            "initial": "L",
+            "icon": "<i class='fas fa-school fa-5x'></i>",
+            "number": "0000000001"
+        }
+    }
+]

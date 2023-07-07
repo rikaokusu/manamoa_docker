@@ -1,0 +1,132 @@
+/* for Pyment Card info  */
+.btn-toolbar{
+  background:#ddd8d0;
+}
+
+.tool-text{
+  color:#826357;
+}
+
+/* #card-container {
+  width: 300px;
+}
+
+.checkout_input {
+  margin-left: 1px;
+  margin-right: 5px;
+}
+
+.payment .error_massage_box {
+  padding: 10px 10px;
+  background-color: #FCFCFC;
+  margin-bottom: 20px;
+}
+
+
+.payment .box {
+  padding: 200px;
+  text-align: center;
+}
+
+
+.payment .required_box {
+  width: 100%;
+  display: -webkit-inline-box;
+  position: relative;
+}
+
+.payment .option_box {
+  width: 100%;
+  display: -webkit-inline-box;
+  position: relative;
+}
+
+.payment .required_box::after {
+  color: #ffffff;
+  font-size: 0.5rem;
+  position: absolute;
+  right: 0px;
+  background-color: red;
+  border-radius: 3px;
+  padding: 2px 3px;
+  white-space: nowrap;
+  margin-left: 10px;
+  content: "必須";
+}
+
+.payment .option_box::after {
+  color: #ffffff;
+  font-size: 0.5rem;
+  position: absolute;
+  right: 0px;
+  background-color: #A5A5A5;
+  border-radius: 3px;
+  padding: 3px;
+  white-space: nowrap;
+  margin-left: 10px;
+  content: "任意";
+}
+
+.payment .service_checkbox_label {
+  padding: 2px;
+}
+
+.payment .upper_text {
+  color: red
+}
+
+.payment .tr_head {
+  background-color: #F2F2F2;
+  width: 180px;
+}
+
+.payment .btn_box {
+  width: 100%;
+  display: -webkit-inline-box;
+  position: relative;
+}
+
+.payment .next::after {
+  font-family: "Font Awesome 5 Free";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: '\f105';
+  position: absolute;
+  right: 10px;
+  font-size: 23px;
+}
+
+.payment .cancel::after {
+  font-family: "Font Awesome 5 Free";
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  content: '\f00d';
+  margin-left: 5px;
+  font-size: 16px;
+}
+
+.payment label .red {
+  color: red;
+}
+
+.payment .estimate_prevew {
+  max-width: 595px;
+  border: 1px solid #000;
+  padding: 1.5rem;
+  height: 847px;
+  margin: auto;
+  margin-bottom: 2rem;
+} */
+
