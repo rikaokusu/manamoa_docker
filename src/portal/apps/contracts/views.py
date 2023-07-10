@@ -1071,7 +1071,6 @@ class EstimateToPDF(LoginRequiredMixin, DetailView, CommonView):
 
         #estimate用
         with open("portal/static/contracts/img/CL_stamp.png", "rb") as f:
-        # with open("static\contracts\img\CL_stamp.png", "rb") as f:
         # with open("static/accounts/img/barcode2.png", "rb") as f:
             #ファイルの内容を読込み、Base64にエンコードする
             bImgBase64 = base64.b64encode(f.read())
@@ -1122,9 +1121,21 @@ class EstimateToPDF(LoginRequiredMixin, DetailView, CommonView):
         date2 = code_regex.sub('', date)
         estimate_date = date2[:16]
 
-        #estimate＆宜野湾a4用
+        #宜野湾a4用
+        # options = {
+        #     'page-size': 'Letter',
+        #     'margin-top': '0.25in',
+        #     'margin-right': '0.25in',
+        #     'margin-bottom': '0.25in',
+        #     'margin-left': '0.25in',
+        #     'encoding': "UTF-8",
+        #     'no-outline': None,
+        #     'quiet': '',
+        #     'enable-local-file-access' : None
+        # }
+        #見積書用
         options = {
-            'page-size': 'Letter',
+            'page-size': 'A4',
             'margin-top': '0.25in',
             'margin-right': '0.25in',
             'margin-bottom': '0.25in',
@@ -1148,17 +1159,7 @@ class EstimateToPDF(LoginRequiredMixin, DetailView, CommonView):
         #     'orientation' : 'Landscape',
         #     'enable-local-file-access' : ''
         # }
-        import winreg
-        try:
-            with winreg.OpenKeyEx(winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\wkhtmltopdf', 
-            access=winreg.KEY_READ | winreg.KEY_WOW64_64KEY) as k:
-                data, regtype = winreg.QueryValueEx(k, "PdfPath")
-                configure = pdfkit.configuration(wkhtmltopdf=data)
-                regtype = regtype
-                pdfkit.from_file(html, "output.pdf", configuration=configure)    
 
-        except FileNotFoundError:
-            pass
 
         response_pdf = pdfkit.from_string(html, False, options=options)
         response = HttpResponse(response_pdf, content_type='application/pdf')
