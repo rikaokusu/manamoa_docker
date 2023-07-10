@@ -4,20 +4,19 @@
 
 {% block breadcrumbtitle %}
 
-  <span>
-    自動更新無効化完了
-  </span>
+    <span>
+        自動更新無効化完了
+    </span>
 
 {% endblock breadcrumbtitle %}
 
 {% block content %}
-<div class="container">
-  <div class="card card-register border-0 mt-2">
-    <div class="card-body">
-    <p>自動更新の無効化が完了しました。</p>
-    <a href="{% url 'contracts:contract' %}">契約管理へ戻る</a>
+    <div class="container">
+        <div class="card card-register border-0 mt-2">
+            <div class="card-body">
+                <p>自動更新の無効化が完了しました。</p>
+                <a href="{% url 'contracts:contract' %}">契約管理へ戻る</a>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-
 {% endblock %}

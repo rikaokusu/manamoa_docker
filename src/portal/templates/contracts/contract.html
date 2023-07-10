@@ -200,6 +200,7 @@
                                                     {% for estimate3 in status_3.estimate.all|dictsortreversed:"created_date" %}
                                                         <div class="initial_slider" dir="rtl">
                                                             {% if estimate3.service == service %}
+                                                                
                                                                 <div class="estimate_icon">
                                                                     <a href="{% url 'contracts:estimateToPdf' estimate.id %}"><i class="far fa-file-alt"></i></a>
                                                                     <div class="estimate_date">{{estimate3.created_date|date:'Y/m/d'}}</div>
@@ -231,7 +232,7 @@
                                                             {% for estimate in contract.estimate.all|dictsortreversed:"created_date" %}
                                                                 <div class="estimate_icon">
                                                                     <a href="{% url 'contracts:estimateToPdf' estimate.id %}"><i class="far fa-file-alt"></i></a>
-                                                                    <div class="estimate_date">{{estimate.created_date|date:'Y/m/d'}}</div>
+                                                                    <div class="estimate_date">{{estimate.created_date|date:'Y/m/d'}}aaa</div>
                                                                 </div><!--estimate_icon-->
                                                             {% endfor %}
                                                         </div><!--initial_slider-->

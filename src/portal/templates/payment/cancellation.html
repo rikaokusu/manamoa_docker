@@ -11,57 +11,53 @@
 
 {% block content %}
 
-<div class="container contract">
-  <div class="card border-0 card-register mt-0">
-    <div class="card-body contract_cancel_body">
-      <p>以下の内容を解約しますか？</p>
-      <table class="table">
-        <tbody>
-          <tr>
-            <th>サービス</th>
-            <td>{{ contract.service }}</td>
-          </tr>
-          <tr>
-            <th>プラン</th>
-            <td>{{ contract.estimate.plan }}</td>
-          </tr>
-          {% if contract.estimate.disksize %}
-          <tr>
-            <th>ディスクサイズオプション</th>
-            <td>{{ contract.estimate.disksize }}</td>
-          </tr>
-          {% endif %}
-          {% if contract.estimate.usernum %}
-          <tr>
-            <th>ユーザー数オプション</th>
-            <td>{{ contract.estimate.usernum }}</td>
-          </tr>
-          {% endif %}
-          <tr>
-            <th>合計(税込)</th>
-            <td>{{ contract.estimate.total|intcomma }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="container contract">
+        <div class="card border-0 card-register mt-0">
+            <div class="card-body contract_cancel_body">
+                <p>以下の内容を解約しますか？</p>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>サービス</th>
+                            <td>{{ contract.service }}</td>
+                        </tr>
+                        <tr>
+                            <th>プラン</th>
+                            <td>{{ contract.estimate.plan }}</td>
+                        </tr>
+                        {% if contract.estimate.disksize %}
+                            <tr>
+                                <th>ディスクサイズオプション</th>
+                                <td>{{ contract.estimate.disksize }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if contract.estimate.usernum %}
+                            <tr>
+                                <th>ユーザー数オプション</th>
+                                <td>{{ contract.estimate.usernum }}</td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th>合計(税込)</th>
+                            <td>{{ contract.estimate.total|intcomma }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-
-
-
-    <div class="row">
-      <div class="col-sm-6">
-        <form action="" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger btn-block">解約</button>
-        </form>
-      </div>
-      <div class="col-sm-6">
-        <a href="{% url 'contracts:contract' %}" class="btn btn-secondary btn-block" onfocus="this.blur();">キャンセル</a>
-      </div>
-    </div>
-
-    </div>
-  </div>
-</div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-block">解約</button>
+                        </form>
+                    </div>
+                    <div class="col-sm-6">
+                        <a href="{% url 'contracts:contract' %}" class="btn btn-secondary btn-block" onfocus="this.blur();">キャンセル</a>
+                    </div>
+                </div><!--row-->
+            </div><!--card-body-->
+        </div><!--card-->
+    </div><!--container-->
 
 
 {% endblock %}

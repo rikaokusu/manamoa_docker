@@ -65,6 +65,8 @@ JSONEncoder.default = new_default
 # pdfkit.from_url('http://google.com', 'out.pdf')
 
 
+
+
 # 全てで実行させるView
 class CommonView(ContextMixin):
     # ログインユーザーを返す
@@ -191,13 +193,12 @@ class ContractIndexView(LoginRequiredMixin, ListView, CommonView):
     login_url = '/login/'
 
     def get_context_data(self, **kwargs):
-        print('コンテキストデータ・・・・・・・・・・・・')
         context = super().get_context_data(**kwargs)
         current_user_id = self.request.user.pk
         context["contracts"] = Contract.objects.filter(user=current_user_id).prefetch_related('estimate', 'payment').order_by('status')
         context["status_3"] = Contract.objects.filter(user=current_user_id,status='3').prefetch_related('estimate', 'payment')
         context["status_4"] = Contract.objects.filter(user=current_user_id,status='4').prefetch_related('estimate', 'payment')
-
+        print('33333333333333333333333',context["status_3"])
 
         # contracts = Contract.objects.extra(
         #     tables=["contracts_plan",],
@@ -1147,7 +1148,17 @@ class EstimateToPDF(LoginRequiredMixin, DetailView, CommonView):
         #     'orientation' : 'Landscape',
         #     'enable-local-file-access' : ''
         # }
+        import winreg
+        try:
+            with winreg.OpenKeyEx(winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\wkhtmltopdf', 
+            access=winreg.KEY_READ | winreg.KEY_WOW64_64KEY) as k:
+                data, regtype = winreg.QueryValueEx(k, "PdfPath")
+                configure = pdfkit.configuration(wkhtmltopdf=data)
+                regtype = regtype
+                pdfkit.from_file(html, "output.pdf", configuration=configure)    
 
+        except FileNotFoundError:
+            pass
 
         response_pdf = pdfkit.from_string(html, False, options=options)
         response = HttpResponse(response_pdf, content_type='application/pdf')
