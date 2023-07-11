@@ -5,6 +5,7 @@
 {% load sort_by %}
 {% load check_date %}
 {% load is_onemonthago %} 
+{% load get_contract_first %}
 
 {% block title %}ご契約状況{% endblock title %}
 
@@ -189,7 +190,10 @@
                                 <div class="estimate_sub_box">
                                     <div class="initial_estimate_box">
                                         <div class="estimate_slider_box mt-1">
-                                            {% if contract.service == service %}
+                                            {% if contract|get_contract_first:current_user %}
+                                                {{contract_estimate}}
+                                            {% endif %}
+                                            {% comment %} {% if contract.service == service %}
                                                 {% if contract.status == "1" %}
                                                     <div class="initial_slider" dir="rtl">
                                                         <div class="estimate_icon">
@@ -259,7 +263,7 @@
                                                         </div><!--initial_slider-->
                                                     {% endif %}
                                                 {% endif %}
-                                            {% endif %}
+                                            {% endif %} {% endcomment %}
                                         </div><!--estimate_slider_box-->
                                     <div class="initial_estimate_text">初回申込時の見積書</div>
                                 </div><!--initial_estimate_box-->

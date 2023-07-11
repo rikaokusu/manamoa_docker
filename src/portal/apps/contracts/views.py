@@ -196,9 +196,9 @@ class ContractIndexView(LoginRequiredMixin, ListView, CommonView):
         context = super().get_context_data(**kwargs)
         current_user_id = self.request.user.pk
         context["contracts"] = Contract.objects.filter(user=current_user_id).prefetch_related('estimate', 'payment').order_by('status')
-        context["status_3"] = Contract.objects.filter(user=current_user_id,status='3').prefetch_related('estimate', 'payment')
-        context["status_4"] = Contract.objects.filter(user=current_user_id,status='4').prefetch_related('estimate', 'payment')
-        print('33333333333333333333333',context["status_3"])
+        # context["status_3"] = Contract.objects.filter(user=current_user_id,status='3').prefetch_related('estimate', 'payment')
+        # context["status_4"] = Contract.objects.filter(user=current_user_id,status='4').prefetch_related('estimate', 'payment')
+        # print('33333333333333333333333',context["status_3"])
 
         # contracts = Contract.objects.extra(
         #     tables=["contracts_plan",],
@@ -1064,7 +1064,7 @@ class EstimateToPDF(LoginRequiredMixin, DetailView, CommonView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         estimate = Estimates.objects.filter(pk = self.kwargs['pk']).first()
-        b_numbar = estimate.num 
+        # b_numbar = estimate.num 
 
         static = settings.STATIC_URL
         #画像ファイルをバイナリで開く
