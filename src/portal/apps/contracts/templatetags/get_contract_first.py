@@ -14,12 +14,10 @@ def get_contract_first(contract,current_user):
     if contract.status == '1':
         return None
     else:
-        old_estimate = Estimates.objects.filter(service=contract.service,user__company=current_user.company,temp_check=False).order_by("start_day").first()
-        print('ふるい見積書・・・',old_estimate)
-        all_contracts = Contract.objects.filter(service=contract.service,user__company=current_user.company).prefetch_related('estimate')
-        print('allのいちらん',all_contracts)
-        contract_estimate = all_contracts.estimate.filter(estimate_id=old_estimate.id).first()
-        return contract_estimate
+        old_estimate = Estimates.objects.filter(service=contract.service,user__company=current_user.company,is_signed=True).order_by('start_day').first()
+        print('おーるどえすてぃめいと',old_estimate)
+        return old_estimate
+            
 
     # contract_estimate = contracts.estimate.filter(estimates_id=estimate.id)
     # print('こんとらくとえすてぃめいと',contract_estimate)

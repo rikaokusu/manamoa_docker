@@ -839,6 +839,8 @@ class Checkout(LoginRequiredMixin, DetailView, CommonView, View):
 
             # 見積り使用フラグをON
             estimate.is_use = True
+            # 契約フラグをON
+            estimate.is_signed = True
 
             estimate.save()
 
@@ -1182,7 +1184,9 @@ class CheckoutFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
 
                 # 見積り使用フラグをON
                 estimate.is_use = True
-
+                # 契約フラグをON
+                estimate.is_signed = True
+                
                 estimate.save()
 
         except stripe.error.CardError as e:
@@ -1481,7 +1485,9 @@ class UpdateFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
 
                 # 見積り使用フラグをON
                 estimate.is_use = True
-
+                # 契約フラグをON
+                estimate.is_signed = True
+                
                 estimate.save()
 
         except stripe.error.CardError as e:
@@ -1615,6 +1621,9 @@ class CheckoutBank(LoginRequiredMixin, DetailView, CommonView, View):
 
             # 見積り使用フラグをON
             estimate.is_use = True
+            # 契約フラグをON
+            estimate.is_signed = True
+            
             estimate.save()
 
         except Exception as e:
@@ -1720,6 +1729,9 @@ class CheckoutBankFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
 
             # 見積り使用フラグをON
             estimate.is_use = True
+            # 契約フラグをON
+            estimate.is_signed = True
+            
             estimate.save()
 
         except Exception as e:
@@ -2469,8 +2481,11 @@ class ChangePlanConfirmCard(LoginRequiredMixin, TemplateView, CommonView):
                 payment.method_payment = estimate.method_payment
                 # 支払いフラグをON
                 payment.is_paymented = True 
-                #プラン変更用フラグをFalseに
+                # 使用フラグをON
                 estimate.is_use = True
+                # 契約フラグをON
+                estimate.is_signed = True
+                #プラン変更用フラグをFalseに
                 estimate.is_change = False
                 contract.status = "2"
                 contract.pay_start_date = today
@@ -2601,6 +2616,8 @@ class ChangePlanConfirmBank(LoginRequiredMixin, TemplateView, CommonView):
             #プラン変更用フラグをFalseに
             estimate.is_use = True
             estimate.is_change = False
+            # 契約フラグをON
+            estimate.is_signed = True
             contract.status = "2"
 
             #旧契約にステータス更新
@@ -3108,7 +3125,9 @@ class UpdateContractCard(LoginRequiredMixin, DetailView, CommonView, View):
                 estimate.tempcheck = False
                 # 見積り使用フラグをON
                 estimate.is_use = True
-
+                # 契約フラグをON
+                estimate.is_signed = True
+                
                 estimate.save()
 
         except stripe.error.CardError as e:
@@ -3257,6 +3276,9 @@ class UpdateContractBank(LoginRequiredMixin, DetailView, CommonView, View):
 
             # 見積り使用フラグをON
             estimate.is_use = True
+            # 契約フラグをON
+            estimate.is_signed = True
+            
             estimate.save()
 
         except Exception as e:

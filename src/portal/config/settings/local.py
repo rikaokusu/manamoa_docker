@@ -22,6 +22,7 @@ DATABASES = {
             'charset': 'utf8mb4'
         }
     },
+    
     # 'user': {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'NAME': 'user',

@@ -168,7 +168,6 @@
                                             </div><!--point-box-->
                                             <a class="dropdown-item base-d-item mt-2" href="{% url 'accounts:user_settings' current_user.company_id %}">ユーザー情報設定</a>
                                             <a class="dropdown-item base-d-item" href="{% url 'accounts:user_infomation' %}">管理ユーザー情報</a>
-                                            {% comment %} <a class="dropdown-item base-d-item" href="{% url 'accounts:setai_infomation' %}">世帯情報</a> {% endcomment %}
                                             <a class="dropdown-item base-d-item" href="{% url 'accounts:logout' %}" data-toggle="modal" data-target="#logoutModal">ログアウト</a>
                                         {% endif %}
                                     </div><!--dropdown-menu-->

@@ -6,14 +6,14 @@
 {% block title %}申込失敗{% endblock title %}
 
 {% block breadcrumbtitle %}
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb mb-1">
-        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
-        <li class="breadcrumb-item">契約管理</li>
-        <li class="breadcrumb-item"><a href="{% url 'contracts:contract' %}">ご契約状況</a></li>
-        <li class="breadcrumb-item active">申し込み失敗</li>
-    </ol>
-  </nav>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+            <li class="breadcrumb-item">契約管理</li>
+            <li class="breadcrumb-item"><a href="{% url 'contracts:contract' %}">ご契約状況</a></li>
+            <li class="breadcrumb-item active">申し込み失敗</li>
+        </ol>
+    </nav>
 
 {% endblock breadcrumbtitle %}
 
@@ -21,34 +21,27 @@
 
 {% block content %}
 
-<div class="container payment">
-  <div class="card card-register border-0 mt-2 mx-auto">
-    <h5 class="card-header border-0">エラー発生</h5>
+    <div class="container payment">
+        <div class="card card-register border-0 mt-2 mx-auto">
+            <h5 class="card-header border-0">エラー発生</h5>
+            <div class="card-body">
 
-    <div class="card-body">
+                <h6>{{err_message}}</h6>
 
-      <h6>{{err_message}}</h6>
+                <div>エラーコード</div>
+                <div class="error_massage_box">
 
-      <div>エラーコード</div>
-      <div class="error_massage_box">
+                    <p>{{err_message_raw}}</p>
 
-        <p>{{err_message_raw}}</p>
+                </div>
 
-      </div>
+                <h1>{{err_message_url}}</h1>
 
-      <h1>{{err_message_url}}</h1>
+                <a href="{% url 'contracts:estimate' %}">見積り一覧へ戻る</a><br>
+                <a href="{% url 'contracts:contract' %}">契約管理へ戻る</a>
 
-      <a href="{% url 'contracts:estimate' %}">見積り一覧へ戻る</a><br>
-      <a href="{% url 'contracts:contract' %}">契約管理へ戻る</a>
-
+            </div>
+        </div>
     </div>
-
-
-  </div>
-
-
-
-
-</div>
 
 {% endblock %}

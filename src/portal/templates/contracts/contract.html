@@ -191,7 +191,12 @@
                                     <div class="initial_estimate_box">
                                         <div class="estimate_slider_box mt-1">
                                             {% if contract|get_contract_first:current_user %}
-                                                {{contract_estimate}}
+                                                <div class="initial_slider" dir="rtl">
+                                                    <div class="estimate_icon">
+                                                        <a href="{% url 'contracts:estimateToPdf' old_estimate.id %}"><i class="far fa-file-alt"></i></a>
+                                                        <div class="estimate_date">{{old_estimate.start_date|date:'Y/m/d'}}aaa</div>
+                                                    </div><!--estimate_icon-->
+                                                </div><!--initial_slider-->
                                             {% endif %}
                                             {% comment %} {% if contract.service == service %}
                                                 {% if contract.status == "1" %}

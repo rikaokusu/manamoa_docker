@@ -173,6 +173,8 @@ class Estimates(models.Model):
     discount = models.ForeignKey(Discount, null=True, on_delete=models.CASCADE, verbose_name='割引', related_name='estimate_discount')
     # 差額
     difference = models.IntegerField('差額', blank=False, default=0)
+    # 契約フラグ（正式に契約を結んだ見積りのみ）
+    is_signed = models.BooleanField('契約フラグ',blank=False, default=False)
 
 
 """

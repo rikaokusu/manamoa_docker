@@ -1951,68 +1951,69 @@
     padding: 1.25rem 0 1.25rem 0;
   }
   
-  
-  .contract_list_body .open,
-  .contract_list_body .close {
-    float: right;
-    font-size: 1.3rem;
-    text-align: center;
-    color: #AD0A1A;
-    margin-right: 5px;
-    margin-left: 5px;
-  }
-  
-  .contract_list_body .open_disable {
-    float: right;
-    font-size: 1.3rem;
-    text-align: center;
-    color: #AD0A1A;
-    margin-right: 5px;
-    margin-top: 5px;
-    margin-left: 5px;
-    opacity: 0.1;
+  .contract_list_body{
+    .open{
+        float: right;
+        font-size: 1.3rem;
+        text-align: center;
+        color: #AD0A1A;
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+    .close{
+        float: right;
+        font-size: 1.3rem;
+        text-align: center;
+        color: #AD0A1A;
+        margin-right: 5px;
+        margin-left: 5px;
+        // display: block;
+        display: none;
+    }
+    .open_disable{
+        float: right;
+        font-size: 1.3rem;
+        text-align: center;
+        color: #AD0A1A;
+        margin-right: 5px;
+        margin-top: 5px;
+        margin-left: 5px;
+        opacity: 0.1;
+    }
+    .hidden_row{
+        display: none;
+    }
+    .detail_label_value{
+        margin-left: 0.3rem;
+        word-break : break-all;
+        white-space: normal;
+        .price{
+            font-size: 1.3rem;
+            margin: 0 5px;
+        }
+        .cell{
+            display: table-cell;
+            vertical-align: middle;
+            margin: auto;
+        }
+    }
+    .price_box{
+        .price_sub_box{
+            height: 60px;
+            display: table;
+            width: 100%;
+            .red{
+                color: red;
+            }
+        }
+    }
+    .main_row{
+        background-color: #F2F2F2;
+    }
   }
   
   .contract_list_body .close:not(:disabled):not(.disabled):hover {
     color: #AA4650;
-  }
-  
-  .contract_list_body .open {
-   display: block;
-  }
-  
-  .contract_list_body .hidden_row,
-  .contract_list_body .close {
-   display: none;
-  }
-  .contract_list_body .detail_label_value {
-    margin-left: 0.3rem;
-    word-break : break-all;
-    white-space: normal;
-  }
-  
-  .contract_list_body .detail_label_value .price {
-    font-size: 1.3rem;
-    margin: 0 5px;
-  }
-  
-  .contract_list_body .detail_label_value.cell {
-    display: table-cell;
-    vertical-align: middle;
-    margin: auto;
-  }
-  .contract_list_body .price_box .price_sub_box {
-    height: 60px;
-    display: table;
-    width: 100%;
-  }
-  
-  .contract_list_body .price_box .price_sub_box .red {
-    color: red;
-  }
-  
-  .contract_list_body .main_row {
-    background-color: #F2F2F2;
   }
   
   
