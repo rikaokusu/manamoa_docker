@@ -196,15 +196,10 @@ class ContractIndexView(LoginRequiredMixin, ListView, CommonView):
         context = super().get_context_data(**kwargs)
         current_user_id = self.request.user.pk
         context["contracts"] = Contract.objects.filter(user=current_user_id).prefetch_related('estimate', 'payment').order_by('status')
-        # context["status_3"] = Contract.objects.filter(user=current_user_id,status='3').prefetch_related('estimate', 'payment')
-        # context["status_4"] = Contract.objects.filter(user=current_user_id,status='4').prefetch_related('estimate', 'payment')
-        # print('33333333333333333333333',context["status_3"])
-
         # contracts = Contract.objects.extra(
         #     tables=["contracts_plan",],
         #     where=['''contracts_contract.plan=contracts_plan.id''']
         # )
-
         Contract.objects.extra(tables=['plan'],where=['contracts.plan_id=plan.id']).query
 
         context["contracts"] = Contract.objects.filter(user=self.request.user.pk).order_by('status')
@@ -1097,13 +1092,6 @@ class EstimateToPDF(LoginRequiredMixin, DetailView, CommonView):
         # imgSample2 = "data:image/png;base64," + strImgBase64
 
         # context["imgSample2"] = imgSample2
-
-        # #口座番号3桁
-        # bank_num = 1234567 #口座番号データ
-        # bank_str = str(bank_num)
-        # bank_3 = bank_str[-3:]
-
-        # context["bank3"] = bank_3
 
         # 日付情報取得
         today = datetime.now()

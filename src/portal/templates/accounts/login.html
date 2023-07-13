@@ -5,52 +5,44 @@
 {% block extra_css %}{% endblock %}
 
 {% block content %}
-<div class="container login">
-
-  <div class="login_box d-flex card-login mx-auto border-0 mt-5 mb-3 text-center text-white justify-content-center">
-    <img src="{% static 'common/img/CL_login3.svg' %}" alt="CloudLabログイン">
-
-  </div>
-  <div class="card card-login mx-auto border-0 position-relative">
-
-    <div class="card-header bg-orange text-white border-0 text-center">
-      <span class="sub_title">クラウドサービスといえば</span><br>
-      <span class="font-weight-bold">CloudLabポータル</span>
-    </div>
-    <div class="card-body login_card_body">
-      <form action="" method="POST">
-        {% for error in form.non_field_errors %}
-        <p class="errornote">
-          {{ error }}
-        </p>
-        {% endfor %}
-
-
-        {% for field in form %}
-        <div class="form-group">
-          {{ field }}
-          {{ field.errors }}
+    <div class="container login">
+        <div class="login_box d-flex card-login mx-auto border-0 mt-5 mb-3 text-center text-white justify-content-center">
+            <img src="{% static 'common/img/CL_login3.svg' %}" alt="CloudLabログイン">
         </div>
-        {% endfor %}
-        <button type="submit" class="btn my-btn-accept btn-block" onfocus="this.blur();">ログイン</button>
-        {% csrf_token %}
-      </form>
-      <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:user_registration' %}"><i class="fas fa-chevron-circle-right"></i> 初めてご利用の方</a></span>
-      <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:password_reset' %}"><i class="fas fa-chevron-circle-right"></i> パスワードを忘れた方</a></span>
-    </div>  <!-- end card-body -->
-   <div class="copyright-2 text-center">© CloudLab G.K.</div>
-  </div>  <!-- end card -->
-</div> <!-- end container -->
+        <div class="card card-login mx-auto border-0 position-relative">
+            <div class="card-header bg-orange text-white border-0 text-center">
+                <span class="sub_title">クラウドサービスといえば</span><br>
+                <span class="font-weight-bold">CloudLabポータル</span>
+            </div>
+            <div class="card-body login_card_body">
+                <form action="" method="POST">
+                    {% for error in form.non_field_errors %}
+                        <p class="errornote">
+                            {{ error }}
+                        </p>
+                    {% endfor %}
 
-
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ field }}
+                            {{ field.errors }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn my-btn-accept btn-block" onfocus="this.blur();">ログイン</button>
+                    {% csrf_token %}
+                </form>
+                <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:user_registration' %}"><i class="fas fa-chevron-circle-right"></i> 初めてご利用の方</a></span>
+                <span class="environ_link hidden"><a class="forget_password" href="{% url 'accounts:password_reset' %}"><i class="fas fa-chevron-circle-right"></i> パスワードを忘れた方</a></span>
+            </div>  <!-- end card-body -->
+            <div class="copyright-2 text-center">© CloudLab G.K.</div>
+        </div>  <!-- end card -->
+    </div> <!-- end container -->
 {% endblock %}
 
 {% block extra_js %}
-
-<script>
-  $(document).ready(function() {
-    $(".iframe_op_environ").colorbox({iframe:true, width:"760px", height:"350px"});
-  });
-</script>
-
+    <script>
+        $(document).ready(function() {
+            $(".iframe_op_environ").colorbox({iframe:true, width:"760px", height:"350px"});
+        });
+    </script>
 {% endblock %}

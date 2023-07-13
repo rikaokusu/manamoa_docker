@@ -91,14 +91,14 @@ class Payment_Radio_For_Estimate(forms.RadioSelect):
     template_name = 'contracts/forms/widget/payment_radio.html'
 
     def get_context(self, name, value, attrs):
-            context = super(Payment_Radio_For_Estimate, self).get_context(name, value, attrs)
-            stripe_id = Stripe.objects.filter(company=self.attrs['user'].company).first()
+        context = super(Payment_Radio_For_Estimate, self).get_context(name, value, attrs)
+        stripe_id = Stripe.objects.filter(company=self.attrs['user'].company).first()
 
-            if stripe_id.stripe_card_id:
-                context['stripe_id'] = stripe_id
-            else:
-                context['stripe_id'] = 'None'
-            return context
+        if stripe_id.stripe_card_id:
+            context['stripe_id'] = stripe_id
+        else:
+            context['stripe_id'] = 'None'
+        return context
 
 """
 見積書の作成(STEP1)

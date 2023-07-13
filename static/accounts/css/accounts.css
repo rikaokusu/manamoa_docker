@@ -2690,15 +2690,23 @@ html, body{
   .estimate label .red {
     color: red;
   }
-  
-  .estimate .estimate_prevew {
+  /* 7/13修正前 */
+  /* .estimate .estimate_prevew {
     max-width: 595px;
     border: 1px solid #000;
     padding: 1.5rem;
     height: 847px;
     margin: auto;
     margin-bottom: 2rem;
+  } */
+  .estimate .estimate_prevew {
+    /* max-width: 595px; */
+    /* height: 847px; */
+    margin: auto;
+    margin-bottom: 2rem;
+    padding:0 35px;
   }
+
   
   @media print{
     .no_print{

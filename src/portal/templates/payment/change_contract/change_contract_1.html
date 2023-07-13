@@ -33,7 +33,7 @@
         <button type="button" class="btn my-btn-w12 mt-2 my-btn-accept" data-toggle="modal" data-target="#exampleModal2">オプション比較表</button>
 
         </h6>
-        <h6 class="border p-2 mt-2 font-weight-bold border-danger text-danger min-price">選択したプラン・オプションの総額が現在契約しているプラン・オプションの総額を上回る変更のみ可能です。</h6>
+        <h6 class="border p-2 mt-2 font-weight-bold border-danger text-danger min-price">選択したプラン・オプションの価格が現在契約しているプラン・オプションの価格を上回る変更のみ可能です。</h6>
 
         <!-- Form全体のバリデーション時のエラーを表示 -->
         {% if form.non_field_errors %}
@@ -64,7 +64,7 @@
                                                     {% render_field form.plan class="form-control is-invalid" %}
                                                     {% for error in form.plan.errors %}
                                                         <div class="invalid-feedback">
-                                                        {{ error }}
+                                                            {{ error }}
                                                         </div>
                                                     {% endfor %}
                                                 {% else %}

@@ -190,85 +190,22 @@
                                 <div class="estimate_sub_box">
                                     <div class="initial_estimate_box">
                                         <div class="estimate_slider_box mt-1">
-                                            {% if contract|get_contract_first:current_user %}
-                                                <div class="initial_slider" dir="rtl">
-                                                    <div class="estimate_icon">
-                                                        <a href="{% url 'contracts:estimateToPdf' old_estimate.id %}"><i class="far fa-file-alt"></i></a>
-                                                        <div class="estimate_date">{{old_estimate.start_date|date:'Y/m/d'}}aaa</div>
-                                                    </div><!--estimate_icon-->
-                                                </div><!--initial_slider-->
-                                            {% endif %}
-                                            {% comment %} {% if contract.service == service %}
-                                                {% if contract.status == "1" %}
-                                                    <div class="initial_slider" dir="rtl">
+                                            <div class="initial_slider" dir="rtl">
+                                                {% with old_estimate=contract|get_contract_first:current_user %}
+                                                    {% if old_estimate == None %}
+                                                        <div class="initial_slider" dir="rtl">
+                                                            <div class="estimate_icon">
+                                                                <a href="#" class="disabled"><i class="far fa-file-alt"></i></a>
+                                                            </div><!--estimate_icon-->
+                                                        </div><!--initial_slider-->
+                                                    {% else %}
                                                         <div class="estimate_icon">
-                                                            <a href="#" class="disabled"><i class="far fa-file-alt"></i></a>
+                                                            <a href="{% url 'contracts:estimateToPdf' old_estimate.id %}"><i class="far fa-file-alt"></i></a>
+                                                            <div class="estimate_date">{{old_estimate.start_day|date:'Y/m/d'}}</div>
                                                         </div><!--estimate_icon-->
-                                                    </div><!--initial_slider-->
-                                                {% elif contract.status == "3" %}
-                                                    {% for estimate3 in status_3.estimate.all|dictsortreversed:"created_date" %}
-                                                        <div class="initial_slider" dir="rtl">
-                                                            {% if estimate3.service == service %}
-                                                                
-                                                                <div class="estimate_icon">
-                                                                    <a href="{% url 'contracts:estimateToPdf' estimate.id %}"><i class="far fa-file-alt"></i></a>
-                                                                    <div class="estimate_date">{{estimate3.created_date|date:'Y/m/d'}}</div>
-                                                                </div><!--estimate_icon-->
-                                                            {% endif %}
-                                                        </div><!--initial_slider-->
-                                                    {% endfor %}
-                                                {% elif contract.status == "4" %}
-                                                    {% if status_3 %}
-                                                        {% for estimate3 in status_3.estimate.all|dictsortreversed:"created_date" %}
-                                                            {% if estimate3.service == service %}
-                                                                <div class="estimate_icon">
-                                                                    <a href="{% url 'contracts:estimateToPdf' estimate3.id %}"><i class="far fa-file-alt"></i></a>
-                                                                    <div class="estimate_date">{{estimate3.created_date|date:'Y/m/d'}}</div>
-                                                                </div><!--estimate_icon-->
-                                                            {% else %}
-                                                                <div class="initial_slider" dir="rtl">
-                                                                    {% for estimate in contract.estimate.all|dictsortreversed:"created_date" %}
-                                                                        <div class="estimate_icon">
-                                                                            <a href="{% url 'contracts:estimateToPdf' estimate.id %}"><i class="far fa-file-alt"></i></a>
-                                                                            <div class="estimate_date">{{estimate.created_date|date:'Y/m/d'}}</div>
-                                                                        </div><!--estimate_icon-->
-                                                                    {% endfor %}
-                                                                </div><!--initial_slider-->
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    {% else %}
-                                                        <div class="initial_slider" dir="rtl">
-                                                            {% for estimate in contract.estimate.all|dictsortreversed:"created_date" %}
-                                                                <div class="estimate_icon">
-                                                                    <a href="{% url 'contracts:estimateToPdf' estimate.id %}"><i class="far fa-file-alt"></i></a>
-                                                                    <div class="estimate_date">{{estimate.created_date|date:'Y/m/d'}}aaa</div>
-                                                                </div><!--estimate_icon-->
-                                                            {% endfor %}
-                                                        </div><!--initial_slider-->
                                                     {% endif %}
-
-                                                {% else %}
-                                                    {% if status_3 %}
-                                                        <div class="initial_slider" dir="rtl">
-                                                            {% for estimate3 in status_3.estimate.all|dictsortreversed:"created_date" %}
-                                                                <div class="estimate_icon">
-                                                                    <a href="{% url 'contracts:estimateToPdf' estimate3.id %}"><i class="far fa-file-alt"></i></a>
-                                                                    <div class="estimate_date">{{estimate3.created_date|date:'Y/m/d'}}</div>
-                                                                </div><!--estimate_icon-->
-                                                            {% endfor %}
-                                                        </div><!--initial_slider-->
-                                                    {% else %}
-                                                        <div class="initial_slider" dir="rtl">
-                                                            {% for estimate in contract.estimate.all|dictsortreversed:"created_date" %}
-                                                                <div class="estimate_icon">
-                                                                    <a href="{% url 'contracts:estimateToPdf' estimate.id %}"><i class="far fa-file-alt"></i></a>
-                                                                    <div class="estimate_date">{{estimate.created_date|date:'Y/m/d'}}</div>
-                                                                </div><!--estimate_icon-->
-                                                            {% endfor %}
-                                                        </div><!--initial_slider-->
-                                                    {% endif %}
-                                                {% endif %}
-                                            {% endif %} {% endcomment %}
+                                                {% endwith %}
+                                            </div>
                                         </div><!--estimate_slider_box-->
                                     <div class="initial_estimate_text">初回申込時の見積書</div>
                                 </div><!--initial_estimate_box-->

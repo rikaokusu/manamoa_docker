@@ -13,15 +13,12 @@ class Plan_Radio_For_Payment(forms.RadioSelect):
     template_name = 'payment/forms/widget/plan_radio.html'
 
     def get_context(self, name, value, attrs):
-            plan_price_list = []
 
             context = super(Plan_Radio_For_Payment, self).get_context(name, value, attrs)
             contract = Contract.objects.filter(pk=self.attrs['contract']).first()
-            print('らじおぼっくすのこんとらくと',contract)
             plans = Plan.objects.filter(is_trial=False, is_option=False).values('id', 'price')
             plan_price_dict = [entry for entry in plans]
             context['contract'] = contract
-
             context['plan_price_dict'] = plan_price_dict
 
             return context
@@ -34,7 +31,6 @@ class Option_Radio_For_Payment(forms.RadioSelect):
     template_name = 'payment/forms/widget/option_radio.html'
 
     def get_context(self, name, value, attrs):
-            plan_price_list = []
             context = super(Option_Radio_For_Payment, self).get_context(name, value, attrs)
             contract = Contract.objects.filter(pk=self.attrs['contract']).first()
             c_list = []
@@ -68,10 +64,8 @@ class Option_Radio_For_Payment(forms.RadioSelect):
                 c_list.append(contract.option5.id)
 
             c_optioin_list = Plan.objects.filter(pk__in=c_list)
-            # plan = Plan.objects.all()
 
             plans = Plan.objects.filter(is_trial=False, is_option=True).values('id', 'price', 'category')
-
             plans_cat_list = Plan.objects.filter(is_trial=False, is_option=True).order_by("name").values_list('category', flat=True)
             plan_price_dict = [entry for entry in plans]
             # plans_cat_dict = [entry for entry in plans_list]

@@ -2242,7 +2242,7 @@ class ChangePlanConfirmCard(LoginRequiredMixin, TemplateView, CommonView):
         form_data = self.request.session.get('form_data', None)
         estimate = Estimates.objects.get(pk = self.request.session['estimate'])
         contract = Contract.objects.filter(service=estimate.service,status='2',company=user.company).first()
-        print('～～～～～～～～～～～～～～～～～～～～～～～～～こんとらくとの有無',contract)
+        print('～～～～～～～～～～こんとらくとの有無',contract)
         difference_price_math = self.request.session.get('difference_price_math', None)
         form = self.request.session.get('form_data', None)
 

@@ -6,247 +6,238 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sawarabi+Mincho">
-    <link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">
-    <link rel="stylesheet" href="{% static 'accounts/css/contracts.css' %}">
+    <head>
+        <meta charset="UTF-8">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sawarabi+Mincho">
+        <link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">
+        <link rel="stylesheet" href="{% static 'accounts/css/contracts.css' %}">
+        <script type="text/javascript">
 
-    <script type="text/javascript">
+            function loadingView(flag) {
+                $('#loading-view').remove();
+                if(!flag) return;
+                $('<div id="loading-view" />').appendTo('body');
+            }
 
-      function loadingView(flag) {
-        $('#loading-view').remove();
-        if(!flag) return;
-        $('<div id="loading-view" />').appendTo('body');
-      }
+            // ローディング
+            loadingView(true);
 
-      // ローディング
-      loadingView(true);
+        </script>
+    </head>
+    <body>
+        <div class="container estimate">
 
-    </script>
+            <div class="estimate_prevew">
 
+                <p class="text-center" style="font-size:5rem; padding:35px 0 50px 0;"><span class="category">御見積</span>書</p>
+                <div class="row">
+                    <div class="col-md-7 col-xs-7">
+                        {% if estimate.bill_address == 2 %}
+                            <h2 id="name">
+                                {% if current_user.company.invoice_corp_class == '1' %}
+                                    {% if current_user.company.invoice_legal_personality == '99' or current_user.company.invoice_legal_personality == '' %}
+                                        {{current_user.company.invoice_company_name}}
+                                    {% else %}
+                                        {% if current_user.company.invoice_legal_person_posi == '1' %}
+                                            {{ current_user.company.get_invoice_legal_personality_display }}{{current_user.company.invoice_company_name}}
+                                        {% else %}
+                                            {{ current_user.company.invoice_company_name }}{{ current_user.company.get_invoice_legal_personality_display }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% elif current_user.company.invoice_corp_class == '2' %}
+                                    {{ current_user.company.invoice_company_name }}
+                                {% endif  %}
+                                {% if current_user.company.invoice_dept_name %}
+                                    {{ current_user.company.invoice_dept_name }}
+                                {% endif %}
+                            御中</h2>
+                        {% else %}
+                            <h2 id="name" class="pb-4">
+                                {% if current_user.company.pic_corp_class == '1' %}
+                                    {% if current_user.company.pic_legal_personality == '99' or current_user.company.pic_legal_personality == '' %}
+                                        {{ current_user.company.pic_company_name }}
+                                    {% else %}
+                                        {% if current_user.company.pic_legal_person_posi == '1' %}
+                                            {{ current_user.company.get_pic_legal_personality_display }}{{ current_user.company.pic_company_name }}
+                                        {% else %}
+                                            {{ current_user.company.pic_company_name }}{{ current_user.company.get_pic_legal_personality_display }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% elif current_user.company.pic_corp_class == '2' %}
+                                    {{ current_user.company.pic_company_name }}
+                                {% endif  %}
+                                {% if current_user.company.pic_dept_name %}
+                                    {{ current_user.company.pic_dept_name }}
+                                {% endif %}
+                            御中</h2>
+                        {% endif %}
+                    </div><!--col-7-->
+                    <div class="col-md-5 col-xs-5" style="text-align:right;">
+                        <h3 id="date">{{ date|date:"Y年m月d日" }}</h3>
+                        <h3 class="category">見積</span>番号 <span id="code">{{ estimate.num }}</h3><br><br>
+                        <h2 class="text-left pt-5">　　　　Cloud Lab合同会社</h2>
+                        <h3 class="text-left">　　　　　〒901-1414<br/>
+                        　　　　　沖縄県南城市佐敷津波古999番地3<br/></h3>
+                    </div>
+                    <img id="imgSample" src="{{imgSample}}" style="margin-top:-120px; margin-left:1200px;">
 
-  </head>
-  <body>
-    <div class="container estimate">
+                </div><!--row-->
+                <div style="margin-top:3em;"></div>
+                <div class="row">
+                    <div class="col-md-8 col-xs-8 h3">
+                        下記のとおり御<span class="category">見積</span>申し上げます。
+                    </div>
+                </div><!--row-->
+                <div class="row" style="margin-top:2em;">
+                    <div class="col-md-12 col-xs-12 h3">
+                        サービス：{{ estimate.service.name }}
+                    </div>
+                    <div class="col-md-12 col-xs-12 h3" style="margin-top:0.5em;">
+                        サービス利用期間：{{ estimate.start_day|date:"Y年m月d日" }}〜{{ estimate.end_day|date:"Y年m月d日" }}
+                    </div>
+                </div><!--row-->
 
-      <div class="estimate_prevew" style="padding:0 35px;">
-
-        <p class="text-center" style="font-size:3.8rem; padding:35px 0 50px 0;"><span class="category">御見積</span>書</p>
-        <div class="row">
-          <div class="col-md-7 col-xs-7">
-            {% if estimate.bill_address == 2 %}
-              <h3 id="name">
-              {% if current_user.company.invoice_corp_class == '1' %}
-                {% if current_user.company.invoice_legal_personality == '99' or current_user.company.invoice_legal_personality == '' %}
-                  {{current_user.company.invoice_company_name}}
-                {% else %}
-                  {% if current_user.company.invoice_legal_person_posi == '1' %}
-                    {{ current_user.company.get_invoice_legal_personality_display }}{{current_user.company.invoice_company_name}}
-                  {% else %}
-                    {{ current_user.company.invoice_company_name }}{{ current_user.company.get_invoice_legal_personality_display }}
-                  {% endif %}
+                <table class="table" style="margin-top:40px;">
+                    <thead>
+                        <tr>
+                            <th class="text-right h3" style="width:4em;">項番</th><th class="h3">品名</th><th class="h3 text-right" style="width:4em;">数量</th><th class="h3" style="width:4em;">単位</th><th class="h3 text-right">単価</th><th class="h3 text-right">年額</th><th class="h3 text-right">金額</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row-template">
+                            <td class="num text-right h3">1</td><td class="name h3">{{ estimate.plan }}</td><td class="qty text-right h3">1</td><td class="unit h3">個</td><td class="unit-price h3" style="text-align:right;">{{ estimate.plan.unit_price|intcomma }}</td><td class="unit-price text-right h3">{{ estimate.plan.price|intcomma }}</td> <td class="price text-right h3">{{ estimate.plan.price|intcomma }}</td>
+                        </tr>
+                        {% if estimate.option1 %}
+                            <tr class="row-template">
+                                <td class="num text-right h3"></td>
+                                <td class="name h3">{{ estimate.option1.name }}</td>
+                                <td class="qty text-right h3">1</td>
+                                <td class="unit h3">個</td>
+                                <td class="unit-price text-right h3">{{ estimate.option1.unit_price|intcomma }}</td><td class="price text-right h3">{{ estimate.option1.price|intcomma }}</td>
+                                <td class="price text-right h3">{{ estimate.option1.price|intcomma }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if estimate.option2 %}
+                            <tr class="row-template">
+                                <td class="num text-right h3"></td>
+                                <td class="name h3">{{ estimate.option2.name }}</td>
+                                <td class="qty text-right h3">1</td>
+                                <td class="unit h3">個</td>
+                                <td class="unit-price text-right h3">{{ estimate.option2.unit_price|intcomma }}</td><td class="price text-right h3">{{ estimate.option2.price|intcomma }}</td>
+                                <td class="price text-right h3">{{ estimate.option2.price|intcomma }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if estimate.option3 %}
+                            <tr class="row-template">
+                                <td class="num text-right h3"></td>
+                                <td class="name h3">{{ estimate.option3.name }}</td>
+                                <td class="qty text-right h3">1</td>
+                                <td class="unit h3">個</td>
+                                <td class="unit-price text-right h3">{{ estimate.option3.unit_price|intcomma }}</td><td class="price text-right h3">{{ estimate.option3.price|intcomma }}</td>
+                                <td class="price text-right h3">{{ estimate.option3.price|intcomma }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if estimate.option4 %}
+                            <tr class="row-template">
+                                <td class="num text-right h3"></td>
+                                <td class="name h3">{{ estimate.option4.name }}</td>
+                                <td class="qty text-right h3">1</td>
+                                <td class="unit h3">個</td>
+                                <td class="unit-price text-right h3">{{ estimate.option4.unit_price|intcomma }}</td><td class="price text-right h3">{{ estimate.option4.price|intcomma }}</td>
+                                <td class="price text-right h3">{{ estimate.option4.price|intcomma }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if estimate.option5 %}
+                            <tr class="row-template">
+                                <td class="num text-right h3"></td>
+                                <td class="name h3">{{ estimate.option5.name }}</td>
+                                <td class="qty text-right h3">1</td>
+                                <td class="unit h3">個</td>
+                                <td class="unit-price text-right h3">{{ estimate.option5.unit_price|intcomma }}</td><td class="price text-right h3">{{ estimate.option5.price|intcomma }}</td>
+                                <td class="price text-right h3">{{ estimate.option5.price|intcomma }}</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                <table class="table" style="align:right; width:100%;">
+                    <tbody>
+                        <tr>
+                            <td class="text-right h3" rowspan="6"></td>
+                        </tr>
+                        {% if estimate.method_payment.id == 1 %}
+                            {% if estimate.total >= 30000 %}
+                                <tr>
+                                    {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">クレジット決済割引</td><td class="minor-total text-right h4">{{ estimate.invoice_op_discount|intcomma }}</td> {% endcomment %}
+                                    <td class="h3" style="width:30%;">クレジットカード支払割引</td><td class="minor-total text-right h3" style="width:10%;">-{{ estimate.method_payment.payment_discount|intcomma }}</td>
+                                </tr>
+                                {% if estimate.discount %}
+                                    <tr>
+                                        {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">{{ estimate.discount.name }}</td><td class="text-right h4">-{{ estimate.discount.discount_rate|intcomma }}</td> {% endcomment %}
+                                        <td class="h3" style="width:30%;">{{ estimate.discount.name }}</td><td class="text-right h3" style="width:10%;">-{{ estimate.discount.discount_rate|intcomma }}</td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">小計</td><td class="minor-total text-right h4">{{ estimate.minor_total|intcomma }}</td> {% endcomment %}
+                                    <td class="h3" style="width:30%;">小計(税抜)</td><td class="minor-total text-right h3" style="width:10%;">{{ estimate.minor_total|intcomma }}</td>
+                                </tr>
+                            {% else %}
+                                {% if estimate.discount %}
+                                    <tr>
+                                        {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">{{ estimate.discount.name }}</td><td class="minor-total text-right h4">-{{ estimate.discount.discount_rate|intcomma }}</td> {% endcomment %}
+                                        <td class="h3">{{ estimate.discount.name }}</td><td class="text-right h3" style="width:10%;">-{{ estimate.discount.discount_rate|intcomma }}</td>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">小計</td><td class="minor-total text-right h4">{{ estimate.minor_total|intcomma }}</td> {% endcomment %}
+                                    <td class="h3">小計(税抜)</td><td class="minor-total text-right h3" style="width:10%;">{{ estimate.minor_total|intcomma }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td class="h3"  style="width:30%;">消費税(<span class="tax-rate">10</span>%)</td><td class="vat text-right h3" style="width:10%;">{{ estimate.tax|intcomma }}</td>
+                            </tr>
+                            <tr>
+                                <td class="h3"  style="width:30%;">合計(税込)</td><td class="text-right"><big><strong><span class="grand-total h3" style="width:10%;">{{ estimate.total|intcomma }}</span></strong></big></td>
+                            </tr>
+                        {% else %}
+                            {% if estimate.discount %}
+                                <tr>
+                                    <td class="h3" style="width:30%;">{{ estimate.discount.name }}</td><td class="text-right h3" style="width:10%;">-{{ estimate.discount.discount_rate|intcomma }}</td>
+                                </tr>
+                            {% endif %}
+                            <tr>
+                                <td class="h3">小計(税抜)</td><td class="minor-total text-right h3" style="width:10%;">{{ estimate.minor_total|intcomma }}</td>
+                            </tr>
+                            <tr>
+                                <td class="h3"  style="width:30%;">消費税(<span class="tax-rate">10</span>%)</td><td class="vat text-right h3" style="width:10%;">{{ estimate.tax|intcomma }}</td>
+                            </tr>
+                            <tr>
+                                <td class="h3"  style="width:30%;">合計(税込)</td><td class="text-right"><big><strong><span class="grand-total h3" style="width:10%;">{{ estimate.total|intcomma }}</span></strong></big></td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                <div class="text-right h3">
+                    単位: 円
+                </div><br>
+                {% if estimate.difference > 0 %}
+                    <div class="row" style="margin-top:1em;">
+                        <div class="col-md-12 col-xs-12 h3">
+                            備考
+                        </div>
+                        <div class="" style="margin-top:1em;">
+                            <h3 style="padding-left:1em; border:1px solid #000; padding:1em; margin:15px;">当契約は現在の契約期間中のプラン・オプション変更です。<br>
+                            支払い時は、上記の合計から未使用の契約期間分を差し引いた差額(￥{{ estimate.difference|intcomma }})を請求いたします。</h3>
+                        </div>
+                    </div>
                 {% endif %}
-              {% elif current_user.company.invoice_corp_class == '2' %}
-                {{ current_user.company.invoice_company_name }}
-              {% endif  %}
-              {% if current_user.company.invoice_dept_name %}
-                {{ current_user.company.invoice_dept_name }}
-              {% endif %}
-                御中</h3>
-            {% else %}
-              <h3 id="name" class="pb-4">
-                {% if current_user.company.pic_corp_class == '1' %}
-                  {% if current_user.company.pic_legal_personality == '99' or current_user.company.pic_legal_personality == '' %}
-                    {{ current_user.company.pic_company_name }}
-                  {% else %}
-                    {% if current_user.company.pic_legal_person_posi == '1' %}
-                      {{ current_user.company.get_pic_legal_personality_display }}{{ current_user.company.pic_company_name }}
-                    {% else %}
-                      {{ current_user.company.pic_company_name }}{{ current_user.company.get_pic_legal_personality_display }}
-                    {% endif %}
-                  {% endif %}
-                {% elif current_user.company.pic_corp_class == '2' %}
-                  {{ current_user.company.pic_company_name }}
-                {% endif  %}
-                {% if current_user.company.pic_dept_name %}
-                  {{ current_user.company.pic_dept_name }}
-                {% endif %}
-                  御中</h3>
-            {% endif %}
-          </div>
-          <div class="col-md-5 col-xs-5" style="text-align:right;">
-            <h4 id="date">{{ date|date:"Y年m月d日" }}</h4>
-            <h4 class="category">見積</span>番号 <span id="code">{{ estimate.num }}</h4><br><br>
-            <h3 class="text-left pt-5">　　　　Cloud Lab合同会社</h3>
-            <h4 class="text-left">　　　　　〒901-1414<br/>
-            　　　　　沖縄県南城市佐敷津波古999番地3<br/></h4>
-          </div>
-          <img id="imgSample" src="{{imgSample}}" style="margin-top:-120px; margin-left:780px;">
-
-        </div>
-        <div style="margin-top:3em;"></div>
-        <div class="row">
-          <div class="col-md-8 col-xs-8 h4">
-            下記のとおり御<span class="category">見積</span>申し上げます。
-          </div>
-        </div>
-        <div class="row" style="margin-top:2em;">
-          <div class="col-md-12 col-xs-12 h4">
-            サービス：{{ estimate.service.name }}
-          </div>
-          <div class="col-md-12 col-xs-12 h4" style="margin-top:0.5em;">
-            サービス利用期間：{{ estimate.start_day|date:"Y年m月d日" }}〜{{ estimate.end_day|date:"Y年m月d日" }}
-          </div>
-        </div>
-
-
-        <table class="table" style="margin-top:40px;">
-          <thead>
-            <tr>
-              <th class="text-right h4" style="width:4em;">項番</th><th class="h4">品名</th><th class="h4 text-right" style="width:4em;">数量</th><th class="h4" style="width:4em;">単位</th><th class="h4 text-right">単価</th><th class="h4 text-right">年額</th><th class="h4 text-right">金額</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="row-template">
-              <td class="num text-right h4">1</td><td class="name h4">{{ estimate.plan }}</td><td class="qty text-right h4">1</td><td class="unit h4">個</td><td class="unit-price h4" style="text-align:right;">{{ estimate.plan.unit_price|intcomma }}</td><td class="unit-price text-right h4">{{ estimate.plan.price|intcomma }}</td> <td class="price text-right h4">{{ estimate.plan.price|intcomma }}</td>
-            </tr>
-              {% if estimate.option1 %}
-                <tr class="row-template">
-                  <td class="num text-right h4"></td>
-                  <td class="name h4">{{ estimate.option1.name }}</td>
-                  <td class="qty text-right h4">1</td>
-                  <td class="unit h4">個</td>
-                  <td class="unit-price text-right h4">{{ estimate.option1.unit_price|intcomma }}</td><td class="price text-right h4">{{ estimate.option1.price|intcomma }}</td>
-                  <td class="price text-right h4">{{ estimate.option1.price|intcomma }}</td>
-                </tr>
-              {% endif %}
-            
-              {% if estimate.option2 %}
-                <tr class="row-template">
-                  <td class="num text-right h4"></td>
-                  <td class="name h4">{{ estimate.option2.name }}</td>
-                  <td class="qty text-right h4">1</td>
-                  <td class="unit h4">個</td>
-                  <td class="unit-price text-right h4">{{ estimate.option2.unit_price|intcomma }}</td><td class="price text-right h4">{{ estimate.option2.price|intcomma }}</td>
-                  <td class="price text-right h4">{{ estimate.option2.price|intcomma }}</td>
-                </tr>
-              {% endif %}
-              {% if estimate.option3 %}
-                <tr class="row-template">
-                  <td class="num text-right h4"></td>
-                  <td class="name h4">{{ estimate.option3.name }}</td>
-                  <td class="qty text-right h4">1</td>
-                  <td class="unit h4">個</td>
-                  <td class="unit-price text-right h4">{{ estimate.option3.unit_price|intcomma }}</td><td class="price text-right h4">{{ estimate.option3.price|intcomma }}</td>
-                  <td class="price text-right h4">{{ estimate.option3.price|intcomma }}</td>
-                </tr>
-              {% endif %}
-              {% if estimate.option4 %}
-                <tr class="row-template">
-                  <td class="num text-right h4"></td>
-                  <td class="name h4">{{ estimate.option4.name }}</td>
-                  <td class="qty text-right h4">1</td>
-                  <td class="unit h4">個</td>
-                  <td class="unit-price text-right h4">{{ estimate.option4.unit_price|intcomma }}</td><td class="price text-right h4">{{ estimate.option4.price|intcomma }}</td>
-                  <td class="price text-right h4">{{ estimate.option4.price|intcomma }}</td>
-                </tr>
-              {% endif %}
-              {% if estimate.option5 %}
-                <tr class="row-template">
-                  <td class="num text-right h4"></td>
-                  <td class="name h4">{{ estimate.option5.name }}</td>
-                  <td class="qty text-right h4">1</td>
-                  <td class="unit h4">個</td>
-                  <td class="unit-price text-right h4">{{ estimate.option5.unit_price|intcomma }}</td><td class="price text-right h4">{{ estimate.option5.price|intcomma }}</td>
-                  <td class="price text-right h4">{{ estimate.option5.price|intcomma }}</td>
-                </tr>
-              {% endif %}
-          </tbody>
-        </table>
-        <table class="table" style="align:right; width:100%;">
-          <tbody>
-            <tr>
-              <td class="text-right h4" rowspan="6"></td>
-            </tr>
-            {% if estimate.method_payment.id == 1 %}
-              {% if estimate.total >= 30000 %}
-                <tr>
-                  {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">クレジット決済割引</td><td class="minor-total text-right h4">{{ estimate.invoice_op_discount|intcomma }}</td> {% endcomment %}
-                  <td class="h4" style="width:30%;">クレジットカード支払割引</td><td class="minor-total text-right h4" style="width:10%;">-{{ estimate.method_payment.payment_discount|intcomma }}</td>
-                
-                </tr>
-                {% if estimate.discount %}
-                  <tr>
-                    {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">{{ estimate.discount.name }}</td><td class="text-right h4">-{{ estimate.discount.discount_rate|intcomma }}</td> {% endcomment %}
-                    <td class="h4" style="width:30%;">{{ estimate.discount.name }}</td><td class="text-right h4" style="width:10%;">-{{ estimate.discount.discount_rate|intcomma }}</td>
-                  </tr>
-                {% endif %}
-                <tr>
-                  {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">小計</td><td class="minor-total text-right h4">{{ estimate.minor_total|intcomma }}</td> {% endcomment %}
-                  <td class="h4" style="width:30%;">小計(税抜)</td><td class="minor-total text-right h4" style="width:10%;">{{ estimate.minor_total|intcomma }}</td>
-                </tr>
-              {% else %}
-                {% if estimate.discount %}
-                  <tr>
-                    {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">{{ estimate.discount.name }}</td><td class="minor-total text-right h4">-{{ estimate.discount.discount_rate|intcomma }}</td> {% endcomment %}
-                    <td class="h4">{{ estimate.discount.name }}</td><td class="text-right h4" style="width:10%;">-{{ estimate.discount.discount_rate|intcomma }}</td>
-                  </tr>
-                {% endif %}
-                <tr>
-                  {% comment %} <td class="text-right h4" colspan="5" rowspan="5"></td><td class="h4">小計</td><td class="minor-total text-right h4">{{ estimate.minor_total|intcomma }}</td> {% endcomment %}
-                  <td class="h4">小計(税抜)</td><td class="minor-total text-right h4" style="width:10%;">{{ estimate.minor_total|intcomma }}</td>
-                </tr>
-              {% endif %}
-
-              <tr>
-                <td class="h4"  style="width:30%;">消費税(<span class="tax-rate">10</span>%)</td><td class="vat text-right h4" style="width:10%;">{{ estimate.tax|intcomma }}</td>
-              </tr>
-              <tr>
-                <td class="h4"  style="width:30%;">合計(税込)</td><td class="text-right"><big><strong><span class="grand-total h4" style="width:10%;">{{ estimate.total|intcomma }}</span></strong></big></td>
-              </tr>
-
-            {% else %}
-              {% if estimate.discount %}
-                <tr>
-                  <td class="h4" style="width:30%;">{{ estimate.discount.name }}</td><td class="text-right h4" style="width:10%;">-{{ estimate.discount.discount_rate|intcomma }}</td>
-                </tr>
-              {% endif %}
-              <tr>
-                <td class="h4">小計(税抜)</td><td class="minor-total text-right h4" style="width:10%;">{{ estimate.minor_total|intcomma }}</td>
-              </tr>
-              <tr>
-                <td class="h4"  style="width:30%;">消費税(<span class="tax-rate">10</span>%)</td><td class="vat text-right h4" style="width:10%;">{{ estimate.tax|intcomma }}</td>
-              </tr>
-              <tr>
-                <td class="h4"  style="width:30%;">合計(税込)</td><td class="text-right"><big><strong><span class="grand-total h4" style="width:10%;">{{ estimate.total|intcomma }}</span></strong></big></td>
-              </tr>
-            {% endif %}
-
-          </tbody>
-        </table>
-        <div class="text-right h4">
-          単位: 円
-        </div><br>
-        {% if estimate.difference > 0 %}
-          <div class="row" style="margin-top:1em;">
-            <div class="col-md-12 col-xs-12 h4">
-              備考
-            </div>
-            <div class="" style="margin-top:1em;">
-              <h4 style="padding-left:1em; border:1px solid #000; padding:1em; margin:15px;">当契約は現在の契約期間中のプラン・オプション変更です。<br>
-              支払い時は、上記の合計から未使用の契約期間分を差し引いた差額(￥{{ estimate.difference|intcomma }})を請求いたします。</h4>
-            </div>
-          </div>
-        {% endif %}
-        <div class="row" style="margin-top:1em;">
-          <div class="col-md-12 col-xs-12 h4">
-            見積書有効期限：{{ estimate.expiration_date|date:'Y年m月d日' }}
-          </div>
-        </div>
-      </div>
-    </div>
-  </body>
+                <div class="row" style="margin-top:1em;">
+                    <div class="col-md-12 col-xs-12 h3">
+                        見積書有効期限：{{ estimate.expiration_date|date:'Y年m月d日' }}
+                    </div>
+                </div>
+            </div><!--estimate_prevew-->
+        </div><!--container-->
+    </body>
 </html>
