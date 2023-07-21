@@ -6,708 +6,700 @@
 {% block title %}ユーザー情報変更{% endblock title %}
 
 {% block breadcrumbtitle %}
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb mb-1">
-      <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
-      <li class="breadcrumb-item">ユーザー管理</li>
-      <li class="breadcrumb-item"><a href="{% url 'accounts:user' %}">ユーザー一覧</a></li>
-      <li class="breadcrumb-item active">ユーザー情報変更</li>
-    </ol>
-  </nav>
-
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+            <li class="breadcrumb-item">ユーザー管理</li>
+            <li class="breadcrumb-item"><a href="{% url 'accounts:user' %}">ユーザー一覧</a></li>
+            <li class="breadcrumb-item active">ユーザー情報変更</li>
+        </ol>
+    </nav>
 {% endblock breadcrumbtitle %}
 
 {% block extra_css %}{% endblock %}
 
 {% block content %}
-  <form action="{% url 'accounts:user_update' user.id %}" method="post" id="myform" enctype="multipart/form-data" validate data-validate>
-    {% comment %} <div class="container user pb-5"> {% endcomment %}
-    <div class="row">
-      <div class="col-6">  
-        <div class="card border-0 card-register mt-2 pb-5 mb-5">
-          <div class="card-body user_update_body p-0">
-            {% csrf_token %}
+    <form action="{% url 'accounts:user_update' user.id %}" method="post" id="myform" enctype="multipart/form-data" validate data-validate>
+        {% comment %} <div class="container user pb-5"> {% endcomment %}
+        <div class="row">
+            <div class="col-6">  
+                <div class="card border-0 card-register mt-2 pb-5 mb-5">
+                    <div class="card-body user_update_body h-adr p-0" data-user="{{user.id}}">
 
-            <!-- messages.succes や messages.errorにて利用 -->
-            {% if messages %}
-              <div class="messages">
-                {% for message in messages %}
-                  <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                {% endfor %}
-              </div>
-            {% endif %}
+                        {% csrf_token %}
 
-
-            <!-- Form全体のバリデーション時のエラーを表示 -->
-            {% if form.non_field_errors %}
-              <div class="alert alert-danger" role="alert">
-                {% for error in form.non_field_errors %}
-                  {{ error }}
-                {% endfor %}
-              </div>
-            {% endif %}
-
-
-            <table class="table table-sm table-bordered" >
-              <tbody>
-                <tr>
-                  <th class="tr_head">
-                    メールアドレス
-                  </th>
-                  <th>
-                    {{ user.email }}
-                  </th>
-                </tr>
-
-                <tr>
-                  <th class="tr_head">
-                    <div class="required_box">
-                      <div class="label require_label">姓</div>
-                    </div>
-                  </th>
-                  <th>
-                    <!-- 入力フィールド -->
-                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                      {% if form.domain_check.errors %}<!-- エラー時の表示 -->
-                        <small>例：津波古</small>
-                        {% render_field form.last_name class="form-control is-invalid" %}
-
-                        {% for error in form.domain_check.errors %}
-                          <div class="invalid-feedback">
-                            {{ error }}
-                          </div>
-                        {% endfor %}
-
-                      {% else %}<!-- 正常時の表示 -->
-                        <small>例：津波古</small>
-                        {% render_field form.last_name class="form-control is-valid" %}
-                      {% endif %}
-
-                    {% else %}<!-- 初期表示 -->
-                      <small>例：津波古</small>
-                      {% render_field form.last_name class="form-control" %}
-                    {% endif %}
-                  </th>
-                </tr>
-
-                <tr>
-                  <th class="tr_head">
-                    <div class="required_box">
-                      <div class="label require_label">名</div>
-                    </div>
-                  </th>
-                  <th>
-                    <!-- 入力フィールド -->
-                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                      {% if form.domain_check.errors %}<!-- エラー時の表示 -->
-                        <small>例：結</small>
-                        {% render_field form.first_name class="form-control is-invalid" %}
-
-                        {% for error in form.domain_check.errors %}
-                          <div class="invalid-feedback">
-                            {{ error }}
-                          </div>
-                        {% endfor %}
-
-                      {% else %}<!-- 正常時の表示 -->
-                        <small>例：結</small>
-                        {% render_field form.first_name class="form-control is-valid" %}
-                      {% endif %}
-
-                    {% else %}<!-- 初期表示 -->
-                      <small>例：結</small>
-                      {% render_field form.first_name class="form-control" %}
-                    {% endif %}
-                  </th>
-                </tr>
-
-                {% if user.company.middle_choice %}
-                  <tr>
-                    <th class="tr_head">
-                      <div class="option_box">
-                        <div class="label option_label">ミドルネーム</div>
-                      </div>
-                    </th>
-                    <th>
-                      <!-- 入力フィールド -->
-                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                        {% if form.domain_check.errors %}<!-- エラー時の表示 -->
-                          <small>例：Sophia</small>
-                          {% render_field form.middle_name class="form-control is-invalid" %}
-
-                          {% for error in form.domain_check.errors %}
-                            <div class="invalid-feedback">
-                              {{ error }}
+                        <!-- messages.succes や messages.errorにて利用 -->
+                        {% if messages %}
+                            <div class="messages">
+                                {% for message in messages %}
+                                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                                {% endfor %}
                             </div>
-                          {% endfor %}
-
-                        {% else %}<!-- 正常時の表示 -->
-                          <small>例：Sophia</small>
-                          {% render_field form.middle_name class="form-control is-valid" %}
                         {% endif %}
 
-                      {% else %}<!-- 初期表示 -->
-                        <small>例：Sophia</small>
-                        {% render_field form.middle_name class="form-control" %}
-                      {% endif %}
-                    </th>
-                  </tr>
-                {% endif %}
 
-                <tr>
-                  <th class="tr_head">
-                    <div class="option_box">
-                      <div class="label option_label">ふりがな(姓)</div>
-                    </div>
-                  </th>
-                  <th>
-                    <!-- 入力フィールド -->
-                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                      {% if form.domain_check.errors %}<!-- エラー時の表示 -->
-                        <small>例：つはこ</small>
-                        {% render_field form.p_last_name class="form-control is-invalid" %}
-
-                        {% for error in form.domain_check.errors %}
-                          <div class="invalid-feedback">
-                            {{ error }}
-                          </div>
-                        {% endfor %}
-
-                      {% else %}<!-- 正常時の表示 -->
-                        <small>例：つはこ</small>
-                        {% render_field form.p_last_name class="form-control is-valid" %}
-                      {% endif %}
-
-                    {% else %}<!-- 初期表示 -->
-                      <small>例：つはこ</small>
-                      {% render_field form.p_last_name class="form-control" %}
-                    {% endif %}
-                  </th>
-                </tr>
-
-
-                <tr>
-                  <th class="tr_head">
-                    <div class="option_box">
-                      <div class="label option_label">ふりがな(名)</div>
-                    </div>
-                  </th>
-                  <th>
-                    <!-- 入力フィールド -->
-                    {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                      {% if form.domain_check.errors %}<!-- エラー時の表示 -->
-                        <small>例：ゆい</small>
-                        {% render_field form.p_first_name class="form-control is-invalid" %}
-
-                        {% for error in form.domain_check.errors %}
-                          <div class="invalid-feedback">
-                            {{ error }}
-                          </div>
-                        {% endfor %}
-
-                      {% else %}<!-- 正常時の表示 -->
-                        <small>例：ゆい</small>
-                        {% render_field form.p_first_name class="form-control is-valid" %}
-                      {% endif %}
-
-                    {% else %}<!-- 初期表示 -->
-                      <small>例：ゆい</small>
-                      {% render_field form.p_first_name class="form-control" %}
-                    {% endif %}
-                  </th>
-                </tr>
-
-                {% if user.company.middle_choice %}
-                  <tr>
-                    <th class="tr_head">
-                      <div class="option_box">
-                        <div class="label option_label">ふりがな<br>(ミドルネーム)</div>
-                      </div>
-                    </th>
-                    <th>
-                      <!-- 入力フィールド -->
-                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                        {% if form.domain_check.errors %}<!-- エラー時の表示 -->
-                          <small>例：そふぃあ</small>
-                          {% render_field form.p_middle_name class="form-control is-invalid" %}
-
-                          {% for error in form.domain_check.errors %}
-                            <div class="invalid-feedback">
-                              {{ error }}
+                        <!-- Form全体のバリデーション時のエラーを表示 -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
                             </div>
-                          {% endfor %}
-
-                        {% else %}<!-- 正常時の表示 -->
-                          <small>例：そふぃあ</small>
-                          {% render_field form.p_middle_name class="form-control is-valid" %}
                         {% endif %}
 
-                      {% else %}<!-- 初期表示 -->
-                        <small>例：そふぃあ</small>
-                        {% render_field form.p_middle_name class="form-control" %}
-                      {% endif %}
-                    </th>
-                  </tr>
-                {% endif %}
+                        <table class="table table-sm table-bordered" >
+                            <tbody>
+                                <tr>
+                                    <th class="tr_head">
+                                        メールアドレス
+                                    </th>
+                                    <th>
+                                        {{ user.email }}
+                                    </th>
+                                </tr>
+
+                                <tr>
+                                    <th class="tr_head">
+                                        <div class="required_box">
+                                            <div class="label require_label">姓</div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <!-- 入力フィールド -->
+                                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                            {% if form.domain_check.errors %}<!-- エラー時の表示 -->
+                                                <small>例：津波古</small>
+                                                {% render_field form.last_name class="form-control is-invalid" %}
+
+                                                {% for error in form.domain_check.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ error }}
+                                                    </div>
+                                                {% endfor %}
+
+                                            {% else %}<!-- 正常時の表示 -->
+                                                <small>例：津波古</small>
+                                                {% render_field form.last_name class="form-control is-valid" %}
+                                            {% endif %}
+
+                                        {% else %}<!-- 初期表示 -->
+                                            <small>例：津波古</small>
+                                            {% render_field form.last_name class="form-control" %}
+                                        {% endif %}
+                                    </th>
+                                </tr>
+
+                                <tr>
+                                    <th class="tr_head">
+                                        <div class="required_box">
+                                            <div class="label require_label">名</div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <!-- 入力フィールド -->
+                                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                            {% if form.domain_check.errors %}<!-- エラー時の表示 -->
+                                                <small>例：結</small>
+                                                {% render_field form.first_name class="form-control is-invalid" %}
+
+                                                {% for error in form.domain_check.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ error }}
+                                                    </div>
+                                                {% endfor %}
+
+                                            {% else %}<!-- 正常時の表示 -->
+                                                <small>例：結</small>
+                                                {% render_field form.first_name class="form-control is-valid" %}
+                                            {% endif %}
+
+                                        {% else %}<!-- 初期表示 -->
+                                            <small>例：結</small>
+                                            {% render_field form.first_name class="form-control" %}
+                                        {% endif %}
+                                    </th>
+                                </tr>
+
+                                {% if user.company.middle_choice %}
+                                    <tr>
+                                        <th class="tr_head">
+                                            <div class="option_box">
+                                                <div class="label option_label">ミドルネーム</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                                {% if form.domain_check.errors %}<!-- エラー時の表示 -->
+                                                    <small>例：Sophia</small>
+                                                    {% render_field form.middle_name class="form-control is-invalid" %}
+
+                                                    {% for error in form.domain_check.errors %}
+                                                        <div class="invalid-feedback">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+
+                                                {% else %}<!-- 正常時の表示 -->
+                                                    <small>例：Sophia</small>
+                                                    {% render_field form.middle_name class="form-control is-valid" %}
+                                                {% endif %}
+
+                                            {% else %}<!-- 初期表示 -->
+                                                <small>例：Sophia</small>
+                                                {% render_field form.middle_name class="form-control" %}
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+                                {% endif %}
+
+                                <tr>
+                                    <th class="tr_head">
+                                        <div class="option_box">
+                                            <div class="label option_label">ふりがな(姓)</div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <!-- 入力フィールド -->
+                                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                            {% if form.domain_check.errors %}<!-- エラー時の表示 -->
+                                                <small>例：つはこ</small>
+                                                {% render_field form.p_last_name class="form-control is-invalid" %}
+
+                                                {% for error in form.domain_check.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ error }}
+                                                    </div>
+                                                {% endfor %}
+
+                                            {% else %}<!-- 正常時の表示 -->
+                                                <small>例：つはこ</small>
+                                                {% render_field form.p_last_name class="form-control is-valid" %}
+                                            {% endif %}
+
+                                        {% else %}<!-- 初期表示 -->
+                                            <small>例：つはこ</small>
+                                            {% render_field form.p_last_name class="form-control" %}
+                                        {% endif %}
+                                    </th>
+                                </tr>
+
+                                <tr>
+                                    <th class="tr_head">
+                                        <div class="option_box">
+                                            <div class="label option_label">ふりがな(名)</div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <!-- 入力フィールド -->
+                                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                            {% if form.domain_check.errors %}<!-- エラー時の表示 -->
+                                                <small>例：ゆい</small>
+                                                {% render_field form.p_first_name class="form-control is-invalid" %}
+
+                                                {% for error in form.domain_check.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ error }}
+                                                    </div>
+                                                {% endfor %}
+
+                                            {% else %}<!-- 正常時の表示 -->
+                                                <small>例：ゆい</small>
+                                                {% render_field form.p_first_name class="form-control is-valid" %}
+                                            {% endif %}
+
+                                        {% else %}<!-- 初期表示 -->
+                                            <small>例：ゆい</small>
+                                            {% render_field form.p_first_name class="form-control" %}
+                                        {% endif %}
+                                    </th>
+                                </tr>
+
+                                {% if user.company.middle_choice %}
+                                    <tr>
+                                        <th class="tr_head">
+                                            <div class="option_box">
+                                                <div class="label option_label">ふりがな<br>(ミドルネーム)</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                                {% if form.domain_check.errors %}<!-- エラー時の表示 -->
+                                                    <small>例：そふぃあ</small>
+                                                    {% render_field form.p_middle_name class="form-control is-invalid" %}
+
+                                                    {% for error in form.domain_check.errors %}
+                                                        <div class="invalid-feedback">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}<!-- 正常時の表示 -->
+                                                    <small>例：そふぃあ</small>
+                                                    {% render_field form.p_middle_name class="form-control is-valid" %}
+                                                {% endif %}
+
+                                            {% else %}<!-- 初期表示 -->
+                                                <small>例：そふぃあ</small>
+                                                {% render_field form.p_middle_name class="form-control" %}
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+                                {% endif %}
+                                {% if current_user.is_authenticated and current_user.is_active and current_user.is_staff %}
+
+                                    <tr>
+                                        <th class="tr_head">
+                                            <div class="option_box">
+                                                <div class="label option_label">サービス</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                                {% if form.domain_check.errors %}<!-- エラー時の表示 -->
+                                                    {% render_field form.service class="is-invalid" %}
+                                                    {% for error in form.domain_check.errors %}
+                                                        <div class="invalid-feedback">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}<!-- 正常時の表示 -->
+                                                    {% render_field form.service class="is-valid" %}
+                                                {% endif %}
+                                            {% else %}<!-- 初期表示 -->
+                                                {% render_field form.service  %}
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th class="tr_head">
+                                            <div class="option_box">
+                                                <div class="label option_label">メモ</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                                {% if form.domain_check.errors %}<!-- エラー時の表示 -->
+                                                    <small>備考欄としてご利用ください。</small>
+                                                {% render_field form.description class="form-control is-invalid" %}
+
+                                                {% for error in form.domain_check.errors %}
+                                                    <div class="invalid-feedback">
+                                                        {{ error }}
+                                                    </div>
+                                                {% endfor %}
+
+                                                {% else %}<!-- 正常時の表示 -->
+                                                    <small>備考欄としてご利用ください。</small>
+                                                    {% render_field form.description class="form-control is-valid" %}
+                                                {% endif %}
+
+                                            {% else %}<!-- 初期表示 -->
+                                                <small>備考欄としてご利用ください。</small>
+                                                {% render_field form.description class="form-control" %}
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+                                    <tr>
+                                        <th class="tr_head">
+                                            <div class="option_box">
+                                                <div class="label option_label">管理者</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                                {% if form.is_staff.errors %}<!-- エラー時の表示 -->
+                                                    <div class="form-inline">
+                                                        {% render_field form.is_staff class="form-control is-invalid mr-1" %}
+                                                        <small class="form-text text-muted help_text">管理者権限を付与したい場合はチェックを入れてください。</small>
+                                                        <div class="user_admin_num_text"><span class="user_admin_num"></span></div>
+                                                    </div>
+
+                                                    {% for error in form.domain_check.errors %}
+                                                        <div class="invalid-feedback">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+
+                                                {% else %}<!-- 正常時の表示 -->
+                                                    <div class="form-inline">
+                                                        {% render_field form.is_staff class="form-control is-valid mr-1" %}
+                                                        <small class="form-text text-muted help_text">管理者権限を付与したい場合はチェックを入れてください。</small>
+                                                        <div class="user_admin_num_text"><span class="user_admin_num"></span></div>
+                                                    </div>
+                                                {% endif %}
+
+                                            {% else %}<!-- 初期表示 -->
+                                                <div class="form-inline">
+                                                    {% render_field form.is_staff class="form-control mr-1" %}
+                                                    <small class="form-text text-muted help_text">管理者権限を付与したい場合はチェックを入れてください。</small>
+                                                    <div class="user_admin_num_text"><span class="user_admin_num"></span></div>
+                                                </div>
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+
+
+                                    <tr>
+                                        <th class="tr_head">
+                                            <div class="option_box">
+                                                <div class="label option_label">サービス管理者</div>
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+
+                                                {% if form.service_admin.errors %}<!-- エラー時の表示 -->
+                                                    {% render_field form.service_admin class="form-control is-invalid mr-1" %}
+                                                    <small class="form-text text-muted help_text">サービスの管理者権限を付与したい場合はチェックを入れてください。</small>
+
+                                                    {% for error in form.domain_check.errors %}
+                                                        <div class="invalid-feedback">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+
+                                                {% else %}<!-- 正常時の表示 -->
+                                                    {% render_field form.service_admin class="form-control is-valid mr-1" %}
+                                                    <small class="form-text text-muted help_text">サービスの管理者権限を付与したい場合はチェックを入れてください。</small>
+                                                {% endif %}
+
+                                            {% else %}<!-- 初期表示 -->
+                                                {% render_field form.service_admin class="form-control mr-1" %}
+                                                <small class="form-text text-muted help_text">サービスの管理者権限を付与したい場合はチェックを入れてください。</small>
+                                            {% endif %}
+                                        </th>
+                                    </tr>
+                                {% endif %}
+                                <tr>
+                                    <th class="tr_head">
+                                        <div class="">
+                                            <div class="label option_label">パスワード</div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="password_change_text">
+                                            <button type="button" class="btn btn-link btn-sm" onclick="location.href='{% url 'accounts:user_chenge_password' user.id %}'">パスワードの変更はこちらをクリック</button>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><!--card-body-->
+                </div><!--card-->
+            </div><!--col-->
+            <div class="col-6 update-image-area">
+                <div class="card border-0 mt-2 pb-5 mb-5">
+                    <div class="card-body p-0">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="tr_head">
+                                        <div class="option_box">
+                                            <div class="label option_label">プロファイル画像</div>
+                                        </div>
+                                    </th>
+                                    {% if gen_image %}
+                                        <th class="text-center image_aria">現在の画像<br>
+                                            <img src="/media/{{ gen_image.file }}" style="width:80px; height:80px;" ><br><br>
+                                            <button type="button" onfocus="this.blur();" id="del_image_btn" data-gen="{{gen_image.file}}">削除する</button>
+                                        </th>
+                                    {% endif %}
+                                    <th class="center-block border-none">
+                                        <p>※アップロードされた画像は、自動で円形に加工して表示されます。</p>
+                                        <div id="myAwesomeDropzone" class="dropzone">
+                                            <div class="fallback"> <!-- this is the fallback if JS isn't working -->
+                                                <input name="file" type="file" multiple/>
+                                            </div><!--fallback-->
+                                        </div><!--dropzone-->
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>  
+                    </div><!--card-body-->
+                </div><!--card-->
+            </div><!--col-->
+            {% comment %} <div class="col-6">
+                <div class="card border-0 card-register mt-2 pb-5 mb-5">
+                <div class="card-body p-0">
+                    <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                        <th class="tr_head">
+                            <div class="option_box">
+                            <div class="label option_label">プロファイル画像</div>
+                            </div>
+                        </th>
+                        <th class="center-block">
+                            <p>※アップロードされた画像は、自動で円形に加工して表示されます。</p>
+
+                            {% if form.is_bound %}
+
+                            {% if form.image.errors %}
+                                {% render_field form.image class="form-control is-invalid border-0" %}
+                                {% for error in form.image.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                                {% endfor %}
+
+                            {% else %}
+                                {% render_field form.image class="form-control is-valid border-0" %}
+                            {% endif %}
+
+                            {% else %}<!-- 初期表示 -->
+                            {% render_field form.image class="form-control border-0" %}
+                            {% endif %}
+                                        
+                        </th>
+                        </tr>
+                    </tbody>
+                    </table>  
+                </div>
+                </div>
+            </div><!--col--> {% endcomment %}
+        </div><!--row-->
+
+        <div class="btn-toolbar fixed-bottom p-3 align-middle">  
+            <div class="row mx-auto">
+                <h5 class="align-middle d-block m-2 tool-text">ユーザー情報を入力し、変更ボタンを押してください。</h5>
                 {% if current_user.is_authenticated and current_user.is_active and current_user.is_staff %}
-
-                  <tr>
-                    <th class="tr_head">
-                      <div class="option_box">
-                        <div class="label option_label">サービス</div>
-                      </div>
-                    </th>
-                    <th>
-                      <!-- 入力フィールド -->
-                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                        {% if form.domain_check.errors %}<!-- エラー時の表示 -->
-                          {% render_field form.service class="is-invalid" %}
-
-                          {% for error in form.domain_check.errors %}
-                            <div class="invalid-feedback">
-                              {{ error }}
-                            </div>
-                          {% endfor %}
-
-                        {% else %}<!-- 正常時の表示 -->
-                          {% render_field form.service class="is-valid" %}
-                        {% endif %}
-
-                      {% else %}<!-- 初期表示 -->
-                        {% render_field form.service  %}
-                      {% endif %}
-                    </th>
-                  </tr>
-
-                  <tr>
-                    <th class="tr_head">
-                      <div class="option_box">
-                        <div class="label option_label">メモ</div>
-                      </div>
-                    </th>
-                    <th>
-                      <!-- 入力フィールド -->
-                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                        {% if form.domain_check.errors %}<!-- エラー時の表示 -->
-                          <small>備考欄としてご利用ください。</small>
-                          {% render_field form.description class="form-control is-invalid" %}
-
-                          {% for error in form.domain_check.errors %}
-                            <div class="invalid-feedback">
-                              {{ error }}
-                            </div>
-                          {% endfor %}
-
-                        {% else %}<!-- 正常時の表示 -->
-                          <small>備考欄としてご利用ください。</small>
-                          {% render_field form.description class="form-control is-valid" %}
-                        {% endif %}
-
-                      {% else %}<!-- 初期表示 -->
-                        <small>備考欄としてご利用ください。</small>
-                        {% render_field form.description class="form-control" %}
-                      {% endif %}
-                    </th>
-                  </tr>
-
-                  <tr>
-                    <th class="tr_head">
-                      <div class="option_box">
-                        <div class="label option_label">管理者</div>
-                      </div>
-                    </th>
-                    <th>
-                      <!-- 入力フィールド -->
-                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                        {% if form.is_staff.errors %}<!-- エラー時の表示 -->
-                          <div class="form-inline">
-                            {% render_field form.is_staff class="form-control is-invalid mr-1" %}
-                            <small class="form-text text-muted help_text">管理者権限を付与したい場合はチェックを入れてください。</small>
-                            <div class="user_admin_num_text"><span class="user_admin_num"></span></div>
-                          </div>
-
-                          {% for error in form.domain_check.errors %}
-                            <div class="invalid-feedback">
-                              {{ error }}
-                            </div>
-                          {% endfor %}
-
-                        {% else %}<!-- 正常時の表示 -->
-                          <div class="form-inline">
-                            {% render_field form.is_staff class="form-control is-valid mr-1" %}
-                            <small class="form-text text-muted help_text">管理者権限を付与したい場合はチェックを入れてください。</small>
-                            <div class="user_admin_num_text"><span class="user_admin_num"></span></div>
-                          </div>
-                        {% endif %}
-
-                      {% else %}<!-- 初期表示 -->
-                        <div class="form-inline">
-                          {% render_field form.is_staff class="form-control mr-1" %}
-                          <small class="form-text text-muted help_text">管理者権限を付与したい場合はチェックを入れてください。</small>
-                          <div class="user_admin_num_text"><span class="user_admin_num"></span></div>
-                        </div>
-                      {% endif %}
-                    </th>
-                  </tr>
-
-
-                  <tr>
-                    <th class="tr_head">
-                      <div class="option_box">
-                        <div class="label option_label">サービス管理者</div>
-                      </div>
-                    </th>
-                    <th>
-                      <!-- 入力フィールド -->
-                      {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-
-                        {% if form.service_admin.errors %}<!-- エラー時の表示 -->
-                          {% render_field form.service_admin class="form-control is-invalid mr-1" %}
-                          <small class="form-text text-muted help_text">サービスの管理者権限を付与したい場合はチェックを入れてください。</small>
-
-                          {% for error in form.domain_check.errors %}
-                            <div class="invalid-feedback">
-                              {{ error }}
-                            </div>
-                          {% endfor %}
-
-                        {% else %}<!-- 正常時の表示 -->
-                          {% render_field form.service_admin class="form-control is-valid mr-1" %}
-                          <small class="form-text text-muted help_text">サービスの管理者権限を付与したい場合はチェックを入れてください。</small>
-                        {% endif %}
-
-                      {% else %}<!-- 初期表示 -->
-                        {% render_field form.service_admin class="form-control mr-1" %}
-                        <small class="form-text text-muted help_text">サービスの管理者権限を付与したい場合はチェックを入れてください。</small>
-                      {% endif %}
-                    </th>
-                  </tr>
+                    <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
+                {% else %}
+                    <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#user_cancel_modal" onfocus="this.blur();">キャンセル</button>
                 {% endif %}
-                <tr>
-                  <th class="tr_head">
-                    <div class="">
-                      <div class="label option_label">パスワード</div>
-                    </div>
-                  </th>
-                  <th>
-                    <div class="password_change_text">
-                      <button type="button" class="btn btn-link btn-sm" onclick="location.href='{% url 'accounts:user_chenge_password' user.id %}'">パスワードの変更はこちらをクリック</button>
-                    </div>
-                  </th>
-                </tr>
-
-              </tbody>
-            </table>
-
-          </div><!--card-body-->
-        </div><!--card-->
-      </div><!--col-->
-      <div class="col-6 update-image-area">
-        <div class="card border-0 mt-2 pb-5 mb-5">
-          <div class="card-body p-0">
-            <table class="table table-bordered">
-              <tbody>
-                <tr>
-                  <th class="tr_head">
-                    <div class="option_box">
-                      <div class="label option_label">プロファイル画像</div>
-                    </div>
-                  </th>
-                  {% if gen_image %}
-                    <th class="text-center image_aria">現在の画像<br>
-                      <img src="/media/{{ gen_image.file }}" style="width:80px; height:80px;" ><br><br>
-                      <button type="button" onfocus="this.blur();" id="del_image_btn" data-gen="{{gen_image.file}}">削除する</button>
-                      
-                    </th>
-                  {% endif %}
-                  <th class="center-block border-none">
-                    <p>※アップロードされた画像は、自動で円形に加工して表示されます。</p>
-                    <div id="myAwesomeDropzone" class="dropzone">
-                      <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                        <input name="file" type="file" multiple/>
-                      </div><!--fallback-->
-                    </div><!--dropzone-->
-                  </th>
-                  
-                </tr>
-              </tbody>
-            </table>  
-          </div>
+                <button type="submit" class="btn my-btn-w11 mr-1 my-btn-accept change" onfocus="this.blur();" id="submit_btn" disabled>変更　</button>
+            </div>
         </div>
-      </div><!--col-->
-      {% comment %} <div class="col-6">
-        <div class="card border-0 card-register mt-2 pb-5 mb-5">
-          <div class="card-body p-0">
-            <table class="table table-bordered">
-              <tbody>
-                <tr>
-                  <th class="tr_head">
-                    <div class="option_box">
-                      <div class="label option_label">プロファイル画像</div>
-                    </div>
-                  </th>
-                  <th class="center-block">
-                    <p>※アップロードされた画像は、自動で円形に加工して表示されます。</p>
+    </form>
+    <!-- キャンセル確認用管理者 -->
+    <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h6>現在の入力した内容は全て破棄されます。</h6>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'accounts:user' %}'">OK</button>
+                    <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
+                </div><!-- /.modal-footer -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
-                    {% if form.is_bound %}
+    <!-- キャンセル確認用一般 -->
+    <div class="modal fade" id="user_cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h6>現在の入力した内容は全て破棄されます。</h6>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" id="cancel_btn">OK</button>
+                    <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
+                </div><!-- /.modal-footer -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
-                      {% if form.image.errors %}
-                        {% render_field form.image class="form-control is-invalid border-0" %}
-                        {% for error in form.image.errors %}
-                          <div class="invalid-feedback">
-                            {{ error }}
-                          </div>
-                        {% endfor %}
-
-                      {% else %}
-                        {% render_field form.image class="form-control is-valid border-0" %}
-                      {% endif %}
-
-                    {% else %}<!-- 初期表示 -->
-                      {% render_field form.image class="form-control border-0" %}
-                    {% endif %}
-                                   
-                  </th>
-                </tr>
-              </tbody>
-            </table>  
-          </div>
-        </div>
-      </div><!--col--> {% endcomment %}
-    </div><!--row-->
-    
-    {% comment %} </div> <!-- end conter--> {% endcomment %}
-
-    <div class="btn-toolbar fixed-bottom p-3 align-middle">  
-        <div class="row mx-auto">
-            <h5 class="align-middle d-block m-2 tool-text">ユーザー情報を入力し、変更ボタンを押してください。</h5>
-            {% if current_user.is_authenticated and current_user.is_active and current_user.is_staff %}
-              <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
-            {% else %}
-              <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#user_cancel_modal" onfocus="this.blur();">キャンセル</button>
-            {% endif %}
-            <button type="submit" class="btn my-btn-w11 mr-1 my-btn-accept change" onfocus="this.blur();" id="submit_btn" disabled>変更　</button>
+    <!-- レスポンス用トースト -->
+    <div class="position-fixed p-3" style="z-index: 2000; right: 0; bottom: 0;">
+        <div id="result_toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <div>
+                </div>
+            </div>
         </div>
     </div>
-
-  </form>
-  <!-- キャンセル確認用管理者 -->
-  <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <h6>現在の入力した内容は全て破棄されます。</h6>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'accounts:user' %}'">OK</button>
-          <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
-        </div><!-- /.modal-footer -->
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-
-  <!-- キャンセル確認用一般 -->
- <div class="modal fade" id="user_cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <h6>現在の入力した内容は全て破棄されます。</h6>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'accounts:home' %}'">OK</button>
-        <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
-      </div><!-- /.modal-footer -->
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
-<!-- レスポンス用トースト -->
-<div class="position-fixed p-3" style="z-index: 2000; right: 0; bottom: 0;">
-  <div id="result_toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-body">
-          <div>
-          </div>
-      </div>
-  </div>
-</div>
 {% endblock content %}
 
 {% block extra_js %}
-<script>
-  // -----------------
-  // Dropzone.jsの設定
-  // -----------------
-  Dropzone.autoDiscover=false;
-  $("#myAwesomeDropzone").dropzone({
-      url:"{% url 'accounts:image_import' %}",
-      params: {'csrfmiddlewaretoken': getCookie('csrftoken')},
-      maxFiles:1,
-      maxFilesize:1.0,
-      acceptedFiles:'image/*',
-      dictDefaultMessage: '<p>画像ファイルをここにドラッグ&ドロップ<br>してください</p><br/><i class="fas fa-file-upload fa-3x dropzone_upload_icon"></i><br/><br/>ファイルを選択',
-      dictFileTooBig: "ファイルが大きすぎます。({{filesize}}MB). 最大サイズ: 0.1MB.",
-      uploadMultiple: false,
-      autoProcessQueue: false,
-      
-      init: function(){
-        var myDropzone = this;
-        var addflug = false;
-          // ファイルを追加したときの処理
-          myDropzone.on("addedfile", function(file) {
-            // 追加フラグをたてる
-            if (this.files.length > 0) {
-              addflug = true;
-            } else {
-              addflug = false;
-            }
-          });
-        // 確定ボタンを押下したらファイルをアップロード
-        $("#submit_btn").click(function (e) {
-          if (addflug) {
-            //フラグがtrueの時はファイルアップロードを実行
-            e.preventDefault();
-            //キューを実行
-            myDropzone.processQueue();
-          } else {
-            //フラグがfalseの時はメッセージ等の保存を実行
-            $('#myform').submit();
-          }
+    <script>
+        // -----------------
+        // Dropzone.jsの設定
+        // -----------------
+        Dropzone.autoDiscover=false;
+        $("#myAwesomeDropzone").dropzone({
+            url:"{% url 'accounts:image_import' %}",
+            params: {'csrfmiddlewaretoken': getCookie('csrftoken')},
+            maxFiles:1,
+            maxFilesize:1.0,
+            acceptedFiles:'image/*',
+            dictDefaultMessage: '<p>画像ファイルをここにドラッグ&ドロップ<br>してください</p><br/><i class="fas fa-file-upload fa-3x dropzone_upload_icon"></i><br/><br/>ファイルを選択',
+            dictFileTooBig: "ファイルが大きすぎます。({{filesize}}MB). 最大サイズ: 0.1MB.",
+            uploadMultiple: false,
+            autoProcessQueue: false,
+            
+            init: function(){
+                var myDropzone = this;
+                var addflug = false;
+                // ファイルを追加したときの処理
+                myDropzone.on("addedfile", function(file) {
+                    // 追加フラグをたてる
+                    if (this.files.length > 0) {
+                        addflug = true;
+                    } else {
+                        addflug = false;
+                    }
+                });
+                // 確定ボタンを押下したらファイルをアップロード
+                $("#submit_btn").click(function (e) {
+                    if (addflug) {
+                        //フラグがtrueの時はファイルアップロードを実行
+                        e.preventDefault();
+                        //キューを実行
+                        myDropzone.processQueue();
+                    } else {
+                        //フラグがfalseの時はメッセージ等の保存を実行
+                        $('#myform').submit();
+                    }
+                });
+            },
+            success: function(file, response){
+                //フォームの全体を確認する
+                $('#myform').submit();
+            },
+            maxfilesexceeded:  function(file) {
+                // 上限数を超えたファイルは削除する
+                this.removeFile(file);
+            },
+        })
+        $(function(){
+            //現在のイメージ削除
+            $('#del_image_btn').on('click', function() {
+                console.log('ajdipajccp')
+                var gen_image = $('#del_image_btn').data('gen') //値を取得
+                $.ajax({
+                    type: "POST",
+                    url: '{% url "accounts:delete_image" %}',
+                    data: {
+                        'gen_image': gen_image
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.is_exist) {
+                            $('#result_toast').on('show.bs.toast', function (e) {
+                                var toast = $(this);
+                                toast.find('.toast-body').removeClass('alert-danger');
+                                toast.find('.toast-body').addClass('alert-success');//このクラスを付与して成功時の色を定義
+                                toast.find('.toast-body').text(data.error_message);//サーバ側から戻ってきたメッセージを表示
+                            });
+                            $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理
+                            $('.image_aria').hide();
+                        };
+                    }
+                });
+            });    
+    
+            {% comment %} // Dropzoneの自動検出を無効
+            Dropzone.autoDiscover = false;
+
+            // Get the template HTML and remove it from the doumenthe template HTML and remove it from the document
+            var previewNode = document.querySelector("#template");
+            // #templateというIDがあるときのみ処理
+            if (previewNode) {
+                previewNode.id = "";
+                var previewTemplate = previewNode.parentNode.innerHTML;
+                previewNode.parentNode.removeChild(previewNode);
+            };
+
+            $("div#myAwesomeDropzone").dropzone({
+                url: "{% url 'accounts:home' %}",
+                params: {'csrfmiddlewaretoken': getCookie('csrftoken')},
+                autoProcessQueue: true,
+                maxFiles: 1,
+                maxFilesize: 0.5, // MiB
+                acceptedFiles: ".jpeg, .jpg, .png, .gif",
+                paramName: "file",
+                dictDefaultMessage: '<span class="dropzone_text">画像をここにドラッグ&ドロップしてください</span><br /><br /><i class="fas fa-file-upload fa-5x dropzone_upload_icon"></i><br /><br />ファイルを選択',
+                previewTemplate: previewTemplate,
+                previewsContainer: "#previews",
+
+                // The setting up of the dropzone
+                init: function() {
+                    var myDropzone = this;
+                    // ドラッグ&ドロップ領域以外にファイルをドラッグ&ドロップしても反応しないようにする
+                    $(document).on('drop dragover', function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    });
+
+
+                    // Update the total progress bar
+                    myDropzone.on("totaluploadprogress", function(progress) {
+                        $(".progress-bar").css("width" , progress + "%");
+                        $(".progress-text").text = progress + "%";
+                    }); 
+                },
+                maxfilesexceeded:  function(file) {
+                    // thisオブジェクトが変わるため、変数に格納しておく
+                    var myDropzone = this;
+                    // モーダルを表示する
+                    $('#removeModal').modal('show');
+                    // 置き換えるボタンがクリックされた場合
+                    $("#removeModalButton").click(function (e) {
+                    // モーダルを非表示
+                    $('#removeModal').modal('hide');
+                        // 旧ファイルを削除して新しいファイルを追加する(置き換える)
+                        myDropzone.removeAllFiles();
+                        myDropzone.addFile(file);
+                    });
+                }
+            }); {% endcomment %}
+
+
+            // 戻るボタンで戻った時に値が入っていたらボタンを有効化
+            $('form[data-validate]').each(function(){
+                $(this).find(':submit').prop('disabled', !this.checkValidity());
+            });
+
+            //  必須項目の入力を確認してボタンを有効化
+            $('form[data-validate]').on('input change', function () {
+                $(this).find(':submit').prop('disabled', !this.checkValidity());
+            });
+
+            if ( $('#id_is_staff').is(':checked') ) {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'accounts:load_admin_count' %}",
+                    dataType: 'json',
+                    success: function (data) {
+                        if(data.status=='ok'){
+                            var admin_num = data.admin_num;
+
+                            // 管理者権限のユーザーが1以上の場合注意喚起
+                            if (admin_num <= 1) {
+                            $('.user_admin_num').text("管理者は1名のみです。")
+                            $('#id_is_staff').prop('disabled', true);
+                            }
+                        }else{
+                        }
+                    }
+                });
+            };
+            //キャンセル処理
+            $('#cancel_btn').click(function(){
+                console.log('ゆーざーkyansel')
+                var user_id = $('.h-adr').data('user');
+                console.log('ゆーざーあいでぃー',user_id)
+
+                window.location.href = '/cancel/'+ user_id +'/update_profile';
+            });
         });
-      },
-      success: function(file, response){
-        //フォームの全体を確認する
-        $('#myform').submit();
-      },
-      maxfilesexceeded:  function(file) {
-        // 上限数を超えたファイルは削除する
-        this.removeFile(file);
-      },
-  })
-$(function(){
-  //現在のイメージ削除
-  $('#del_image_btn').on('click', function() {
-    console.log('ajdipajccp')
-    var gen_image = $('#del_image_btn').data('gen') //値を取得
-    $.ajax({
-      type: "POST",
-      url: '{% url "accounts:delete_image" %}',
-
-      data: {
-        'gen_image': gen_image
-      },
-      dataType: 'json',
-      success: function (data) {
-        if (data.is_exist) {
-          $('#result_toast').on('show.bs.toast', function (e) {
-            var toast = $(this);
-            toast.find('.toast-body').removeClass('alert-danger');
-            toast.find('.toast-body').addClass('alert-success');//このクラスを付与して成功時の色を定義
-            toast.find('.toast-body').text(data.error_message);//サーバ側から戻ってきたメッセージを表示
-          });
-          $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理
-          $('.image_aria').hide();
-        };
-      }
-    });
-  });    
- 
-  {% comment %} // Dropzoneの自動検出を無効
-  Dropzone.autoDiscover = false;
-
-  // Get the template HTML and remove it from the doumenthe template HTML and remove it from the document
-  var previewNode = document.querySelector("#template");
-  // #templateというIDがあるときのみ処理
-  if (previewNode) {
-    previewNode.id = "";
-    var previewTemplate = previewNode.parentNode.innerHTML;
-    previewNode.parentNode.removeChild(previewNode);
-  };
-
-    $("div#myAwesomeDropzone").dropzone({
-      url: "{% url 'accounts:home' %}",
-      params: {'csrfmiddlewaretoken': getCookie('csrftoken')},
-      autoProcessQueue: true,
-      maxFiles: 1,
-      maxFilesize: 0.5, // MiB
-      acceptedFiles: ".jpeg, .jpg, .png, .gif",
-      paramName: "file",
-      dictDefaultMessage: '<span class="dropzone_text">画像をここにドラッグ&ドロップしてください</span><br /><br /><i class="fas fa-file-upload fa-5x dropzone_upload_icon"></i><br /><br />ファイルを選択',
-      previewTemplate: previewTemplate,
-      previewsContainer: "#previews",
-
-      // The setting up of the dropzone
-      init: function() {
-        var myDropzone = this;
-        // ドラッグ&ドロップ領域以外にファイルをドラッグ&ドロップしても反応しないようにする
-        $(document).on('drop dragover', function (e) {
-          e.stopPropagation();
-          e.preventDefault();
-        });
-
-
-        // Update the total progress bar
-        myDropzone.on("totaluploadprogress", function(progress) {
-          $(".progress-bar").css("width" , progress + "%");
-          $(".progress-text").text = progress + "%";
-        });
-        
-      },
-      maxfilesexceeded:  function(file) {
-        // thisオブジェクトが変わるため、変数に格納しておく
-        var myDropzone = this;
-        // モーダルを表示する
-        $('#removeModal').modal('show');
-        // 置き換えるボタンがクリックされた場合
-        $("#removeModalButton").click(function (e) {
-          // モーダルを非表示
-          $('#removeModal').modal('hide');
-            // 旧ファイルを削除して新しいファイルを追加する(置き換える)
-            myDropzone.removeAllFiles();
-            myDropzone.addFile(file);
-        });
-      }
-    }); {% endcomment %}
-
-
-  // 戻るボタンで戻った時に値が入っていたらボタンを有効化
-  $('form[data-validate]').each(function(){
-    $(this).find(':submit').prop('disabled', !this.checkValidity());
-  });
-
-  //  必須項目の入力を確認してボタンを有効化
-    $('form[data-validate]').on('input change', function () {
-      $(this).find(':submit').prop('disabled', !this.checkValidity());
-    });
-
-  if ( $('#id_is_staff').is(':checked') ) {
-      $.ajax({
-        type: 'GET',
-        url: "{% url 'accounts:load_admin_count' %}",
-        dataType: 'json',
-        success: function (data) {
-          if(data.status=='ok'){
-            var admin_num = data.admin_num;
-
-            // 管理者権限のユーザーが1以上の場合注意喚起
-            if (admin_num <= 1) {
-              $('.user_admin_num').text("管理者は1名のみです。")
-              $('#id_is_staff').prop('disabled', true);
-            }
-          }else{
-          }
-        }
-      });
-  };
-});
-
-</script>
+    </script>
 {% endblock %}

@@ -58,26 +58,30 @@
                 </div>
             </div> {% endcomment %}
 
-            {% if option.index != "0" %}
+
+
+            {% comment %} {% if option.index != "0" %} {% endcomment %}
                 <div class="col-sm-6">
                     <div class="form-check check_row text-right pr-3">
-                    {% with value=option.value %}
-                        {% with category=plan_price_dict|get_cat:option.value %}
-
-                            <span {% if c_options_dict|get_list_2:category > plan_price_dict|get_list:option.value %}
-                                class="form-check-label service_checkbox_label text-black-50"
-                            {% elif option.label == 'なし' and c_options_dict|get_list_3:option.name == 1  %}
-                                class="form-check-label service_checkbox_label text-black-50"
-                            {% else %}
-                                class="form-check-label service_checkbox_label"
-                            {% endif %}>
-                            {{ plan_price_dict|get_list:value|intcomma }}/年</span>
+                        {% with value=option.value %}
+                            
+                            {% with category=plan_price_dict|get_cat:option.value %}
+                                <span {% if c_options_dict|get_list_2:category > plan_price_dict|get_list:option.value %}
+                                    class="form-check-label service_checkbox_label text-black-50"
+                                {% elif option.label == 'なし' and c_options_dict|get_list_3:option.name == 1  %}
+                                    class="form-check-label service_checkbox_label text-black-50"
+                                {% else %}
+                                    class="form-check-label service_checkbox_label"
+                                {% endif %}>
+                                {{ plan_price_dict|get_list:value|intcomma }}/年</span>
+                            {% endwith %}
                         {% endwith %}
-                    {% endwith %}
 
                     </div>
                 </div>
-            {% endif %}
+            {% comment %} {% endif %} {% endcomment %}
+
+
             {% comment %} {% if option.index != "0" %}
                 <div class="col-sm-6">
                     <div class="form-check check_row text-right pr-3">

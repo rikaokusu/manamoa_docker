@@ -7,6 +7,8 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.contrib.auth.base_user import BaseUserManager
+#楽観的排他処理用
+from concurrency.fields import AutoIncVersionField
 import os
 # from django.conf import settings
 
@@ -232,6 +234,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     image = models.OneToOneField(File, on_delete=models.CASCADE,blank=True,null=True)
     # ユーザーカラー
     color_num = models.IntegerField("color_num", default=0,blank=True)
+    #排他処理用タイムスタンプ
+    last_updated = models.DateTimeField(null=True)
+    #排他処理用フラグ
+    is_updating = models.BooleanField(_('is_updating'), default=False)
 
     is_activate = models.BooleanField(
         _('activate'),

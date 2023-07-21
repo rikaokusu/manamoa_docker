@@ -565,19 +565,34 @@ class Cancel(LoginRequiredMixin, View):
 
         # プロファイル更新時のキャンセル
         if self.kwargs['str'] == "update_profile":
+            print('きゃんせるにすすんだ')
             # 変更対象のオブジェクトを取得
             company = Company.objects.filter(id=self.kwargs['pk']).first()
-            # バージョンフラグをNoneとする
-            company.version = None
-            # 変更者のIDをNoneとする
-            company.change_user = None
-            # 上書きフラグをNoneとする
-            company.change_row = None
-            # 保存
-            company.save()
+            user = User.objects.filter(id=self.kwargs['pk']).first()
+            if company:
+                # バージョンフラグをNoneとする
+                company.version = None
+                # 変更者のIDをNoneとする
+                company.change_user = None
+                # 上書きフラグをNoneとする
+                company.change_row = None
+                # 保存
+                company.save()
+                
+                return HttpResponseRedirect(reverse('accounts:companyprofile'))
+            elif user:
+                print('ユーザーキャンセル進んだ')
+                # 排他処理フラグをFalseに
+                user.is_updating = False
+                # 保存
+                user.save()
+                return HttpResponseRedirect(reverse('accounts:user'))
+                
+            else:
+                return HttpResponseRedirect(reverse('accounts:home'))
 
 
-        return HttpResponseRedirect(reverse('accounts:companyprofile'))
+        
 
 
 """
@@ -1007,6 +1022,11 @@ class UserUpdateView(LoginRequiredMixin, OnlyOurUserMixin, UpdateView, CommonVie
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         target_user = User.objects.filter(pk=self.kwargs['pk']).first()
+        #排他処理のタイムスタンプを上書きする
+        target_user.last_updated = datetime.now(timezone.utc)
+        target_user.is_updating = True
+        target_user.save()
+        
         if target_user.image:
             context["gen_image"] = target_user.image
         return context
@@ -1057,7 +1077,7 @@ class UserUpdateView(LoginRequiredMixin, OnlyOurUserMixin, UpdateView, CommonVie
             user.image = File.objects.filter(id=self.request.session['up_file_id']).first()
             if old_image:
                 old_image.delete()
-
+        user.is_updating = False
         # 保存
         user.save()
 
