@@ -49,19 +49,19 @@
                 <td>{{ estimate.service }}<br>{{ estimate.plan }}</td>
 
                 <td>
-                    {% if estimate.option1 %}
+                    {% if estimate.option1 and not estimate.option1.name == 'なし' %}
                       {{ estimate.option1.name }}<br />
                     {% endif %}
-                    {% if estimate.option2 %}
+                    {% if estimate.option2 and not estimate.option2.name == 'なし' %}
                       {{ estimate.option2.name }}<br />
                     {% endif %}
-                    {% if estimate.option3 %}
+                    {% if estimate.option3 and not estimate.option3.name == 'なし' %}
                       {{ estimate.option3.name }}<br />
                     {% endif %}
-                    {% if estimate.option4 %}
+                    {% if estimate.option4 and not estimate.option4.name == 'なし' %}
                       {{ estimate.option4.name }}<br />
                     {% endif %}
-                    {% if estimate.option5 %}
+                    {% if estimate.option5 and not estimate.option5.name == 'なし' %}
                       {{ estimate.option5.name }}<br />
                     {% endif %}
                     

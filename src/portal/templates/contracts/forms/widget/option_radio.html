@@ -9,7 +9,7 @@
 
         {% with category=plans_cat_list|get_cat_list:forloop.parentloop.counter0 %}
             {% if category != plan_price_dict|get_cat:option.value %}
-                <hr>
+                {% comment %} <hr> {% endcomment %}
             {% endif %}
         {% endwith %}
 
@@ -29,14 +29,18 @@
             </div>
 
             {% comment %} {% if option.index != "0" %} {% endcomment %}
+            
             <div class="col-sm-6">
                 <div class="form-check check_row text-right pr-3">
+                
                 {% comment %} {{plan_price_dict}} {% endcomment %}
                     {% with value=option.value %}
-                        <span class="form-check-label service_checkbox_label">{{ plan_price_dict|get_list:value|intcomma }}/年</span>
+                        <span class="form-check-label service_checkbox_label">{% if not option.label == 'なし'  %}{{ plan_price_dict|get_list:value|intcomma }}/年{% endif %}</span>
                     {% endwith %}
+                
                 </div>
             </div>
+            
             {% comment %} {% endif %} {% endcomment %}
         </div>
     {% endfor %}

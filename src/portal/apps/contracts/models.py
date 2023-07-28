@@ -175,7 +175,10 @@ class Estimates(models.Model):
     difference = models.IntegerField('差額', blank=False, default=0)
     # 契約フラグ（正式に契約を結んだ見積りのみ）
     is_signed = models.BooleanField('契約フラグ',blank=False, default=False)
-
+    #排他処理用タイムスタンプ
+    last_updated = models.DateTimeField(null=True)
+    #排他処理用フラグ
+    is_updating = models.BooleanField(_('is_updating'), default=False)
 
 """
 契約テーブル
@@ -239,3 +242,7 @@ class Contract(models.Model):
     discount = models.ForeignKey(Discount, null=True, on_delete=models.CASCADE, verbose_name='割引', related_name='contract_discount')
     # 解約日
     cancellation_date = models.DateTimeField(_('cancellation_date'), null=True)
+    #排他処理用タイムスタンプ
+    last_updated = models.DateTimeField(null=True)
+    #排他処理用フラグ
+    is_updating = models.BooleanField(_('is_updating'), default=False)

@@ -60,10 +60,11 @@
                     </thead>
                     <tbody>
                         {% for estimate in estimates %}
+                        {% with status=estimate.contract_set.all|get_contract_status:current_user %}
                             <tr class="odd gradeX py-3">
                                 <!-- チェックボックスカラム -->
                                 <td>
-                                    {% if estimate.is_use and estimate.contract_set.all|get_contract_status:current_user == "2" %}
+                                    {% if estimate.is_use and status == "2" %}
                                         <span data-toggle="tooltip" title="複製" data-placement="top">
                                         <input type="checkbox" class="copy" value="{{ estimate.pk }}" name="check[]">
                                         <a id="copyicon" data-value={{estimate.id}}><i class="fas fa-lg fa-copy"></i></a>
@@ -77,11 +78,11 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if estimate.is_use and estimate.contract_set.all|get_contract_status:current_user == "2" %}
+                                    {% if estimate.is_use and status == "2" %}
                                         契約中
-                                    {% elif estimate.contract_set.all|get_contract_status:current_user == "3" %}
+                                    {% elif status == "3" %}
                                         解約済
-                                    {% elif estimate.contract_set.all|get_contract_status:current_user == "4" %}
+                                    {% elif status == "4" %}
                                         更新済
                                     {% elif estimate.is_change == 1 %}
                                         {% comment %} プラン変更用 {% endcomment %}
@@ -119,10 +120,10 @@
                                 <td>{{ estimate.method_payment.name }}</td>
                                 <td>
                                     {% if not estimate.is_use %}
-                                        {% if estimate.expiration_date|is_oneweekago and estimate.contract_set.all|get_contract_status:current_user != "3" %}
+                                        {% if estimate.expiration_date|is_oneweekago and status != "3" %}
                                             <div class="text-danger font-weight-bold">有効期限間近！</div>
                                             {{ estimate.expiration_date|date:'Y/m/d' }}
-                                        {% elif estimate.contract_set.all|get_contract_status:current_user != "3" and estimate.contract_set.all|get_contract_status:current_user != "4" %}
+                                        {% elif status != "3" and status != "4" %}
                                             <div class="new" data-created_time="{{ estimate.created_date|date:'Y/m/d H:i' }}">NEW</div>
                                             {{ estimate.expiration_date|date:'Y/m/d' }}
                                         {% endif %}
@@ -132,9 +133,12 @@
                                 <td class="text-center">
                                     {% comment %} <div class="my-btn my-btn-gray-2 my-btn-sm my-btn-w10-2 mb-2" onclick="location.href='{% url 'contracts:estimateToPdf' estimate.id %}'; return false;"><span>見積書ダウンロード  </span><i class="fas fa-file-download"></i></div><br> {% endcomment %}
                                     <div class="my-btn my-btn-gray-2 my-btn-sm my-btn-w10-2 mb-2" onclick="location.href='{% url 'contracts:estimateToPdf' estimate.id %}'; return false;"><span>見積書ダウンロード  </span><i class="fas fa-file-download"></i></div><br>         
-                                    {% if estimate.is_use and estimate.contract_set.all|get_contract_status:current_user == "2" %}
+                                    
+                                    {% if estimate.is_use and status == "2" %}
+                                    {% comment %} {% if estimate.is_use and estimate.contract_set.all|get_contract_status:current_user == "2" %} {% endcomment %}
                                         <div class="using-comment" data-toggle="tooltip" title="すでに契約中です" data-placement="top">契約中</div>
-                                    {% elif estimate.contract_set.all|get_contract_status:current_user == "3" %}
+                                    {% elif status == "3" %}
+                                    {% comment %} {% elif estimate.contract_set.all|get_contract_status:current_user == "3" %} {% endcomment %}
                                         {% if estimate.end_day.date|check_date %}
                                             <div class="using-comment text-danger" data-toggle="tooltip" title="{{ estimate.end_day|date:'Y年m月d日' }}までご利用いただけます" data-placement="top">{{ estimate.end_day|date:'Y年m月d日' }}まで</div>
                                         {% else %}
@@ -142,25 +146,48 @@
                                         {% endif %}
                                     {% elif estimate.is_change == 1 %}
                                         {% if estimate.method_payment.id == 1 %}  <!-- 1がクレジット -->
-                                            <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout' estimate.id %}'"><span>プラン変更&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% if estimate.is_updating == False %}
+                                                <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout' estimate.id %}'"><span>プラン変更&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% else %}
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="他管理ユーザーが手続き中です。">
+                                                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout' estimate.id %}'" disabled><span>プラン変更&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                                </span>
+                                            {% endif %}
                                         {% else %}
-                                            <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'"><span>プラン変更&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% if estimate.is_updating == False %}
+                                                <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'"><span>プラン変更&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% else %}
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="他管理ユーザーが手続き中です。">
+                                                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'" disabled><span>プラン変更&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                                </span>
+                                            {% endif %}
                                         {% endif %}
                                     {% elif estimate.service_id in estimate.contract_set.all|get_estimate_id:current_user %}
                                         <div class="using-comment" data-toggle="tooltip" title="同サービス契約中のため使用出来ません" data-placement="top">使用不可</div>
-                                    {% elif estimate.contract_set.all|get_contract_status:current_user == "4" %}
+                                    {% comment %} {% elif estimate.contract_set.all|get_contract_status:current_user == "4" %} {% endcomment %}
+                                    {% elif status == "4" %}
                                         <div class="using-comment" data-toggle="tooltip" title="プラン変更済みのため使用出来ません" data-placement="top">使用不可</div>
                                     {% else %}
                                         {% if estimate.method_payment.id == 1 %}  <!-- 1がクレジット -->
-                                            {% comment %} <a href="{% url 'payment:checkout' estimate.id %}" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6">申し込み！</a> {% endcomment %}
-                                            <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout' estimate.id %}'"><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% if estimate.is_updating == False %}
+                                                <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout' estimate.id %}'"><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% else %}
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="他管理ユーザーが手続き中です。">
+                                                <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout' estimate.id %}'" disabled><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% endif %}
                                         {% else %}
-                                            <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'"><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
-                                            {% comment %} <a href="{% url 'payment:checkout_bank' estimate.id %}" class="my-btn my-btn-bluepurple-1 my-btn-sm my-btn-w6">申し込み</a> {% endcomment %}
+                                            {% if estimate.is_updating == False %}
+                                                <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'"><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% else %}
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="他管理ユーザーが手続き中です。">
+                                                <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w10-2" onclick="location.href='{% url 'payment:checkout_bank' estimate.id %}'" disabled><span>申し込み&nbsp;&nbsp;</span><i class="fas fa-mouse-pointer text-white"></i></button>
+                                            {% endif %}
                                         {% endif %}
                                     {% endif %}
+                                   
                                 </td>
-                            </tr>
+                            </tr> 
+                        {% endwith %}
                         {% endfor %}
                     </tbody>
                 </table><!-- /.table-responsive -->

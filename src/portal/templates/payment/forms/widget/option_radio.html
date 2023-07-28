@@ -73,7 +73,7 @@
                                 {% else %}
                                     class="form-check-label service_checkbox_label"
                                 {% endif %}>
-                                {{ plan_price_dict|get_list:value|intcomma }}/年</span>
+                                {% if not option.label == 'なし'  %}{{ plan_price_dict|get_list:value|intcomma }}/年{% endif %}</span>
                             {% endwith %}
                         {% endwith %}
 

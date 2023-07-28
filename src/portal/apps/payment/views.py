@@ -464,23 +464,23 @@ class Checkout(LoginRequiredMixin, DetailView, CommonView, View):
 
         option_list = []
 
-        if estimate.option1:
+        if estimate.option1 and not estimate.option1.stripe_plan_id == 'pln':
             option_1 = {'price':estimate.option1.stripe_price_id}
             item_set.append(option_1)
             option_list.append(estimate.option1)
-        if estimate.option2:
+        if estimate.option2 and not estimate.option2.stripe_plan_id == 'pln':
             option_2 = {'price':estimate.option2.stripe_price_id}
             item_set.append(option_2)
             option_list.append(estimate.option2)
-        if estimate.option3:
+        if estimate.option3 and not estimate.option3.stripe_plan_id == 'pln':
             option_3 = {'price':estimate.option3.stripe_price_id}
             item_set.append(option_3)
             option_list.append(estimate.option3)
-        if estimate.option4:
+        if estimate.option4 and not estimate.option4.stripe_plan_id == 'pln':
             option_4 = {'price':estimate.option4.stripe_price_id}
             item_set.append(option_4)
             option_list.append(estimate.option4)
-        if estimate.option5:
+        if estimate.option5 and not estimate.option5.stripe_plan_id == 'pln':
             option_5 = {'price':estimate.option5.stripe_price_id}
             item_set.append(option_5)
             option_list.append(estimate.option5)
@@ -612,6 +612,7 @@ class Checkout(LoginRequiredMixin, DetailView, CommonView, View):
                 old_contract.status = "4"
                 #旧契約の契約終了日を変更
                 old_contract.contract_end_date = estimate.start_day
+                old_contract.is_updating = False
                 old_contract.save()
                 
             else:
@@ -832,7 +833,7 @@ class Checkout(LoginRequiredMixin, DetailView, CommonView, View):
 
             # 見積りの支払い方法を支払いテーブルに保存
             payment.method_payment = estimate.method_payment
-
+            contract.is_updating = False
             # 保存
             contract.save()
             payment.save()
@@ -841,6 +842,7 @@ class Checkout(LoginRequiredMixin, DetailView, CommonView, View):
             estimate.is_use = True
             # 契約フラグをON
             estimate.is_signed = True
+            estimate.is_updating = False
 
             estimate.save()
 
@@ -936,23 +938,23 @@ class CheckoutFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
         print('＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝すたーとでい',type(trial_day))
         option_list = []
 
-        if estimate.option1:
+        if estimate.option1 and not estimate.option1.stripe_plan_id == 'pln':
             option_1 = {'price':estimate.option1.stripe_price_id}
             item_set.append(option_1)
             option_list.append(estimate.option1)
-        if estimate.option2:
+        if estimate.option2 and not estimate.option2.stripe_plan_id == 'pln':
             option_2 = {'price':estimate.option2.stripe_price_id}
             item_set.append(option_2)
             option_list.append(estimate.option2)
-        if estimate.option3:
+        if estimate.option3 and not estimate.option3.stripe_plan_id == 'pln':
             option_3 = {'price':estimate.option3.stripe_price_id}
             item_set.append(option_3)
             option_list.append(estimate.option3)
-        if estimate.option4:
+        if estimate.option4 and not estimate.option4.stripe_plan_id == 'pln':
             option_4 = {'price':estimate.option4.stripe_price_id}
             item_set.append(option_4)
             option_list.append(estimate.option4)
-        if estimate.option5:
+        if estimate.option5 and not estimate.option5.stripe_plan_id == 'pln':
             option_5 = {'price':estimate.option5.stripe_price_id}
             item_set.append(option_5)
             option_list.append(estimate.option5)
@@ -1177,6 +1179,7 @@ class CheckoutFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
                 # 見積りの支払い方法を支払いテーブルに保存
                 payment.method_payment = estimate.method_payment
 
+                contract.is_updating = False
                 # 保存
                 contract.save()
                 payment.save()
@@ -1186,6 +1189,8 @@ class CheckoutFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
                 estimate.is_use = True
                 # 契約フラグをON
                 estimate.is_signed = True
+                
+                estimate.is_updating = False
                 
                 estimate.save()
 
@@ -1294,23 +1299,23 @@ class UpdateFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
         
         option_list = []
 
-        if estimate.option1:
+        if estimate.option1 and not estimate.option1.stripe_plan_id == 'pln':
             option_1 = {'price':estimate.option1.stripe_price_id}
             item_set.append(option_1)
             option_list.append(estimate.option1)
-        if estimate.option2:
+        if estimate.option2 and not estimate.option2.stripe_plan_id == 'pln':
             option_2 = {'price':estimate.option2.stripe_price_id}
             item_set.append(option_2)
             option_list.append(estimate.option2)
-        if estimate.option3:
+        if estimate.option3 and not estimate.option3.stripe_plan_id == 'pln':
             option_3 = {'price':estimate.option3.stripe_price_id}
             item_set.append(option_3)
             option_list.append(estimate.option3)
-        if estimate.option4:
+        if estimate.option4 and not estimate.option4.stripe_plan_id == 'pln':
             option_4 = {'price':estimate.option4.stripe_price_id}
             item_set.append(option_4)
             option_list.append(estimate.option4)
-        if estimate.option5:
+        if estimate.option5 and not estimate.option5.stripe_plan_id == 'pln':
             option_5 = {'price':estimate.option5.stripe_price_id}
             item_set.append(option_5)
             option_list.append(estimate.option5)
@@ -1478,6 +1483,7 @@ class UpdateFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
                 # 見積りの支払い方法を支払いテーブルに保存
                 payment.method_payment = estimate.method_payment
 
+                contract.is_updating = False
                 # 保存
                 contract.save()
                 payment.save()
@@ -1487,6 +1493,8 @@ class UpdateFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
                 estimate.is_use = True
                 # 契約フラグをON
                 estimate.is_signed = True
+                
+                estimate.is_updating = False
                 
                 estimate.save()
 
@@ -1615,6 +1623,7 @@ class CheckoutBank(LoginRequiredMixin, DetailView, CommonView, View):
             # 見積りの支払い方法を支払いテーブルに保存
             payment.method_payment = estimate.method_payment
 
+            contract.is_updating = False
             # 保存
             contract.save()
             payment.save()
@@ -1624,6 +1633,7 @@ class CheckoutBank(LoginRequiredMixin, DetailView, CommonView, View):
             # 契約フラグをON
             estimate.is_signed = True
             
+            estimate.is_updating =False
             estimate.save()
 
         except Exception as e:
@@ -1723,6 +1733,7 @@ class CheckoutBankFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
             # 見積りの支払い方法を支払いテーブルに保存
             payment.method_payment = estimate.method_payment
 
+            contract.is_updating =False
             # 保存
             contract.save()
             payment.save()
@@ -1731,6 +1742,8 @@ class CheckoutBankFromOffer(LoginRequiredMixin, DetailView, CommonView, View):
             estimate.is_use = True
             # 契約フラグをON
             estimate.is_signed = True
+            
+            estimate.is_updating =False
             
             estimate.save()
 
@@ -1905,7 +1918,8 @@ class ChangeContract(LoginRequiredMixin, FormView, CommonView):
         contract_id = self.kwargs['pk']
         contract = Contract.objects.get(pk=contract_id)
         service = Service.objects.get(pk=contract.service_id)
-
+        contract.is_updating = True
+        contract.save()
         context["contract"] = contract
         context["service"] = service
         # サービスに紐づくプランの数
@@ -2200,6 +2214,8 @@ class ChangeContract(LoginRequiredMixin, FormView, CommonView):
 
             print('difference_price_mathのあたい',difference_price_math)
         estimate.difference = difference_price_math
+        
+        estimate.is_updating = True
         # 保存
         estimate.save()
         # 入力した値を、セッションに保存    
@@ -2303,23 +2319,23 @@ class ChangePlanConfirmCard(LoginRequiredMixin, TemplateView, CommonView):
             else:
                 item_set = [{"price":estimate.plan.stripe_price_id},{"price":"price_1MUgVyI8iZ48PSn6ctfLVE2H"}]
 
-            if estimate.option1:
+            if estimate.option1 and not estimate.option1.stripe_plan_id == 'pln':
                 option_1 = {'price':estimate.option1.stripe_price_id}
                 item_set.append(option_1)
                 contract.option1 = estimate.option1
-            if estimate.option2:
+            if estimate.option2 and not estimate.option2.stripe_plan_id == 'pln':
                 option_2 = {'price':estimate.option2.stripe_price_id}
                 item_set.append(option_2)
                 contract.option2 = estimate.option2
-            if estimate.option3:
+            if estimate.option3 and not estimate.option3.stripe_plan_id == 'pln':
                 option_3 = {'price':estimate.option3.stripe_price_id}
                 item_set.append(option_3)
                 contract.option3 = estimate.option3
-            if estimate.option4:
+            if estimate.option4 and not estimate.option4.stripe_plan_id == 'pln':
                 option_4 = {'price':estimate.option4.stripe_price_id}
                 item_set.append(option_4)
                 contract.option4 = estimate.option4
-            if estimate.option5:
+            if estimate.option5 and not estimate.option5.stripe_plan_id == 'pln':
                 option_5 = {'price':estimate.option5.stripe_price_id}
                 item_set.append(option_5)
                 contract.option5 = estimate.option5
@@ -2497,7 +2513,11 @@ class ChangePlanConfirmCard(LoginRequiredMixin, TemplateView, CommonView):
                 #旧契約の契約終了日を変更
                 old_contract.contract_end_date = estimate.start_day
                 old_contract.payment.save()
+                old_contract.is_updating = False
                 old_contract.save()
+                
+                contract.is_updating = False
+                estimate.is_updating = False
                 # 保存
                 contract.save()
                 payment.save()
@@ -2625,7 +2645,10 @@ class ChangePlanConfirmBank(LoginRequiredMixin, TemplateView, CommonView):
             #旧契約の契約終了日を変更
             old_contract.contract_end_date = estimate.start_day
             old_contract.save()
-
+            old_contract.is_updating = False
+            
+            contract.is_updating = False
+            estimate.is_updating = False
             # 保存
             contract.save()
             payment.save()
@@ -2771,19 +2794,19 @@ class AutoCheckoutChange(View):
                     else:
                         item_set = [{"price":contract.plan.stripe_price_id},{"price":"price_1MUgVyI8iZ48PSn6ctfLVE2H"}]
 
-                    if contract.option1:
+                    if contract.option1 and not contract.option1.stripe_plan_id == 'pln':
                         option_1 = {'price':contract.option1.stripe_price_id}
                         item_set.append(option_1)
-                    if contract.option2:
+                    if contract.option2 and not contract.option2.stripe_plan_id == 'pln':
                         option_2 = {'price':contract.option2.stripe_price_id}
                         item_set.append(option_2)
-                    if contract.option3:
+                    if contract.option3 and not contract.option3.stripe_plan_id == 'pln':
                         option_3 = {'price':contract.option3.stripe_price_id}
                         item_set.append(option_3)
-                    if contract.option4:
+                    if contract.option4 and not contract.option4.stripe_plan_id == 'pln':
                         option_4 = {'price':contract.option4.stripe_price_id}
                         item_set.append(option_4)
-                    if contract.option5:
+                    if contract.option5 and not contract.option5.stripe_plan_id == 'pln':
                         option_5 = {'price':contract.option5.stripe_price_id}
                         item_set.append(option_5)
 
@@ -2926,23 +2949,23 @@ class UpdateContractCard(LoginRequiredMixin, DetailView, CommonView, View):
 
         option_list = []
 
-        if estimate.option1:
+        if estimate.option1 and not estimate.option1.stripe_plan_id == 'pln':
             option_1 = {'price':estimate.option1.stripe_price_id}
             item_set.append(option_1)
             option_list.append(estimate.option1)
-        if estimate.option2:
+        if estimate.option2 and not estimate.option2.stripe_plan_id == 'pln':
             option_2 = {'price':estimate.option2.stripe_price_id}
             item_set.append(option_2)
             option_list.append(estimate.option2)
-        if estimate.option3:
+        if estimate.option3 and not estimate.option3.stripe_plan_id == 'pln':
             option_3 = {'price':estimate.option3.stripe_price_id}
             item_set.append(option_3)
             option_list.append(estimate.option3)
-        if estimate.option4:
+        if estimate.option4 and not estimate.option4.stripe_plan_id == 'pln':
             option_4 = {'price':estimate.option4.stripe_price_id}
             item_set.append(option_4)
             option_list.append(estimate.option4)
-        if estimate.option5:
+        if estimate.option5 and not estimate.option5.stripe_plan_id == 'pln':
             option_5 = {'price':estimate.option5.stripe_price_id}
             item_set.append(option_5)
             option_list.append(estimate.option5)

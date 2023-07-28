@@ -16,8 +16,15 @@
 {% block content %}
 
     {% if current_user.company %}
-        <button type="button" class="btn my-btn-w13 my-btn-accept" onclick="location.href='{% url 'accounts:update_companyonly' user.company.id %}'">会社情報変更</button>
-        <button type="button" class="btn my-btn-w13 my-btn-accept ml-2" onclick="location.href='{% url 'accounts:update_companyprofile' user.company.id %}'">会社・請求先情報変更</button>
+        {% if user.company.is_updating == False %}
+            <button type="button" class="btn my-btn-w13 my-btn-accept" onclick="location.href='{% url 'accounts:update_companyonly' user.company.id %}'">会社情報変更</button>
+            <button type="button" class="btn my-btn-w13 my-btn-accept ml-2" onclick="location.href='{% url 'accounts:update_companyprofile' user.company.id %}'">会社・請求先情報変更</button>
+        {% else %}
+            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="他管理ユーザーが編集中です。">
+                <button type="button" class="btn my-btn-w13 my-btn-accept" onclick="location.href='{% url 'accounts:update_companyonly' user.company.id %}'" disabled>会社情報変更</button>
+                <button type="button" class="btn my-btn-w13 my-btn-accept ml-2" onclick="location.href='{% url 'accounts:update_companyprofile' user.company.id %}'" disabled>会社・請求先情報変更</button>
+            </span>
+        {% endif %}
     {% endif %}
 
     <div class="row company_profile mx-auto">

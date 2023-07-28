@@ -131,8 +131,8 @@
                                     <span class="admin">管理者</span>
                                 {% endif %}
                                 {% if user.is_updating == True %}
-                                    {% if user.last_updated|check_update_time %}
-                                    {% comment %} <a href="{% url 'accounts:user_update' user.id %}"> {% endcomment %}
+                                    {% comment %} {% if user.last_updated|check_update_time %} {% endcomment %}
+                                    {% comment %} <a href="{% url 'accounts:user_update' user.id %}">
                                         <a class="conflict" data-toggle="modal" data-target="#conflictModal" data-user="{{ user.id }}">
                                             {% if user.company.middle_choice == '1' %}
                                                 {% if user.middle_name %}
@@ -144,7 +144,7 @@
                                                 {{ user.last_name }} {{ user.first_name }}
                                             {% endif %}&nbsp;<i class="fas fa-user-edit"></i>
                                         </a>
-                                    {% else %}
+                                    {% else %} {% endcomment %}
                                         <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="他管理ユーザーが編集中です。">
                                         {% if user.company.middle_choice == '1' %}
                                                 {% if user.middle_name %}
@@ -156,7 +156,7 @@
                                             {{ user.last_name }} {{ user.first_name }}
                                         {% endif %}</span>&nbsp;<i class="fas fa-user-edit"></i>
                                         
-                                    {% endif %}
+                                    {% comment %} {% endif %} {% endcomment %}
                                 {% else %}
                                     <a href="{% url 'accounts:user_update' user.id %}">
                                         {% if user.company.middle_choice == '1' %}
@@ -551,10 +551,8 @@
                     $(this).css("display", "none");
                 }
             });
-
             $('#user_conflict').click(function(){
                 var user_id = $('.conflict').data('user') //値を取得
-                
                 window.location.href = '/user/' + user_id + '/user_update';
             });
         });

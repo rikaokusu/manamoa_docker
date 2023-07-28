@@ -6,6 +6,7 @@ tody = datetime.date.today()
 
 @register.filter
 def get_contract_status(queryset, current_user):
+    
     print('かれんとゆーざーaaaaaaaa',current_user.company)
     #試用中
     contracts1 = queryset.filter(company=current_user.company,status="1").first()

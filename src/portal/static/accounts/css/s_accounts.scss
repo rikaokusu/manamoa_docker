@@ -955,36 +955,33 @@
       background-color: #fff;
       background-position: 5px 12px;
   }
-  
-  .login .environ_link {
-    display: block;
-    margin-top: 0.5rem;
-  }
-  
-  .login .iframe_op_environ {
-    color: #000;
-  }
-  
-  .login .forget_password {
-    color: #000;
-  }
-  
-  .login .copyright {
-    display: block;
-    text-align: center;
-    margin-top: 2rem;
-  }
-  
+    .login{
+        .environ_link{
+            display: block;
+            margin-top: 0.5rem;
+        }
+        .iframe_op_environ {
+            color: #000;
+        }
+        .forget_password {
+            color: #000;
+        }
+        .copyright {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .for_first {
+            margin-top: 0.3rem;
+        }
+    }
+
   .copyright-2{
     font-size: 12px;
     bottom: -23px;
     
   }
-  
-  .login .for_first {
-    margin-top: 0.3rem;
-  }
-  
+
   .login_box{
     border-radius: 3px;
     padding: 10px 13px;
@@ -1018,41 +1015,41 @@
   }
   
   /* 動作環境画面 */
-  .environ {
-    padding: 5px;
-  }
-  .environ .table1 thead th {
-    padding: 10px 0;
-    text-align: center;
-    color: #212529;
-    background: #e9ecef;
-    line-height: 24px;
-    font-weight: bold;
-    font-size: 16px;
-  }
-  
-  .environ .table1 th {
-    padding: 10px 10px;
-    line-height: 24px;
-    font-weight: bold;
-    font-size: 16px;
-    background-color: #F2F2F2;
-  }
-  .environ .table1 td {
-    padding: 10px 10px;
-    line-height: 24px;
-    font-size: 16px;
-  }
-  
+    .environ {
+        padding: 5px;
+        .table1{
+            thead{
+                th{
+                    padding: 10px 0;
+                    text-align: center;
+                    color: #212529;
+                    background: #e9ecef;
+                    line-height: 24px;
+                    font-weight: bold;
+                    font-size: 16px;
+                }
+            }
+            th {
+                padding: 10px 10px;
+                line-height: 24px;
+                font-weight: bold;
+                font-size: 16px;
+                background-color: #F2F2F2;
+            }
+            td {
+                padding: 10px 10px;
+                line-height: 24px;
+                font-size: 16px;
+            }
+        }
+        p{
+            padding: 10px 10px;
+        }
+    }
   .environ .table1 th, .table1 td {
       border: 1px solid #d4d4d4;
       vertical-align: middle;
   }
-  
-  .environ p {
-    padding: 10px 10px;
-  }
-  
   /*---------------------------------
   
   for Portal Home
@@ -1627,96 +1624,86 @@
   .user{
     padding:0;
     width:1376px;
-  }
-  
-  .user .user_list_body {
-    padding: 1.25rem 0 1.25rem 0;
-  }
-  
-  .user_list_body .td_name .active {
-    background-color: #A8C3F4;
-    padding: 0px 2px;
-    color: #000;
-    font-size: 0.4rem;
-    vertical-align: middle;
-    border-radius: 3px;
-  }
-  
-  .user_list_body .temp {
-    background-color: #A8C3F4;
-    padding: 1px 2px;
-    color: #000;
-    font-size: 0.4rem;
-    vertical-align: middle;
-    border-radius: 3px;
-  }
-  
-  .user_list_body .new {
-    background-color: #FCD3D7;
-    padding: 0px 2px;
-    color: #7D0713;
-    font-size: 0.4rem;
-    vertical-align: middle;
-    display: none;
-  }
-  
-  
-  .user .email_text {
-    text-decoration: none;
-    cursor: help;
-    color: #212528;
-  }
-  .user .resend_link {
-    font-size: 1rem;
-  }
-  
-  .user_list_body .td_num {
-    width: 31px;
-  }
-  .user_list_body .td_check {
-    width: 100px;
-  }
-  .user_list_body .td_name {
-    width: 230px;
-  }
-  .user_list_body .td_pname {
-    width: 200px;
-  }
-  
-  .user_list_body .td_service {
-    width: 170px;
-  }
-  .user_list_body .td_icon {
-    width: 60px;
-  }
-  
-  .user_list_body .user_list_icon {
-    position: relative;
-    font-size: 1rem;
-    margin-left: 6px;
-    color: #000;
-  }
-  
-  .user_list_body .disable_user_list_icon {
-    position: relative;
-    font-size: 1rem;
-    margin-left: 6px;
-    opacity: .2;
-  }
-  
-  
-  .user_list_body .user_list_icon:hover {
-    top: -4px;
-    color: #ff7f50;
-  }
-  
-  .user_list_body .admin {
-    background-color: #0000ff;
-    padding: 1px 2px;
-    color: #fff;
-    font-size: 0.4rem;
-    vertical-align: middle;
-    border-radius: 3px;
+    .user_list_body {
+        padding: 1.25rem 0 1.25rem 0;
+        .td_name{
+            .active {
+                background-color: #A8C3F4;
+                padding: 0px 2px;
+                color: #000;
+                font-size: 0.4rem;
+                vertical-align: middle;
+                border-radius: 3px;
+            }
+        }
+        .temp {
+            background-color: #A8C3F4;
+            padding: 1px 2px;
+            color: #000;
+            font-size: 0.4rem;
+            vertical-align: middle;
+            border-radius: 3px;
+        }
+        .new {
+            background-color: #FCD3D7;
+            padding: 0px 2px;
+            color: #7D0713;
+            font-size: 0.4rem;
+            vertical-align: middle;
+            display: none;
+        }
+        .td_num {
+            width: 31px;
+        }
+        .td_check {
+            width: 100px;
+        }
+        .td_name {
+            width: 230px;
+        }
+        .td_pname {
+            width: 200px;
+        }
+        .td_service {
+            width: 170px;
+        }
+        .td_icon {
+            width: 60px;
+        }
+        .user_list_icon {
+            position: relative;
+            font-size: 1rem;
+            margin-left: 6px;
+            color: #000;
+        }
+        .disable_user_list_icon {
+            position: relative;
+            font-size: 1rem;
+            margin-left: 6px;
+            opacity: .2;
+        }
+        .user_list_icon:hover {
+            top: -4px;
+            color: #ff7f50;
+        }
+        .admin {
+            background-color: #0000ff;
+            padding: 1px 2px;
+            color: #fff;
+            font-size: 0.4rem;
+            vertical-align: middle;
+            border-radius: 3px;
+        }
+
+    }
+    .email_text {
+        text-decoration: none;
+        cursor: help;
+        color: #212528;
+    }
+    .resend_link {
+        font-size: 1rem;
+    }
   }
   
   /* ユーザー情報設定button */
@@ -1734,44 +1721,48 @@
    for User Create Page
   
   ---------------------------------*/
-  .user .user_create_body {
-    padding: 1.25rem 0 1.25rem 0;
-  }
-  
-  .user_create_body .table th {
-    font-weight: normal;
-  }
-  
-  .user_create_body .subdomain_checkbox {
-    margin-top: 5px;
-  }
-  .user .help_text {
-    margin-top: 0;
-    font-size: 80%;
-  }
-  
-  .user .required_box {
-    width: 100%;
-    display: -webkit-inline-box;
-    position: relative;
-  }
-  .user .required_box2 {
-    width: 100%;
-    display: -webkit-inline-box;
-    position: relative;
-  }
-  
-  .user .option_box {
-    width: 100%;
-    display: -webkit-inline-box;
-    position: relative;
-  }
-  
-  .user .option_box2 {
-    width: 100%;
-    display: -webkit-inline-box;
-    position: relative;
-  }
+    .user{
+        .user_create_body {
+            padding: 1.25rem 0 1.25rem 0;
+            .table{
+                th{
+                    font-weight: normal;
+                }
+            }
+            .subdomain_checkbox {
+                margin-top: 5px;
+            }
+        }
+        .help_text {
+            margin-top: 0;
+            font-size: 80%;
+        }
+        .required_box {
+            width: 100%;
+            display: -webkit-inline-box;
+            position: relative;
+        }
+        .required_box2 {
+            width: 100%;
+            display: -webkit-inline-box;
+            position: relative;
+        }
+        .option_box {
+            width: 100%;
+            display: -webkit-inline-box;
+            position: relative;
+        }
+        .option_box2 {
+            width: 100%;
+            display: -webkit-inline-box;
+            position: relative;
+        }
+        .tr_head {
+            background-color: #F2F2F2;
+            width: 25%;
+        }
+
+    } 
   
   .user .required_box::after {
     color: #ffffff;
@@ -1798,10 +1789,6 @@
     content: "必須";
   }
   
-  .user .tr_head {
-    background-color: #F2F2F2;
-    width: 25%;
-  }
   
   .tr_head {
     background-color: #F2F2F2;
@@ -2453,20 +2440,21 @@
   .estimate{
     width:1376px;
     padding: 0;
+    .table {
+        td {
+            vertical-align: middle;
+        }
+    }
+    .estimate_td{
+        .price {
+            text-align: right;
+        }
+    }
+    .estinamte_used {
+        margin-left: 3px;
+    }
   }
-  
-  .estimate .table td {
-    vertical-align: middle;
-  }
-  
-  .estimate .estimate_td.price {
-    text-align: right;
-  }
-  
-  .estimate .estinamte_used {
-    margin-left: 3px;
-  }
-  
+
   .using-comment{
     font-size:14px;
     color:#f15a24;
@@ -3017,21 +3005,21 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    
+    li {
+        position: relative;
+        list-style-type: none;
+        text-align: center;
+        text-transform: uppercase;
+        width: 10%;
+        padding: 0;
+      
+        color: #b0bec5;
+        font-size: 14px;
+        font-weight: bold;
+        counter-increment: steps;
+    }
   }
-  .progressbar li {
-    position: relative;
-    list-style-type: none;
-    text-align: center;
-    text-transform: uppercase;
-    width: 10%;
-    padding: 0;
-  
-    color: #b0bec5;
-    font-size: 14px;
-    font-weight: bold;
-    counter-increment: steps;
-  }
+
   .progressbar li:before {
     display: block;
     width: 35px;
@@ -3232,11 +3220,10 @@
   
   #newsticker{
     border: 1px solid #ff9e6f;
-  }
-  
-  #newsticker h6{
-    font-weight:bold;
-    color:red;
+    h6{
+        font-weight:bold;
+        color:red;
+    }
   }
   
   .inv_watermark{

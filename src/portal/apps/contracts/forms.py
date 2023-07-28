@@ -130,8 +130,6 @@ class EstimateStep1Form(forms.ModelForm):
 
     # dist_start_date = forms.DateTimeField(required=True, label="配布開始日", widget=datetimepicker.DateTimePickerInput(format='%Y/%m/%d %H:%M:%S', options={'locale': 'ja', 'dayViewHeaderFormat': 'YYYY年 MMMM',}), input_formats=['%Y/%m/%d %H:%M:%S'])
 
-
-
     class Meta:
         model = Estimates
         fields = ('service','start_day',)
@@ -173,36 +171,36 @@ class EstimateStep2Form(forms.ModelForm):
         self.fields['option1'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="1").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option2'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="2").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option3'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="3").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option4'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="4").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option5'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="5").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
 """
@@ -320,13 +318,6 @@ class OfferStep1Form(forms.ModelForm):
         self.service_id = kwargs.pop('service_id')
         service = Service.objects.get(pk=self.service_id)
         super(OfferStep1Form, self).__init__(*args, **kwargs)
-        # self.fields['service'] = forms.ModelChoiceField(label="利用サービス",
-        #                                 widget=Service_Radio_For_Estimate(attrs = {'company_id': self.user.company, 'readonly':'readonly'}),
-        #                                 queryset=Service.objects.annotate(num_contract=Count('contract', filter=Q(contract__user_id=self.user))),
-        #                                 required=False,
-        #                                 empty_label=None,
-        #                                             )
-
         self.fields['plan'] = forms.ModelChoiceField(label="プラン",
                                         widget=Plan_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=False, is_trial=False).order_by('layout'),
@@ -337,36 +328,36 @@ class OfferStep1Form(forms.ModelForm):
         self.fields['option1'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="1").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option2'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="2").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option3'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="3").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option4'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="4").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option5'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'company_id': self.user.company}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="5").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
 
@@ -428,7 +419,6 @@ class UpdateContractChangeStep1Form(forms.ModelForm):
 
     class Meta:
         model = Estimates
-        # fields = ('start_day', 'plan', 'option')
         fields = ('start_day', 'plan', 'option1', 'option2', 'option3', 'option4', 'option5')
 
 
@@ -448,36 +438,36 @@ class UpdateContractChangeStep1Form(forms.ModelForm):
         self.fields['option1'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'user_id': self.user.id}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="1").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option2'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'user_id': self.user.id}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="2").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option3'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'user_id': self.user.id}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="3").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option4'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'user_id': self.user.id}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="4").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
         self.fields['option5'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Estimate(attrs = {'user_id': self.user.id}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="5").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        empty_label = None,
                                                     )
 
 class UpdateContractChangeStep2Form(forms.ModelForm):

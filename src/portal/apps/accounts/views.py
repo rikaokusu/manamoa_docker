@@ -47,7 +47,8 @@ from django.db.models.signals import post_save
 # セッションを利用するためのライブラリ
 from lib.my_utils import check_session
 #メール送信
-from django.core.mail import send_mail
+# from django.core.mail import send_mail
+from django.core.mail import BadHeaderError,send_mail
 
 # 逆参照のテーブルをフィルタやソートする
 from django.db.models import Prefetch
@@ -195,13 +196,10 @@ class HomeTemplateView(LoginRequiredMixin, ListView, CommonView):
                     limit_cont.append(limit_contract.service.name)
 
         if len(limit_est) > 0:
-            print('みつもりきげんちかいもの',limit_est)
             context["limit_est"] = limit_est
 
         if len(limit_cont) > 0:
-
             context["limit_cont"] = limit_cont
-            print('けいやくきげんちかいもの',limit_cont)
 
         context["url_name"] = url_name
         context["userlist"] = userlist
@@ -312,6 +310,10 @@ class CompanyonlyUpdateView(LoginRequiredMixin, UpdateView, CommonView):
         context = super().get_context_data(**kwargs)
         current_user = User.objects.filter(pk=self.request.user.id).select_related().get()
         company = Company.objects.filter(pk=current_user.company.id).first()
+        #排他処理のタイムスタンプを上書きする
+        company.last_updated = datetime.now(timezone.utc)
+        company.is_updating = True
+        company.save()
         context["company"] = company
         return context
 
@@ -319,7 +321,7 @@ class CompanyonlyUpdateView(LoginRequiredMixin, UpdateView, CommonView):
 
         # 会社の登録
         company = form.save(commit=False)
-
+        company.is_updating = False
         company.save()
 
         return super(CompanyonlyUpdateView, self).form_valid(form)
@@ -341,6 +343,9 @@ class CompanyprofileUpdateView(LoginRequiredMixin, UpdateView, CommonView):
         context = super().get_context_data(**kwargs)
         current_user = User.objects.filter(pk=self.request.user.id).select_related().get()
         company = Company.objects.filter(pk=current_user.company.id).first()
+        company.last_updated = datetime.now(timezone.utc)
+        company.is_updating = True
+        company.save()
         context["company"] = company
         return context
 
@@ -482,7 +487,7 @@ class CompanyprofileUpdateView(LoginRequiredMixin, UpdateView, CommonView):
 
         # else:
         #     company.invoice_company_name = company.invoice_company_name
-
+        company.is_updating = False
         company.save()
 
         return super(CompanyprofileUpdateView, self).form_valid(form)
@@ -576,6 +581,9 @@ class Cancel(LoginRequiredMixin, View):
                 company.change_user = None
                 # 上書きフラグをNoneとする
                 company.change_row = None
+                # 排他処理をFalseに
+                company.is_updating = False
+                
                 # 保存
                 company.save()
                 
@@ -589,10 +597,11 @@ class Cancel(LoginRequiredMixin, View):
                 return HttpResponseRedirect(reverse('accounts:user'))
                 
             else:
+                print('すすまなかった')
                 return HttpResponseRedirect(reverse('accounts:home'))
 
 
-        
+
 
 
 """
@@ -1375,18 +1384,6 @@ class UserRegistration(CreateView):
 
     #     return context
 
-    # def post(self, request, *args, **kwargs):
-    #     """
-    #     Handle POST requests: instantiate a form instance with the passed
-    #     POST variables and then check if it's valid.
-    #     """
-    #     form = self.get_form()
-    #     print('ふぉーーーむ・・・・・・',form)
-    #     if form.is_valid():
-    #         return self.form_valid(form)
-    #     else:
-    #         return self.form_invalid(form)
-
     def form_valid(self, form):
         """仮登録と本登録用メールの発行."""
         # 会社の登録
@@ -1443,18 +1440,29 @@ class UserRegistrationDone(TemplateView):
 """
 class UserRegistrationComplete(View):
     """メール内URLアクセス後のユーザー本登録"""
-    timeout_seconds = getattr(settings, 'ACTIVATION_TIMEOUT_SECONDS', 60*60*24) # デフォルトでは1日以内
+    # timeout_seconds = getattr(settings, 'ACTIVATION_TIMEOUT_SECONDS', 60*60*24) # デフォルトでは1日以内
+    timeout_seconds = getattr(settings, 'ACTIVATION_TIMEOUT_SECONDS', 60*2) # デフォルトでは1日以内
+    # timeout_seconds = getattr(settings, 'ACTIVATION_TIMEOUT_SECONDS', 60*15) # 15分以内に設定
 
     def get(self, request, **kwargs):
         """tokenが正しければ本登録."""
         token = kwargs.get('token')
         # context = super().get_context_data(**kwargs)
         try:
+            user_id = loads(token)
             user_pk = loads(token, max_age=self.timeout_seconds)
 
         # 期限切れ
         except SignatureExpired:
-            return HttpResponseBadRequest()
+            # return HttpResponseBadRequest()
+            user = User.objects.filter(pk=user_id).first()
+            company = Company.objects.filter(pk=user.company.id).first()
+            if user:
+                user.delete()
+            if company:
+                company.delete()
+            return render(request, 'timelimit.html', status=404)
+        
 
         # tokenが間違っている
         except BadSignature:

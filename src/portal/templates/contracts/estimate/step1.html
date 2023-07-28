@@ -9,307 +9,280 @@
 
 {% block breadcrumbtitle %}
 
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb mb-1">
-        <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
-        <li class="breadcrumb-item">契約管理</li>
-        <li class="breadcrumb-item"><a href="{% url 'contracts:estimate' %}">見積一覧</a></li>
-        <li class="breadcrumb-item active">見積書作成 ― サービスの選択</li>
-    </ol>
-  </nav>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a href="{% url 'accounts:home' %}">ホーム</a></li>
+            <li class="breadcrumb-item">契約管理</li>
+            <li class="breadcrumb-item"><a href="{% url 'contracts:estimate' %}">見積一覧</a></li>
+            <li class="breadcrumb-item active">見積書作成 ― サービスの選択</li>
+        </ol>
+    </nav>
 
 {% endblock breadcrumbtitle %}
 
 
 {% block content %}
 
-<ul class="progressbar pt-4">
-  <li class="complete">サービスの選択</li>
-  <li>プランの選択</li>
-  <li>支払い方法の選択</li>
-  <li>見積書の確認</li>
-</ul>
+    <ul class="progressbar pt-4">
+        <li class="complete">サービスの選択</li>
+        <li>プランの選択</li>
+        <li>支払い方法の選択</li>
+        <li>見積書の確認</li>
+    </ul>
 
-  <div class="card card border-0 mt-5 pb-5 my-0">
-    <h5 class="estimate-guide"><i class="fas fa-feather"></i>&nbsp;作成の流れ</h5>
-    <h6 class="pt-2 py-3">
-      １．サービス利用開始日と対象のサービスを選択してください<br>
-      ２．見積りの内容をご確認後、「次へ」を押してください。
-    </h6>
+    <div class="card card border-0 mt-5 pb-5 my-0">
+        <h5 class="estimate-guide"><i class="fas fa-feather"></i>&nbsp;作成の流れ</h5>
+        <h6 class="pt-2 py-3">
+            １．サービス利用開始日と対象のサービスを選択してください<br>
+            ２．見積りの内容をご確認後、「次へ」を押してください。
+        </h6>
 
-    <!-- Form全体のバリデーション時のエラーを表示 -->
-    {% if form.non_field_errors %}
-        <div class="alert alert-danger" role="alert">
-            {% for error in form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
-        </div>
-    {% endif %}
-
-     <!-- <div class="page-title">サービスの選択</div> -->
-
-    <div class="">
-
-
-      <form action="" method="post" data-validate>{% csrf_token %}
-        <div class="row mx-auto" style="width:1376px;">
-          <div class="col-6 mb-5 pl-0">
-            <table class="table table-bordered">
-
-              <tbody>
-
-                <tr>
-
-                  <th class="tr_head">
-                    <div class="required_box">
-                      <div class="label require_label">サービス開始日</div>
-                    </div>
-                  </th>
-                  <th>
-                    <div class="">
-                        <!-- 入力フィールド -->
-                        {% if form.is_bound %}
-
-                            {% if form.start_day.errors %}
-                              {% render_field form.start_day class="form-control is-invalid" placeholder="YYYY/MM/DD" %}
-                                {% for error in form.start_day.errors %}
-                                  <div class="invalid-feedback">
-                                    {{ error }}
-                                  </div>
-                                {% endfor %}
-
-                            {% else %}
-                              {% render_field form.start_day class="form-control is-valid" placeholder="YYYY/MM/DD" %}
-                            {% endif %}
-
-                        {% else %}<!-- 初期表示 -->
-                          {% render_field form.start_day class="form-control" placeholder="YYYY/MM/DD" %}
-                        {% endif %}
-
-                    </div>
-
-                  </th>
-                </tr>
-
-
-
-
-                <tr>
-
-                  <th class="tr_head">
-                    <div class="required_box">
-                      <div class="label require_label">サービス</div>
-                    </div>
-                  </th>
-                  <th>
-                    
-                    <div class="sname">
-                        <!-- 入力フィールド -->
-                        {% if form.is_bound %}
-
-                            {% if form.service.errors %}
-                              {% render_field form.service class="form-control is-invalid" id="service_name" %}
-                                {% for error in form.service.errors %}
-                                  <div class="invalid-feedback">
-                                    {{ error }}
-                                  </div>
-                                {% endfor %}
-
-                            {% else %}
-                              {% render_field form.service class="form-control is-valid" id="service_name" %}
-                            {% endif %}
-
-                        {% else %}<!-- 初期表示 -->
-                          {% render_field form.service class="form-control" id="service_name" %}
-                        {% endif %}
-
-                    </div>
-
-                  </th>
-                </tr>
-
-              </tbody>
-            </table>
-          </div>
-          <div class="col-6 mb-5 py-3 estimate-preview">
-            <div class='row'>
-              <div class='col'>
-              </div>
-              <div class='col text-center'>
-                <h6 class="font-weight-bold">見積プレビュー</h6>
-              </div><!--colsm-->
-              <div class='col'>
-              </div>
-            </div><!--row-->
-            <hr class="mt-0">
-
-            <div class='row mt-3'>
-              <div class='col'>
-                <h6 class="font-weight-bold">サービス</h6>
-              </div><!--colsm-->
-              <div class='col'>
-                <h6 id="s_name"></h6>
-              </div><!--colsm-->
-              <div class='col'>
-
-              </div><!--colsm-->
-            </div><!--row-->
-
-            <div class='row mt-2'>
-              <div class='col'>
-                <h6 class="font-weight-bold">サービス契約開始日</h6>
-              </div><!--colsm-->
-              <div class='col'>
-                <h6 id="s_day"></h6>
-              </div><!--colsm-->
-              <div class='col'>
-
-              </div><!--colsm-->
-            </div><!--row-->
-
-            <div class='row mt-2' style="height:25px;"></div>
-            <div class='row mt-2' style="height:140px;"></div>
-            <div class='row mt-2' style="height:50px;"></div>
-            <hr class="hr-dark">
-
-            <div class='row mt-3'>
-              <div class='col'>
-
-              </div><!--colsm-->
-              <div class='col text-right'>
-                <h5 class="font-weight-bold">合計(税抜)</h5>
-              </div><!--colsm-->
-              <div class='col pr-4 text-right'>
-              <h5 id="total_price" class="font-weight-bold">0</h5>
-              </div><!--colsm-->
-            </div><!--row-->
-            <div class='mt-2 text-right'>
-              <h6 class="pr-2">単位：円</h6>
+        <!-- Form全体のバリデーション時のエラーを表示 -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
             </div>
-          </div>
+        {% endif %}
+
+        <!-- <div class="page-title">サービスの選択</div> -->
+
+        <div class="">
+            <form action="" method="post" data-validate>{% csrf_token %}
+                <div class="row mx-auto" style="width:1376px;">
+                    <div class="col-6 mb-5 pl-0">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="tr_head">
+                                        <div class="required_box">
+                                            <div class="label require_label">サービス開始日</div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="">
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}
+                                                {% if form.start_day.errors %}
+                                                    {% render_field form.start_day class="form-control is-invalid" placeholder="YYYY/MM/DD" %}
+                                                    {% for error in form.start_day.errors %}
+                                                        <div class="invalid-feedback">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% render_field form.start_day class="form-control is-valid" placeholder="YYYY/MM/DD" %}
+                                                {% endif %}
+                                            {% else %}<!-- 初期表示 -->
+                                                {% render_field form.start_day class="form-control" placeholder="YYYY/MM/DD" %}
+                                            {% endif %}
+                                        </div>
+                                    </th>
+                                </tr>
+
+                                <tr>
+
+                                    <th class="tr_head">
+                                        <div class="required_box">
+                                            <div class="label require_label">サービス</div>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="sname">
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}
+                                                {% if form.service.errors %}
+                                                    {% render_field form.service class="form-control is-invalid" id="service_name" %}
+                                                    {% for error in form.service.errors %}
+                                                        <div class="invalid-feedback">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% render_field form.service class="form-control is-valid" id="service_name" %}
+                                                {% endif %}
+                                            {% else %}<!-- 初期表示 -->
+                                                {% render_field form.service class="form-control" id="service_name" %}
+                                            {% endif %}
+                                        </div>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div><!--col6-->
+                    <div class="col-6 mb-5 py-3 estimate-preview">
+                        <div class='row'>
+                            <div class='col'>
+                            </div>
+                            <div class='col text-center'>
+                                <h6 class="font-weight-bold">見積プレビュー</h6>
+                            </div><!--colsm-->
+                            <div class='col'>
+                            </div>
+                        </div><!--row-->
+
+                        <hr class="mt-0">
+
+                        <div class='row mt-3'>
+                            <div class='col'>
+                                <h6 class="font-weight-bold">サービス</h6>
+                            </div><!--colsm-->
+                            <div class='col'>
+                                <h6 id="s_name"></h6>
+                            </div><!--colsm-->
+                            <div class='col'>
+                            </div><!--colsm-->
+                        </div><!--row-->
+
+                        <div class='row mt-2'>
+                            <div class='col'>
+                                <h6 class="font-weight-bold">サービス契約開始日</h6>
+                            </div><!--colsm-->
+                            <div class='col'>
+                                <h6 id="s_day"></h6>
+                            </div><!--colsm-->
+                            <div class='col'>
+                            </div><!--colsm-->
+                        </div><!--row-->
+
+                        <div class='row mt-2' style="height:25px;"></div>
+                        <div class='row mt-2' style="height:140px;"></div>
+                        <div class='row mt-2' style="height:50px;"></div>
+                        <hr class="hr-dark">
+
+                        <div class='row mt-3'>
+                            <div class='col'>
+
+                            </div><!--colsm-->
+                            <div class='col text-right'>
+                                <h5 class="font-weight-bold">合計(税抜)</h5>
+                            </div><!--colsm-->
+                            <div class='col pr-4 text-right'>
+                                <h5 id="total_price" class="font-weight-bold">0</h5>
+                            </div><!--colsm-->
+                        </div><!--row-->
+
+                        <div class='mt-2 text-right'>
+                            <h6 class="pr-2">単位：円</h6>
+                        </div>
+                    </div><!--col6-->
+                </div><!--row-->
+
+                <div class="btn-toolbar fixed-bottom p-3 align-middle">  
+                    <div class="row mx-auto">
+                        <h5 class="align-middle d-block m-2 tool-text">必須項目を入力して次へ進んでください。</h5>
+                        <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
+                        <button type="submit" class="btn my-btn-w11 mr-1 my-btn-accept" id="send" onfocus="this.blur();" disabled><span class="next">次へ</span></button>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="btn-toolbar fixed-bottom p-3 align-middle">  
-
-          <div class="row mx-auto">
-              <h5 class="align-middle d-block m-2 tool-text">必須項目を入力して次へ進んでください。</h5>
-              <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
-              <button type="submit" class="btn my-btn-w11 mr-1 my-btn-accept" id="send" onfocus="this.blur();" disabled><span class="next">次へ</span></button>
-          </div>
-        </div>
-
-      </form>
-
-
-    </div>
+    </div><!--card-->
     <!-- キャンセル確認用 -->
     <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <h6>現在の入力した内容は全て破棄されます。</h6>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'contracts:estimate_cancel' %}'">OK</button>
-            <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
-          </div><!-- /.modal-footer -->
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h6>現在の入力した内容は全て破棄されます。</h6>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'contracts:estimate_cancel' %}'">OK</button>
+                    <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
+                </div><!-- /.modal-footer -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 {% endblock %}
 {% block extra_js %}
-<script>
+    <script>
 
-$(function(){
+        $(function(){
 
-  // 戻るボタンで戻った時に値が入ったらボタンを有効化
-  $('form[data-validate]').each(function(){
-    $(this).find(':submit').prop('disabled', !this.checkValidity());
-  });
+            // 戻るボタンで戻った時に値が入ったらボタンを有効化
+            $('form[data-validate]').each(function(){
+                $(this).find(':submit').prop('disabled', !this.checkValidity());
+            });
 
-  // 値が入ったらボタンを有効化
-  $('form[data-validate]').on('change dp.change', function () {
-    $(this).find(':submit').prop('disabled', !this.checkValidity());
-  });
+            // 値が入ったらボタンを有効化
+            $('form[data-validate]').on('change dp.change', function () {
+                $(this).find(':submit').prop('disabled', !this.checkValidity());
+            });
 
-  // 配布期間のコピー
-  $("#dist_date_copy").on("click", function() {
-    var id_dist_start_date = $("#id_dist_start_date").val()
-    var id_dist_end_date = $("#id_dist_end_date").val()
+            // 配布期間のコピー
+            $("#dist_date_copy").on("click", function() {
+                var id_dist_start_date = $("#id_dist_start_date").val()
+                var id_dist_end_date = $("#id_dist_end_date").val()
 
-    $("#id_sub_start_date").val(id_dist_start_date).change();;
-    $("#id_sub_end_date").val(id_dist_end_date).change();;
-  });
+                $("#id_sub_start_date").val(id_dist_start_date).change();;
+                $("#id_sub_end_date").val(id_dist_end_date).change();;
+            });
 
+            // 入力画面で画面遷移する際に確認画面を表示する。
+            var checkValue = document.querySelectorAll('.form-control');
+            var submitBtn = $(':submit');
+            var checkFlag = false;
+            var onBeforeunloadHandler = function(e) {
+                var msg = 'このページから移動すると入力フォームの内容が消えます。';
+                e.returnValue = msg;
+            };
+            var formAlert = function() {
+                if(!checkFlag) {
+                    window.addEventListener('beforeunload', onBeforeunloadHandler);
+                for(var i = 0; i < checkValue.length; i++) {
+                    checkValue[i].removeEventListener('input', formAlert);
+                    checkValue[i].removeEventListener('change', formAlert);
+                }
+                checkFlag = true;
+                }
+            };
+            for(var i = 0; i < checkValue.length; i++) {
+                checkValue[i].addEventListener('input', formAlert);
+                checkValue[i].addEventListener('change', formAlert);
+            }
+            // 次へボタンの時はイベントを削除
+            $(submitBtn).on("click", function() {
+                window.removeEventListener('beforeunload', onBeforeunloadHandler);
+            });
+            $('#logout_btn').on("click", function() {
+                window.removeEventListener('beforeunload', onBeforeunloadHandler);
+            });
 
-  // 入力画面で画面遷移する際に確認画面を表示する。
-  var checkValue = document.querySelectorAll('.form-control');
-  var submitBtn = $(':submit');
-  var checkFlag = false;
-  var onBeforeunloadHandler = function(e) {
-    var msg = 'このページから移動すると入力フォームの内容が消えます。';
-    e.returnValue = msg;
-  };
-  var formAlert = function() {
-    if(!checkFlag) {
-      window.addEventListener('beforeunload', onBeforeunloadHandler);
-      for(var i = 0; i < checkValue.length; i++) {
-        checkValue[i].removeEventListener('input', formAlert);
-        checkValue[i].removeEventListener('change', formAlert);
-      }
-      checkFlag = true;
-    }
-  };
-  for(var i = 0; i < checkValue.length; i++) {
-    checkValue[i].addEventListener('input', formAlert);
-    checkValue[i].addEventListener('change', formAlert);
-  }
-  // 次へボタンの時はイベントを削除
-  $(submitBtn).on("click", function() {
-    window.removeEventListener('beforeunload', onBeforeunloadHandler);
-  });
-  $('#logout_btn').on("click", function() {
-    window.removeEventListener('beforeunload', onBeforeunloadHandler);
-  });
+            // ブラウザの戻るボタン無効化
+            history.pushState(null, null, null);
+            $(window).on("popstate", function (event) {
+                $('.my_alert').css('display', 'block')
+                $('.my_msg').text('ブラウザの戻るボタンは使用できません。ページ内の戻るまたはキャンセルボタンをご利用ください。')
+                if (!event.originalEvent.state) {
+                    history.pushState(null, null, null);
+                    return;
+                }
+            });
+            history.forward();
 
+            //日付取得
+            $('#id_start_day').on("dp.change", function(e) {
+                //console.log(e.date.format(e.date._f));
+                var s_day = $('#id_start_day').val()
+                $("#s_day").text(s_day)
+            });
 
-  // ブラウザの戻るボタン無効化
-  history.pushState(null, null, null);
-  $(window).on("popstate", function (event) {
-      $('.my_alert').css('display', 'block')
-      $('.my_msg').text('ブラウザの戻るボタンは使用できません。ページ内の戻るまたはキャンセルボタンをご利用ください。')
-      if (!event.originalEvent.state) {
-          history.pushState(null, null, null);
-          return;
-      }
-  });
-  history.forward();
+            $('input[name="service"]:radio').change( function(e) {
+                var id = $(this).attr('id');
+                var label = $('label[for="' + id + '"]').text();
+                $('#s_name').text(label);
+            });
 
-  //日付取得
-  $('#id_start_day').on("dp.change", function(e) {
-    //console.log(e.date.format(e.date._f));
-    var s_day = $('#id_start_day').val()
-    $("#s_day").text(s_day)
-  });
-
-  $('input[name="service"]:radio').change( function(e) {
-    var id = $(this).attr('id');
-    var label = $('label[for="' + id + '"]').text();
-    $('#s_name').text(label);
-  });
-
-  //戻るボタンで戻ったときに値を保持
-  if($('input[name="service"]:checked')){
-    var id = $('input[name="service"]:checked').attr('id');
-    var label = $('label[for="' + id + '"]').text();
-    $('#s_name').text(label);
-  };
-  if($('input[name="start_day"]').val()){
-    $('#s_day').text($('input[name="start_day"]').val());
-  };
-});
-
-
-</script>
+            //戻るボタンで戻ったときに値を保持
+            if($('input[name="service"]:checked')){
+                var id = $('input[name="service"]:checked').attr('id');
+                var label = $('label[for="' + id + '"]').text();
+                $('#s_name').text(label);
+            };
+            if($('input[name="start_day"]').val()){
+                $('#s_day').text($('input[name="start_day"]').val());
+            };
+        });
+    </script>
 {% endblock %}
 

@@ -479,7 +479,7 @@
             <div class="row mx-auto">
                 <h5 class="align-middle d-block m-2 tool-text">ユーザー情報を入力し、変更ボタンを押してください。</h5>
                 {% if current_user.is_authenticated and current_user.is_active and current_user.is_staff %}
-                    <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
+                    <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" id="cancel_modal_btn" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
                 {% else %}
                     <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#user_cancel_modal" onfocus="this.blur();">キャンセル</button>
                 {% endif %}
@@ -495,7 +495,7 @@
                     <h6>現在の入力した内容は全て破棄されます。</h6>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'accounts:user' %}'">OK</button>
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" id="cancel_btn" >OK</button>
                     <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
                 </div><!-- /.modal-footer -->
             </div><!-- /.modal-content -->
@@ -510,13 +510,27 @@
                     <h6>現在の入力した内容は全て破棄されます。</h6>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" id="cancel_btn">OK</button>
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'accounts:home' %}'">OK</button>
                     <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
                 </div><!-- /.modal-footer -->
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-
+    <!---->
+    <div class="modal fade" id="auto_modal" tabindex="-1" aria-hidden="true" aria-labelledby="autoModalLabel" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h6>一定時間が経過したため、あと30秒後にユーザー一覧画面へ戻ります。<br>
+                        入力を続けたい場合は「延長」ボタンを押してください。
+                    </h6>
+                    <div class="modal-footer">
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" id="extend">延長</button>
+                </div><!-- /.modal-footer -->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
     <!-- レスポンス用トースト -->
     <div class="position-fixed p-3" style="z-index: 2000; right: 0; bottom: 0;">
         <div id="result_toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
@@ -672,11 +686,32 @@
             $('form[data-validate]').on('input change', function () {
                 $(this).find(':submit').prop('disabled', !this.checkValidity());
             });
-
+            var user_id = $('.h-adr').data('user');
             if ( $('#id_is_staff').is(':checked') ) {
                 $.ajax({
                     type: 'GET',
                     url: "{% url 'accounts:load_admin_count' %}",
+                    data: {
+                        'user_id': user_id
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        if(data.status=='ok'){
+                            $('#auto_modal').hide()
+                        }else{
+                        }
+                    }
+                });
+            };
+            
+            console.log('aidexiii',user_id)
+            setTimeout(function(){
+                $('#auto_modal').show()
+            },1000);
+            {% comment %} $('#extend').click(function(){
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'accounts:session_extend' %}",
                     dataType: 'json',
                     success: function (data) {
                         if(data.status=='ok'){
@@ -691,13 +726,15 @@
                         }
                     }
                 });
-            };
+            }) {% endcomment %}
+            setTimeout(function(){
+                console.log('ゆーざーkyansel')
+                window.location.href ='/cancel/'+ user_id +'/';
+            },60000);
+
             //キャンセル処理
             $('#cancel_btn').click(function(){
                 console.log('ゆーざーkyansel')
-                var user_id = $('.h-adr').data('user');
-                console.log('ゆーざーあいでぃー',user_id)
-
                 window.location.href = '/cancel/'+ user_id +'/update_profile';
             });
         });

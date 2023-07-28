@@ -130,7 +130,15 @@ class Company(models.Model):
     from_address = models.CharField('送信元アドレス', max_length=50, blank=True, null=True)
     # 通信タイプ
     smtp_connection_type = models.CharField('法人格', max_length=2, choices=SMTP_CONNECTION_CHOICES, blank=True, default=1)
+    #排他処理用タイムスタンプ
+    last_updated = models.DateTimeField(null=True)
+    #排他処理用フラグ
+    is_updating = models.BooleanField(_('is_updating'), default=False)
 
+    # is_activate = models.BooleanField(
+    #     _('activate'),
+    #     default=False,
+    # )
     def __str__(self):
         return self.pic_company_name
 

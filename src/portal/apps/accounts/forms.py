@@ -1,6 +1,7 @@
 from django import forms
+from django.http import HttpResponse
 from .models import User, Company, Service
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import BadHeaderError,send_mail
 from django.conf import settings
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm, PasswordChangeForm, AdminPasswordChangeForm, PasswordResetForm, SetPasswordForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -75,8 +76,8 @@ class UserChangeForm(forms.ModelForm):
 
         try:
             validate_email(email)
-        except ValidationError:
-            raise ValidationError("正しいメールアドレスを指定してください。")
+        except forms.ValidationError:
+            raise forms.ValidationError("正しいメールアドレスを指定してください。")
 
         try:
             user = User.objects.get(email=email)
@@ -86,7 +87,7 @@ class UserChangeForm(forms.ModelForm):
             if self.user.email == email:
                 return email
 
-            raise ValidationError("このメールアドレスは既に使用されています。別のメールアドレスを指定してください")
+            raise forms.ValidationError("このメールアドレスは既に使用されています。別のメールアドレスを指定してください")
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

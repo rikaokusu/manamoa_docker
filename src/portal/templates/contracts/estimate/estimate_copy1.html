@@ -21,508 +21,500 @@
 
 {% block content %}
 
-<div class="card  border-0 mx-auto mt-5">
-    <h5 class="estimate-guide"><i class="fas fa-feather"></i>&nbsp;作成の流れ</h5>
-    <h6 class="pt-2 py-3">
-      １．サービス利用開始日を選択してください。<br>
-      ２．見積りの内容をご確認後、「次へ」を押してください。
-    </h6>
-    <!-- Form全体のバリデーション時のエラーを表示 -->
-    {% if form.non_field_errors %}
-        <div class="alert alert-danger" role="alert">
-            {% for error in form.non_field_errors %}
-                {{ error }}
-            {% endfor %}
-        </div>
-    {% endif %}
+    <div class="card  border-0 mx-auto mt-5">
+        <h5 class="estimate-guide"><i class="fas fa-feather"></i>&nbsp;作成の流れ</h5>
+        <h6 class="pt-2 py-3">
+            １．サービス利用開始日を選択してください。<br>
+            ２．見積りの内容をご確認後、「次へ」を押してください。
+        </h6>
+        <!-- Form全体のバリデーション時のエラーを表示 -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
 
-    <form action="" method="post" data-validate>{% csrf_token %}
-        <div class="row offer p-0 pb-5">
-            <div class="col-6 pb-5">
-                <table class="table table-bordered">
-                    <thead>　　　</thead>
-                    <tbody>
-                        <tr>
-                            <th class="tr_head">
-                                <div class="required_box">
-                                    <div class="label require_label">サービス</div>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="form-check">
-                                    <!-- 入力フィールド -->
-                                    <input class="form-check-input" type="radio" id="id_service" checked>
-
-                                    <label class="form-check-label service_checkbox_label" for="id_service">
-                                    {{ estimate.service.name }}
-                                    </label>
-                                </div>
-                            </th>
-                        </tr>
-
-                        <tr>
-                            <th class="tr_head">
-                                <div class="required_box">
-                                    <div class="label require_label">サービス開始日</div>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="">
-                                    <!-- 入力フィールド -->
-                                    {% if form.is_bound %}
-
-                                      {% if form.start_day.errors %}
-                                          {% render_field form.start_day class="form-control is-invalid" placeholder="YYYY/MM/DD" %}
-                                            {% for error in form.start_day.errors %}
-                                                <div class="invalid-feedback">
-                                                    {{ error }}
-                                                </div>
-                                            {% endfor %}
-                                      {% else %}
-                                        {% render_field form.start_day class="form-control is-valid" placeholder="YYYY/MM/DD" %}
-                                      {% endif %}
-                                    {% else %}<!-- 初期表示 -->
-                                      {% render_field form.start_day class="form-control" placeholder="YYYY/MM/DD" %}
-                                    {% endif %}
-                                </div>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th class="tr_head">
-                                <div class="option_box">
-                                    <div class="label option_label">クーポン</div>
-                                </div>
-                            </th>
-                            <th>クーポンコードを入力(見積書作成時は使用回数としてカウントされません。)<br>
-                                <div class="row mt-2">
-                                    <div class="col-8 pr-0">
+        <form action="" method="post" data-validate>{% csrf_token %}
+            <div class="row offer p-0 pb-5">
+                <div class="col-6 pb-5">
+                    <table class="table table-bordered">
+                        <thead>　　　</thead>
+                        <tbody>
+                            <tr>
+                                <th class="tr_head">
+                                    <div class="required_box">
+                                        <div class="label require_label">サービス</div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="form-check">
                                         <!-- 入力フィールド -->
-                                        {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
-                                            {% if form.discount.errors %}<!-- エラー時の表示 -->
-                                                {% render_field form.discount class="form-control is-invalid" id="estimate_discount" %}
-                                                {% for error in form.discount.errors %}
+                                        <input class="form-check-input" type="radio" id="id_service" checked>
+
+                                        <label class="form-check-label service_checkbox_label" for="id_service">
+                                            {{ estimate.service.name }}
+                                        </label>
+                                    </div>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th class="tr_head">
+                                    <div class="required_box">
+                                        <div class="label require_label">サービス開始日</div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="">
+                                        <!-- 入力フィールド -->
+                                        {% if form.is_bound %}
+                                            {% if form.start_day.errors %}
+                                                {% render_field form.start_day class="form-control is-invalid" placeholder="YYYY/MM/DD" %}
+                                                {% for error in form.start_day.errors %}
                                                     <div class="invalid-feedback">
                                                         {{ error }}
                                                     </div>
                                                 {% endfor %}
-                                            {% else %}<!-- 正常時の表示 -->
-                                                {% render_field form.discount class="form-control is-valid" id="estimate_discount" %}
+                                            {% else %}
+                                                {% render_field form.start_day class="form-control is-valid" placeholder="YYYY/MM/DD" %}
                                             {% endif %}
                                         {% else %}<!-- 初期表示 -->
-                                            {% render_field form.discount class="form-control" id="estimate_discount" %}
+                                            {% render_field form.start_day class="form-control" placeholder="YYYY/MM/DD" %}
                                         {% endif %}
                                     </div>
-                                    <div class="col-4 text-right">
-                                        <button type="button" id="discount-btn" class="my-btn my-btn-sm my-btn-accept mr-1">&nbsp;&nbsp;適用&nbsp;&nbsp;</button>
-                                        <button type="button" id="clear-btn" class="my-btn my-btn-cancel my-btn-sm">クリア</button>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="tr_head">
+                                    <div class="option_box">
+                                        <div class="label option_label">クーポン</div>
                                     </div>
-                                    <div class="pay-change ml-3 mt-1"></div>
-                                </div><!--row-->
-                            </th>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-6 estimate-preview mt-3 mb-5">
-                <div class='row pt-2'>
-                    <div class='col'>
-                    </div>
-                    <div class='col text-center'>
-                      <h5 class="font-weight-bold">見積プレビュー</h5>
-                    </div><!--colsm-->
-                    <div class='col'>
-                    </div>
-                </div><!--row-->
-                <hr class="mt-0">
+                                </th>
+                                <th>クーポンコードを入力(見積書作成時は使用回数としてカウントされません。)<br>
+                                    <div class="row mt-2">
+                                        <div class="col-8 pr-0">
+                                            <!-- 入力フィールド -->
+                                            {% if form.is_bound %}<!-- エラーがはるかな以下の判断 -->
+                                                {% if form.discount.errors %}<!-- エラー時の表示 -->
+                                                    {% render_field form.discount class="form-control is-invalid" id="estimate_discount" %}
+                                                    {% for error in form.discount.errors %}
+                                                        <div class="invalid-feedback">
+                                                            {{ error }}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}<!-- 正常時の表示 -->
+                                                    {% render_field form.discount class="form-control is-valid" id="estimate_discount" %}
+                                                {% endif %}
+                                            {% else %}<!-- 初期表示 -->
+                                                {% render_field form.discount class="form-control" id="estimate_discount" %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <button type="button" id="discount-btn" class="my-btn my-btn-sm my-btn-accept mr-1">&nbsp;&nbsp;適用&nbsp;&nbsp;</button>
+                                            <button type="button" id="clear-btn" class="my-btn my-btn-cancel my-btn-sm">クリア</button>
+                                        </div>
+                                        <div class="pay-change ml-3 mt-1"></div>
+                                    </div><!--row-->
+                                </th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><!--col6-->
+                <div class="col-6 estimate-preview mt-3 mb-5">
+                    <div class='row pt-2'>
+                        <div class='col'>
+                        </div>
+                        <div class='col text-center'>
+                        <h5 class="font-weight-bold">見積プレビュー</h5>
+                        </div><!--colsm-->
+                        <div class='col'>
+                        </div>
+                    </div><!--row-->
+                    <hr class="mt-0">
 
-                <div class='row mt-4'>
-                    <div class='col'>
-                        <h6 class="font-weight-bold">サービス</h6>
-                    </div><!--col-->
-                    <div class='col'>
-                        <h6>{{ estimate.service.name }}</h6>
-                    </div><!--col-->
-                    <div class='col'>
+                    <div class='row mt-4'>
+                        <div class='col'>
+                            <h6 class="font-weight-bold">サービス</h6>
+                        </div><!--col-->
+                        <div class='col'>
+                            <h6>{{ estimate.service.name }}</h6>
+                        </div><!--col-->
+                        <div class='col'>
 
-                    </div><!--col-->
-                </div><!--row-->
-                
-                <div class='row mt-2'>
-                    <div class='col'>
-                        <h6 class="font-weight-bold">サービス契約開始日</h6>
-                    </div><!--col-->
-                    <div class='col'>
-                        <h6 id="s_day"></h6>
-                    </div><!--col-->
-                    <div class='col'>
+                        </div><!--col-->
+                    </div><!--row-->
                     
-                    </div><!--col-->
-                </div><!--row-->
+                    <div class='row mt-2'>
+                        <div class='col'>
+                            <h6 class="font-weight-bold">サービス契約開始日</h6>
+                        </div><!--col-->
+                        <div class='col'>
+                            <h6 id="s_day"></h6>
+                        </div><!--col-->
+                        <div class='col'>
+                        
+                        </div><!--col-->
+                    </div><!--row-->
 
-                <div class='row mt-2'>
-                    <div class='col'>
-                        <h6 class="font-weight-bold">プラン</h6>
-                    </div><!--colsm-->
-                    <div class='col'>
-                        <h6>{{ estimate.plan }}</h6>
-                    </div><!--colsm-->
-                    <div class='col pr-4 text-right'>
-                        <h6 id="p_price">{{ estimate.plan.price|intcomma }}/年</h6>
-                    </div><!--colsm-->
-                </div><!--row-->
-      
-                <div class='row mt-2' style="height:140px;">
-                    <div class='col'>
-                        <h6 class="font-weight-bold">オプション</h6>
-                    </div><!--colsm-->
-                    <div class='col'>
-                        {% if estimate.option1 or estimate.option2 or estimate.option3 or estimate.option4 or estimate.option5 %}
-                          {% if estimate.option1 %}
-                            <h6>{{ estimate.option1.name }}</h6>
-                          {% endif %}
-                          {% if estimate.option2 %}
-                            <h6>{{ estimate.option2.name }}</h6>
-                          {% endif %}
-                          {% if estimate.option3 %}
-                            <h6>{{ estimate.option3.name }}</h6>
-                          {% endif %}
-                          {% if estimate.option4 %}
-                            <h6>{{ estimate.option4.name }}</h6>
-                          {% endif %}
-                          {% if estimate.option5 %}
-                            <h6>{{ estimate.option5.name }}</h6>
-                          {% endif %}
-                        {% else %}
-                            <h6>なし</h6>
-                        {% endif %}
-                    </div><!--colsm-->
-                    <div class='col pr-4 text-right'>
-                        {% if estimate.option1 %}
-                            <h6 id='o_price1'>{{ estimate.option1.price|intcomma }}/年</h6>
-                        {% endif %}
-                        {% if estimate.option2 %}
-                            <h6 id='o_price2'>{{ estimate.option2.price|intcomma }}/年</h6>
-                        {% endif %}
-                        {% if estimate.option3 %}
-                            <h6 id='o_price1'>{{ estimate.option3.price|intcomma }}/年</h6>
-                        {% endif %}
-                        {% if estimate.option4 %}
-                            <h6 id='o_price2'>{{ estimate.option4.price|intcomma }}/年</h6>
-                        {% endif %}
-                        {% if estimate.option5 %}
-                            <h6 id='o_price1'>{{ estimate.option5.price|intcomma }}/年</h6>
-                        {% endif %}
-                    </div><!--colsm-->
-                </div><!--row-->
+                    <div class='row mt-2'>
+                        <div class='col'>
+                            <h6 class="font-weight-bold">プラン</h6>
+                        </div><!--colsm-->
+                        <div class='col'>
+                            <h6>{{ estimate.plan }}</h6>
+                        </div><!--colsm-->
+                        <div class='col pr-4 text-right'>
+                            <h6 id="p_price">{{ estimate.plan.price|intcomma }}/年</h6>
+                        </div><!--colsm-->
+                    </div><!--row-->
+        
+                    <div class='row mt-2' style="height:140px;">
+                        <div class='col'>
+                            <h6 class="font-weight-bold">オプション</h6>
+                        </div><!--colsm-->
+                        <div class='col'>
+                            {% if estimate.option1 or estimate.option2 or estimate.option3 or estimate.option4 or estimate.option5 %}
+                                {% if estimate.option1 and not estimate.option1.name == 'なし' %}
+                                    <h6>{{ estimate.option1.name }}</h6>
+                                {% endif %}
+                                {% if estimate.option2 and not estimate.option2.name == 'なし' %}
+                                    <h6>{{ estimate.option2.name }}</h6>
+                                {% endif %}
+                                {% if estimate.option3 and not estimate.option3.name == 'なし' %}
+                                    <h6>{{ estimate.option3.name }}</h6>
+                                {% endif %}
+                                {% if estimate.option4 and not estimate.option4.name == 'なし' %}
+                                    <h6>{{ estimate.option4.name }}</h6>
+                                {% endif %}
+                                {% if estimate.option5 and not estimate.option5.name == 'なし' %}
+                                    <h6>{{ estimate.option5.name }}</h6>
+                                {% endif %}
+                            {% else %}
+                                <h6>なし</h6>
+                            {% endif %}
+                        </div><!--colsm-->
+                        <div class='col pr-4 text-right'>
+                            {% if estimate.option1 and not estimate.option1.name == 'なし' %}
+                                <h6 id='o_price1'>{{ estimate.option1.price|intcomma }}/年</h6>
+                            {% endif %}
+                            {% if estimate.option2 and not estimate.option2.name == 'なし' %}
+                                <h6 id='o_price2'>{{ estimate.option2.price|intcomma }}/年</h6>
+                            {% endif %}
+                            {% if estimate.option3 and not estimate.option3.name == 'なし' %}
+                                <h6 id='o_price1'>{{ estimate.option3.price|intcomma }}/年</h6>
+                            {% endif %}
+                            {% if estimate.option4 and not estimate.option4.name == 'なし' %}
+                                <h6 id='o_price2'>{{ estimate.option4.price|intcomma }}/年</h6>
+                            {% endif %}
+                            {% if estimate.option5 and not estimate.option5.name == 'なし' %}
+                                <h6 id='o_price1'>{{ estimate.option5.price|intcomma }}/年</h6>
+                            {% endif %}
+                        </div><!--colsm-->
+                    </div><!--row-->
 
-                <div class='row mt-2' style="height:50px;">
-                    <div class='col'>
-                        <h6 class="font-weight-bold">割引</h6>
+                    <div class='row mt-2' style="height:50px;">
+                        <div class='col'>
+                            <h6 class="font-weight-bold">割引</h6>
+                        </div>
+                        <div class='col discount-name'>
+                            {% if estimate.method_payment_id == 1 and estimate.unit_total >= 30000 %}
+                                <h6 class="credit-discount">クレジットカード支払割引</h6>
+                            {% endif %}
+                        </div><!--colsm-->
+                        <div class="col discount-price pr-4">
+                            {% if estimate.method_payment_id == 1 and estimate.unit_total >= 30000 %}
+                                <h6 class=' text-right credit-discount'>-{{ estimate.method_payment.payment_discount|intcomma }}</h6>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class='col discount-name'>
-                        {% if estimate.method_payment_id == 1 and estimate.unit_total >= 30000 %}
-                            <h6 class="credit-discount">クレジットカード支払割引</h6>
-                        {% endif %}
-                    </div><!--colsm-->
-                    <div class="col discount-price pr-4">
-                        {% if estimate.method_payment_id == 1 and estimate.unit_total >= 30000 %}
-                            <h6 class=' text-right credit-discount'>-{{ estimate.method_payment.payment_discount|intcomma }}</h6>
-                        {% endif %}
+
+                    <hr class="hr-dark">
+
+                    <div class='row'>
+                        <div class='col'>
+
+                        </div><!--col-->
+                        <div class='col text-right'>
+                            <h5 class="font-weight-bold">合計(税抜)</h5>
+                        </div><!--col-->
+                        <div class='col pr-4 text-right'>
+                            <h5 id="total_price" class="font-weight-bold">{{ total|intcomma }}/年</h5>
+                            <h5 id="gen_price" class="font-weight-bold"></h5>
+                        </div><!--col-->
+                    </div><!--row-->
+                    <div class='mt-2 text-right'>
+                        <h6 class="pr-2">単位：円</h6>
                     </div>
+                </div><!--col-6-->
+            </div><!--row-->
+
+            <div class="btn-toolbar fixed-bottom p-3 align-middle">  
+                <div class="row mx-auto">
+                    <h5 class="align-middle d-block m-2 tool-text">必須項目を入力して次へ進んでください。</h5>
+                    <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
+                    <button type="submit" class="btn my-btn-w11 mr-1 my-btn-accept" onfocus="this.blur();" disabled><span class="next">次へ</span></button>
                 </div>
-
-                <hr class="hr-dark">
-
-                <div class='row'>
-                    <div class='col'>
-
-                    </div><!--col-->
-                    <div class='col text-right'>
-                        <h5 class="font-weight-bold">合計(税抜)</h5>
-                    </div><!--col-->
-                    <div class='col pr-4 text-right'>
-                        <h5 id="total_price" class="font-weight-bold">{{ total|intcomma }}/年</h5>
-                        <h5 id="gen_price" class="font-weight-bold"></h5>
-                    </div><!--col-->
-                </div><!--row-->
-                <div class='mt-2 text-right'>
-                    <h6 class="pr-2">単位：円</h6>
+            </div><!--btn-toolbar-->
+        </form>
+    </div><!--card-->
+    <!-- レスポンス用トースト -->
+    <div class="position-fixed p-3" style="z-index: 2000; right: 0; bottom: 0;">
+        <div id="result_toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <div>
+                    
                 </div>
-            </div><!--col-6-->
-        </div><!--row-->
-
-        <div class="btn-toolbar fixed-bottom p-3 align-middle">  
-            <div class="row mx-auto">
-                <h5 class="align-middle d-block m-2 tool-text">必須項目を入力して次へ進んでください。</h5>
-                <button type="button" class="btn my-btn-w11 mr-3 my-btn-cancel cancel" data-toggle="modal" data-target="#cancel_modal" onfocus="this.blur();">キャンセル</button>
-                <button type="submit" class="btn my-btn-w11 mr-1 my-btn-accept" onfocus="this.blur();" disabled><span class="next">次へ</span></button>
-            </div>
-        </div><!--btn-toolbar-->
-    </form>
-</div><!--card-->
-<!-- レスポンス用トースト -->
-<div class="position-fixed p-3" style="z-index: 2000; right: 0; bottom: 0;">
-    <div id="result_toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body">
-            <div>
-                
             </div>
         </div>
     </div>
-</div>
 
-<!-- キャンセル確認用 -->
-<div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <h6>現在の入力した内容は全て破棄されます。</h6>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'contracts:estimate_cancel' %}'">OK</button>
-          <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
-        </div><!-- /.modal-footer -->
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-  
+    <!-- キャンセル確認用 -->
+    <div class="modal fade" id="cancel_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h6>現在の入力した内容は全て破棄されます。</h6>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="my-btn my-btn-accept my-btn-sm my-btn-w6" onclick="location.href='{% url 'contracts:estimate_cancel' %}'">OK</button>
+                    <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">戻る</button>
+                </div><!-- /.modal-footer -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 {% endblock %}
 {% block extra_js %}
-<script>
+    <script>
 
-$(function(){
-    // 試用期間終了後に利用開始日をセットする
-    $('#is_start_now').on('change', function () {
-        _trial_end_day = $(this).data("end_day")
-        // Date型に変更
-        var trial_end_day = new Date( _trial_end_day );
-        // 1日追加
-        trial_end_day.setDate( trial_end_day.getDate() + 1 );
-        // フォーマット
-        var y = trial_end_day.getFullYear();
-        var m = ("00" + (trial_end_day.getMonth()+1)).slice(-2);
-        var d = ("00" + trial_end_day.getDate()).slice(-2);
-        var result = y + "/" + m + "/" + d;
-        // セット
-        $("#id_start_day").val(result)
-    });
-
-    // 戻るボタンで戻った時に値が入ったらボタンを有効化
-    $('form[data-validate]').each(function(){
-        $(this).find(':submit').prop('disabled', !this.checkValidity());
-    });
-
-    // 値が入ったらボタンを有効化
-    $('form[data-validate]').on('change dp.change', function () {
-        $(this).find(':submit').prop('disabled', !this.checkValidity());
-    });
-
-    // 配布期間のコピー
-    $("#dist_date_copy").on("click", function() {
-        var id_dist_start_date = $("#id_dist_start_date").val()
-        var id_dist_end_date = $("#id_dist_end_date").val()
-        $("#id_sub_start_date").val(id_dist_start_date).change();;
-        $("#id_sub_end_date").val(id_dist_end_date).change();;
-    });
-
-
-    // 入力画面で画面遷移する際に確認画面を表示する。
-    var checkValue = document.querySelectorAll('.form-control');
-    var submitBtn = $(':submit');
-    var checkFlag = false;
-    var onBeforeunloadHandler = function(e) {
-        var msg = 'このページから移動すると入力フォームの内容が消えます。';
-        e.returnValue = msg;
-    };
-    var formAlert = function() {
-        if(!checkFlag) {
-            window.addEventListener('beforeunload', onBeforeunloadHandler);
-            for(var i = 0; i < checkValue.length; i++) {
-                checkValue[i].removeEventListener('input', formAlert);
-                checkValue[i].removeEventListener('change', formAlert);
-            }
-            checkFlag = true;
-        }
-    };
-
-    for(var i = 0; i < checkValue.length; i++) {
-        checkValue[i].addEventListener('input', formAlert);
-        checkValue[i].addEventListener('change', formAlert);
-    }
-    // 次へボタンの時はイベントを削除
-    $(submitBtn).on("click", function() {
-        window.removeEventListener('beforeunload', onBeforeunloadHandler);
-    });
-    $('#logout_btn').on("click", function() {
-        window.removeEventListener('beforeunload', onBeforeunloadHandler);
-    });
-
-
-    //日付取得
-    $('#id_start_day').on("dp.change", function(e) {
-        //console.log(e.date.format(e.date._f));
-        var s_day = $('#id_start_day').val()
-        $("#s_day").text(s_day)
-    });
-    if($('input[name="start_day"]').val()){
-        $('#s_day').text($('input[name="start_day"]').val());
-      };
-
-
-
-    /* ---------------------
-
-       プロモーションコード
-
-    --------------------- */
-
-    //クリアボタン
-    $('#clear-btn').on('click',function(){
-        $('#estimate_discount').val('')
-        $('#discount-btn').prop("disabled", false);
-    });
-
-    if($("[name=discount]").val()){
-          $('.pay-change-text').remove()
-          $('#gen_price').hide();
-          $('.dis-name').remove();
-          $('.dis-price').remove();
-    
-          var discount_code = $('#estimate_discount').val()
-        if($('h6').hasClass("credit-discount")){
-            var payment_check = '1';
-        }else{
-            var payment_check = '2';
-        };
-          console.log('discount_code-->',discount_code)
-          console.log('payment_check-->',payment_check)
-    
-          $.ajax({
-            type: "POST",
-            url: "{% url 'contracts:discount_check' %}",
-            data: {
-              'discount_code': discount_code,
-              'payment_check': payment_check
-            },
-            dataType: 'json'
-          }).done(function (data, textStatus, jqXHR) {
-    
-                if(data['judge']=='success'){
-                  console.log('成功に来た')
-                  $('#discount-btn').prop("disabled", true);
-                  $('#result_toast').on('show.bs.toast', function (e) {
-                    var toast = $(this);
-                    toast.find('.toast-body').removeClass('alert-danger');
-                    toast.find('.toast-body').addClass('alert-success');//このクラスを付与して成功時の色を定義
-                    toast.find('.toast-body').text(data["message"]);//サーバ側から戻ってきたメッセージを表示
-                  });
-                  $('.discount-name').append('<h6 class="dis-name">'+data["coupon_name"]+'</h6>');
-                  discount_rate =  String(data["discount_rate"]).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-                  $('.discount-price').append('<h6 class="dis-price text-right">-'+ discount_rate +'</h6>');
-                  discount_price = Number($('.dis-price').text().replace(/[^0-9]/g, ''));
-                  ttl_price = Number($('#total_price').text().replace(/[^0-9]/g, ''));
-
-                  console.log('でぃすかうんとぷらいす',discount_price)
-                  console.log('opayment',ttl_price)
-                    discount_ttl = String(ttl_price - discount_price).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-                  $('#gen_price').hide();
-                  $('#total_price').hide();
-                  $('#gen_price').text(discount_ttl + '/年');
-                  $('#gen_price').show();    
-                }else{
-                  $('#result_toast').on('show.bs.toast', function (e) {
-                    var toast = $(this);
-                    toast.find('.toast-body').removeClass('alert-success');//このクラスを付与して成功時の色を定義
-                    toast.find('.toast-body').addClass('alert-danger');//このクラスを付与して成功時の色を定義
-                    toast.find('.toast-body').text(data["message"]);//サーバ側から戻ってきたメッセージを表示
-                  });
-                  $('#total_price').show();
-                  $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理 
-                };
-          }).fail(function(data, jqXHR, textStatus, errorThrown){
-            console.log('failにきた')
-            $('#result_toast').on('show.bs.toast', function (e) {
-              var toast = $(this);
-              toast.find('.toast-body').addClass('alert-danger');//このクラスを付与して成功時の色を定義
-              toast.find('.toast-body').text('クーポンの確認中にエラーが発生しました。再度適用ボタンを押してください。');//サーバ側から戻ってきたメッセージを表示
+        $(function(){
+            // 試用期間終了後に利用開始日をセットする
+            $('#is_start_now').on('change', function () {
+                _trial_end_day = $(this).data("end_day")
+                // Date型に変更
+                var trial_end_day = new Date( _trial_end_day );
+                // 1日追加
+                trial_end_day.setDate( trial_end_day.getDate() + 1 );
+                // フォーマット
+                var y = trial_end_day.getFullYear();
+                var m = ("00" + (trial_end_day.getMonth()+1)).slice(-2);
+                var d = ("00" + trial_end_day.getDate()).slice(-2);
+                var result = y + "/" + m + "/" + d;
+                // セット
+                $("#id_start_day").val(result)
             });
-            $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理
-          });
-    }
 
-    // 値が入ったらボタンを有効化
-    $('#discount-btn').on('click', function () {
-        $('.pay-change-text').remove();
-        $('#gen_price').hide();
-        $('.dis-name').remove();
-        $('.dis-price').remove();
+            // 戻るボタンで戻った時に値が入ったらボタンを有効化
+            $('form[data-validate]').each(function(){
+                $(this).find(':submit').prop('disabled', !this.checkValidity());
+            });
 
-        var discount_code = $('#estimate_discount').val()
+            // 値が入ったらボタンを有効化
+            $('form[data-validate]').on('change dp.change', function () {
+                $(this).find(':submit').prop('disabled', !this.checkValidity());
+            });
 
-        if($('h6').hasClass("credit-discount")){
-            var payment_check = '1';
-        }else{
-            var payment_check = '2';
-        };
-    
-        console.log('discount_code-->',discount_code)
-        console.log('payment_check-->',payment_check)
+            // 配布期間のコピー
+            $("#dist_date_copy").on("click", function() {
+                var id_dist_start_date = $("#id_dist_start_date").val()
+                var id_dist_end_date = $("#id_dist_end_date").val()
+                $("#id_sub_start_date").val(id_dist_start_date).change();;
+                $("#id_sub_end_date").val(id_dist_end_date).change();;
+            });
 
-        $.ajax({
-            type: "POST",
-            url: "{% url 'contracts:discount_check' %}",
-            data: {
-            'discount_code': discount_code,
-            'payment_check': payment_check
-            },
-            dataType: 'json'
-        }).done(function (data, textStatus, jqXHR) {
-            console.log('でーたもどってきた')
-            console.log('データの中身',data)
-            if(data['judge']=='success'){
-                console.log('成功に来た')
-                $('#discount-btn').prop("disabled", true);
-                $('#result_toast').on('show.bs.toast', function (e) {
-                    var toast = $(this);
-                    toast.find('.toast-body').removeClass('alert-danger');
-                    toast.find('.toast-body').addClass('alert-success');//このクラスを付与して成功時の色を定義
-                    toast.find('.toast-body').text(data["message"]);//サーバ側から戻ってきたメッセージを表示
-                });
-                $('.discount-name').append('<h6 class="dis-name">'+data["coupon_name"]+'</h6>');
-                discount_rate =  String(data["discount_rate"]).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-                $('.discount-price').append('<h6 class="dis-price text-right">-'+discount_rate+'</h6>');
-                discount_price = Number($('.dis-price').text().replace(/[^0-9]/g, ''));
-                ttl_price = Number($('#total_price').text().replace(/[^0-9]/g, ''));
-                console.log('成功に来た2')
-                discount_ttl = String(ttl_price - discount_price).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-                console.log('discount_ttl',discount_ttl)
-                $('#gen_price').hide();
-                $('#total_price').hide();
-                $('#gen_price').text(discount_ttl + '/年');
-                $('#gen_price').show();
-                $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理 
-            }else{
-                console.log('しっぱいにきた')
-                $('#result_toast').on('show.bs.toast', function (e) {
-                    var toast = $(this);
-                    toast.find('.toast-body').removeClass('alert-success');
-                    toast.find('.toast-body').addClass('alert-danger');//このクラスを付与して成功時の色を定義
-                    toast.find('.toast-body').text(data["message"]);//サーバ側から戻ってきたメッセージを表示
-                });
-                $('#total_price').show();
-                $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理 
+            // 入力画面で画面遷移する際に確認画面を表示する。
+            var checkValue = document.querySelectorAll('.form-control');
+            var submitBtn = $(':submit');
+            var checkFlag = false;
+            var onBeforeunloadHandler = function(e) {
+                var msg = 'このページから移動すると入力フォームの内容が消えます。';
+                e.returnValue = msg;
             };
-        }).fail(function(data, jqXHR, textStatus, errorThrown){
-            console.log('failにきた')
-            $('#result_toast').on('show.bs.toast', function (e) {
-                var toast = $(this);
-                toast.find('.toast-body').addClass('alert-danger');//このクラスを付与して成功時の色を定義
-                toast.find('.toast-body').text('クーポンの確認中にエラーが発生しました。再度適用ボタンを押してください。');//サーバ側から戻ってきたメッセージを表示
+            var formAlert = function() {
+                if(!checkFlag) {
+                    window.addEventListener('beforeunload', onBeforeunloadHandler);
+                    for(var i = 0; i < checkValue.length; i++) {
+                        checkValue[i].removeEventListener('input', formAlert);
+                        checkValue[i].removeEventListener('change', formAlert);
+                    }
+                    checkFlag = true;
+                }
+            };
+
+            for(var i = 0; i < checkValue.length; i++) {
+                checkValue[i].addEventListener('input', formAlert);
+                checkValue[i].addEventListener('change', formAlert);
+            }
+            // 次へボタンの時はイベントを削除
+            $(submitBtn).on("click", function() {
+                window.removeEventListener('beforeunload', onBeforeunloadHandler);
             });
-            $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理
+            $('#logout_btn').on("click", function() {
+                window.removeEventListener('beforeunload', onBeforeunloadHandler);
+            });
+
+
+            //日付取得
+            $('#id_start_day').on("dp.change", function(e) {
+                //console.log(e.date.format(e.date._f));
+                var s_day = $('#id_start_day').val()
+                $("#s_day").text(s_day)
+            });
+            if($('input[name="start_day"]').val()){
+                $('#s_day').text($('input[name="start_day"]').val());
+            };
+
+            /* ---------------------
+
+            プロモーションコード
+
+            --------------------- */
+
+            //クリアボタン
+            $('#clear-btn').on('click',function(){
+                $('#estimate_discount').val('')
+                $('#discount-btn').prop("disabled", false);
+            });
+
+            if($("[name=discount]").val()){
+                $('.pay-change-text').remove()
+                $('#gen_price').hide();
+                $('.dis-name').remove();
+                $('.dis-price').remove();
+            
+                var discount_code = $('#estimate_discount').val()
+                if($('h6').hasClass("credit-discount")){
+                    var payment_check = '1';
+                }else{
+                    var payment_check = '2';
+                };
+                console.log('discount_code-->',discount_code)
+                console.log('payment_check-->',payment_check)
+            
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'contracts:discount_check' %}",
+                    data: {
+                        'discount_code': discount_code,
+                        'payment_check': payment_check
+                    },
+                    dataType: 'json'
+                }).done(function (data, textStatus, jqXHR) {
+            
+                    if(data['judge']=='success'){
+                        console.log('成功に来た')
+                        $('#discount-btn').prop("disabled", true);
+                        $('#result_toast').on('show.bs.toast', function (e) {
+                            var toast = $(this);
+                            toast.find('.toast-body').removeClass('alert-danger');
+                            toast.find('.toast-body').addClass('alert-success');//このクラスを付与して成功時の色を定義
+                            toast.find('.toast-body').text(data["message"]);//サーバ側から戻ってきたメッセージを表示
+                        });
+                        $('.discount-name').append('<h6 class="dis-name">'+data["coupon_name"]+'</h6>');
+                        discount_rate =  String(data["discount_rate"]).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+                        $('.discount-price').append('<h6 class="dis-price text-right">-'+ discount_rate +'</h6>');
+                        discount_price = Number($('.dis-price').text().replace(/[^0-9]/g, ''));
+                        ttl_price = Number($('#total_price').text().replace(/[^0-9]/g, ''));
+                        discount_ttl = String(ttl_price - discount_price).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+                        $('#gen_price').hide();
+                        $('#total_price').hide();
+                        $('#gen_price').text(discount_ttl + '/年');
+                        $('#gen_price').show();    
+                    }else{
+                        $('#result_toast').on('show.bs.toast', function (e) {
+                            var toast = $(this);
+                            toast.find('.toast-body').removeClass('alert-success');//このクラスを付与して成功時の色を定義
+                            toast.find('.toast-body').addClass('alert-danger');//このクラスを付与して成功時の色を定義
+                            toast.find('.toast-body').text(data["message"]);//サーバ側から戻ってきたメッセージを表示
+                        });
+                        $('#total_price').show();
+                        $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理 
+                    };
+                }).fail(function(data, jqXHR, textStatus, errorThrown){
+                    console.log('failにきた')
+                    $('#result_toast').on('show.bs.toast', function (e) {
+                        var toast = $(this);
+                        toast.find('.toast-body').addClass('alert-danger');//このクラスを付与して成功時の色を定義
+                        toast.find('.toast-body').text('クーポンの確認中にエラーが発生しました。再度適用ボタンを押してください。');//サーバ側から戻ってきたメッセージを表示
+                    });
+                    $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理
+                });
+            }
+
+            // 値が入ったらボタンを有効化
+            $('#discount-btn').on('click', function () {
+                $('.pay-change-text').remove();
+                $('#gen_price').hide();
+                $('.dis-name').remove();
+                $('.dis-price').remove();
+
+                var discount_code = $('#estimate_discount').val()
+
+                if($('h6').hasClass("credit-discount")){
+                    var payment_check = '1';
+                }else{
+                    var payment_check = '2';
+                };
+            
+                console.log('discount_code-->',discount_code)
+                console.log('payment_check-->',payment_check)
+
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'contracts:discount_check' %}",
+                    data: {
+                        'discount_code': discount_code,
+                        'payment_check': payment_check
+                    },
+                    dataType: 'json'
+                }).done(function (data, textStatus, jqXHR) {
+                    console.log('でーたもどってきた')
+                    console.log('データの中身',data)
+                    if(data['judge']=='success'){
+                        console.log('成功に来た')
+                        $('#discount-btn').prop("disabled", true);
+                        $('#result_toast').on('show.bs.toast', function (e) {
+                            var toast = $(this);
+                            toast.find('.toast-body').removeClass('alert-danger');
+                            toast.find('.toast-body').addClass('alert-success');//このクラスを付与して成功時の色を定義
+                            toast.find('.toast-body').text(data["message"]);//サーバ側から戻ってきたメッセージを表示
+                        });
+                        $('.discount-name').append('<h6 class="dis-name">'+data["coupon_name"]+'</h6>');
+                        discount_rate =  String(data["discount_rate"]).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+                        $('.discount-price').append('<h6 class="dis-price text-right">-'+discount_rate+'</h6>');
+                        discount_price = Number($('.dis-price').text().replace(/[^0-9]/g, ''));
+                        ttl_price = Number($('#total_price').text().replace(/[^0-9]/g, ''));
+                        console.log('成功に来た2')
+                        discount_ttl = String(ttl_price - discount_price).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+                        console.log('discount_ttl',discount_ttl)
+                        $('#gen_price').hide();
+                        $('#total_price').hide();
+                        $('#gen_price').text(discount_ttl + '/年');
+                        $('#gen_price').show();
+                        $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理 
+                    }else{
+                        console.log('しっぱいにきた')
+                        $('#result_toast').on('show.bs.toast', function (e) {
+                            var toast = $(this);
+                            toast.find('.toast-body').removeClass('alert-success');
+                            toast.find('.toast-body').addClass('alert-danger');//このクラスを付与して成功時の色を定義
+                            toast.find('.toast-body').text(data["message"]);//サーバ側から戻ってきたメッセージを表示
+                        });
+                        $('#total_price').show();
+                        $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理 
+                    };
+                }).fail(function(data, jqXHR, textStatus, errorThrown){
+                    console.log('failにきた')
+                    $('#result_toast').on('show.bs.toast', function (e) {
+                        var toast = $(this);
+                        toast.find('.toast-body').addClass('alert-danger');//このクラスを付与して成功時の色を定義
+                        toast.find('.toast-body').text('クーポンの確認中にエラーが発生しました。再度適用ボタンを押してください。');//サーバ側から戻ってきたメッセージを表示
+                    });
+                    $('#result_toast').toast({ delay: 5000, animation: true }).toast('show'); //表示処理
+                });
+            });
         });
-    });
-});
-</script>
+    </script>
 {% endblock %}

@@ -109,34 +109,34 @@ class ChangeContractForm(forms.ModelForm):
         self.fields['option1'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Payment(attrs = {'user_id': self.user.id,'contract': self.contract}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="1").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        # empty_label = 'なし',
                                                     )
 
         self.fields['option2'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Payment(attrs = {'user_id': self.user.id,'contract': self.contract}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="2").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        # empty_label = 'なし',
                                                     )
 
         self.fields['option3'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Payment(attrs = {'user_id': self.user.id,'contract': self.contract}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="3").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        # empty_label = 'なし',
                                                     )
 
         self.fields['option4'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Payment(attrs = {'user_id': self.user.id,'contract': self.contract}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="4").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        # empty_label = 'なし',
                                                     )
 
         self.fields['option5'] = forms.ModelChoiceField(label="オプション",
                                         widget=Option_Radio_For_Payment(attrs = {'user_id': self.user.id,'contract': self.contract}),
                                         queryset=Plan.objects.filter(service=service, is_option=True, is_trial=False, category="5").order_by('layout'),
-                                        required=False,
-                                        empty_label = 'なし',
+                                        required=True,
+                                        # empty_label = 'なし',
                                                     )

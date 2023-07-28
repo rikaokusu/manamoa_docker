@@ -130,8 +130,8 @@ urlpatterns = [
     path('contact_done/', views.ContactDoneView.as_view(), name='contact_done'),
 
     # 共通
-    # path('cancel/<int:pk>/<str>',views.Cancel.as_view(),name='cancel'),
     path('cancel/<uuid:pk>/<str>',views.Cancel.as_view(),name='cancel'),
+    
 
     path('reset_session/',views.ResetSession.as_view(),name='reset_session'),
 

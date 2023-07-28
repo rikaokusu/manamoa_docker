@@ -955,36 +955,33 @@
       background-color: #fff;
       background-position: 5px 12px;
   }
-  
-  .login .environ_link {
-    display: block;
-    margin-top: 0.5rem;
-  }
-  
-  .login .iframe_op_environ {
-    color: #000;
-  }
-  
-  .login .forget_password {
-    color: #000;
-  }
-  
-  .login .copyright {
-    display: block;
-    text-align: center;
-    margin-top: 2rem;
-  }
-  
+    .login{
+        .environ_link{
+            display: block;
+            margin-top: 0.5rem;
+        }
+        .iframe_op_environ {
+            color: #000;
+        }
+        .forget_password {
+            color: #000;
+        }
+        .copyright {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .for_first {
+            margin-top: 0.3rem;
+        }
+    }
+
   .copyright-2{
     font-size: 12px;
     bottom: -23px;
     
   }
-  
-  .login .for_first {
-    margin-top: 0.3rem;
-  }
-  
+
   .login_box{
     border-radius: 3px;
     padding: 10px 13px;
@@ -1018,41 +1015,41 @@
   }
   
   /* 動作環境画面 */
-  .environ {
-    padding: 5px;
-  }
-  .environ .table1 thead th {
-    padding: 10px 0;
-    text-align: center;
-    color: #212529;
-    background: #e9ecef;
-    line-height: 24px;
-    font-weight: bold;
-    font-size: 16px;
-  }
-  
-  .environ .table1 th {
-    padding: 10px 10px;
-    line-height: 24px;
-    font-weight: bold;
-    font-size: 16px;
-    background-color: #F2F2F2;
-  }
-  .environ .table1 td {
-    padding: 10px 10px;
-    line-height: 24px;
-    font-size: 16px;
-  }
-  
+    .environ {
+        padding: 5px;
+        .table1{
+            thead{
+                th{
+                    padding: 10px 0;
+                    text-align: center;
+                    color: #212529;
+                    background: #e9ecef;
+                    line-height: 24px;
+                    font-weight: bold;
+                    font-size: 16px;
+                }
+            }
+            th {
+                padding: 10px 10px;
+                line-height: 24px;
+                font-weight: bold;
+                font-size: 16px;
+                background-color: #F2F2F2;
+            }
+            td {
+                padding: 10px 10px;
+                line-height: 24px;
+                font-size: 16px;
+            }
+        }
+        p{
+            padding: 10px 10px;
+        }
+    }
   .environ .table1 th, .table1 td {
       border: 1px solid #d4d4d4;
       vertical-align: middle;
   }
-  
-  .environ p {
-    padding: 10px 10px;
-  }
-  
   /*---------------------------------
   
   for Portal Home

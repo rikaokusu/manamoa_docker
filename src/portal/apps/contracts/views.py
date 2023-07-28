@@ -1452,6 +1452,8 @@ class OfferStep1(LoginRequiredMixin, FormView, CommonView):
         today = datetime.now()
         contract = Contract.objects.filter(service=service,status="1").first()
         if contract:
+            contract.is_updating = True
+            contract.save()
             context["contract"] = contract
 
         # サービスに紐づくプランの数
@@ -1953,6 +1955,8 @@ class UpdateContractChangeStep1(LoginRequiredMixin, FormView, CommonView):
         context = super().get_context_data(**kwargs)
         contract_id = self.kwargs['pk']
         contract = Contract.objects.get(pk=contract_id)
+        contract.is_updating = True
+        contract.save()
         service = Service.objects.get(pk=contract.service.id)
 
         # サービスに紐づくプランの数
@@ -2207,6 +2211,8 @@ class UpdateContractStep2(LoginRequiredMixin, TemplateView, CommonView):
         else:
             estimate = Estimates.objects.filter(pk = self.request.session['contract_update_step1']).prefetch_related('option1', 'option2', 'option3', 'option4', 'option5').first()
         # 見積オブジェクトを取得
+        estimate.is_updating = True
+        estimate.save()
         context["estimate"] = estimate
 
         # 日付情報取得
@@ -2231,7 +2237,7 @@ class UpdateEstimateDone(LoginRequiredMixin, View, CommonView):
         estimate.is_update = True
         #仮作成フラグをFalseに
         estimate.temp_check = False
-
+        estimate.is_updating = False
         estimate.save()
 
         # 保存したセッションをクリア(Djangoが生成するキー以外)
