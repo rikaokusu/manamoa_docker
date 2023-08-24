@@ -1,0 +1,16 @@
+old/
+media/
+*.pyc
+*.pyo
+__pycache__
+__init__.py
+
+node_modules/
+migrations/
+uploads/
+
+TODO
+
+mysql/my.cnf
+
+#webfonts

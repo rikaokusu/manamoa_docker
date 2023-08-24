@@ -1,0 +1,235 @@
+{% extends "common/base.html" %}
+
+{% load i18n static %}
+
+
+{% block title %}HOME{% endblock title %}
+
+{% block breadcrumbtitle %}
+
+  <span>
+    HOME
+  </span>
+
+{% endblock breadcrumbtitle %}
+
+{% block content %}
+
+<div class="container">
+  <div class="trial_contract_reg">
+    <div class="row">
+        {% for service in services %}
+          <div class="col-4">
+              <div class="card text-center icon">
+
+                <div class="card-body service_icon">
+                  <div class="mb-3">
+                    {{ service.icon|safe }}
+                  </div>
+
+                  <span class="card-title">{{service.name}}</span>
+
+
+                </div>
+              </div>
+          </div>
+        {% endfor %}
+    </div>
+  </div>
+
+
+  {% comment %} <!-- お知らせタブ -->
+  <ul class="tab clearfix info_tab">
+    <li class="active">全て表示</li>
+    <li>お知らせ</li>
+    <li>メンテナンス</li>
+
+  </ul>
+
+  <!-- コンテンツ  全体を非表示にし、showクラスが付いたコンテンツのみ表示 -->
+  <div class="area">
+    <ul class="show">
+      {% for all in all_informations %}
+      <li><a href="#"><time datetime="{{ all.release_date|date:'Y-m-d' }}" class="newsList-date">{{ all.release_date|date:'Y/m/d' }}</time><b class="newsList-category"><span>{{ all.category }}</span></b><span class="newsList-title">{{ all.title }}</span></a></li>
+      {% empty %}
+        <li><a href="#"><span class="newsList-empty">お知らせはありません</span></a></li>
+      {% endfor %}
+    </ul>
+    <ul>
+      {% for notice in notice_informations %}
+      <li><a href="#"><time datetime="{{ notice.release_date|date:'Y-m-d' }}" class="newsList-date">{{ notice.release_date|date:'Y/m/d' }}</time><b class="newsList-category"><span>{{ notice.category }}</span></b><span class="newsList-title">{{ notice.title }}</span></a></li>
+      {% empty %}
+        <li><a href="#"><span class="newsList-empty">お知らせはありません</span></a></li>
+      {% endfor %}
+    </ul>
+    <ul>
+      {% for mainte in maintenance_informations %}
+      <li><a href="#"><time datetime="{{ mainte.release_date|date:'Y-m-d' }}" class="newsList-date">{{ mainte.release_date|date:'Y/m/d' }}</time><b class="newsList-category"><span>{{ mainte.category }}</span></b><span class="newsList-title">{{ mainte.title }}</span></a></li>
+      {% empty %}
+        <li><a href="#"><span class="newsList-empty">お知らせはありません</span></a></li>
+      {% endfor %}
+    </ul>
+  </div> {% endcomment %}
+
+  {% if is_more_notice %}
+    <!-- <a href="{% url 'tasks:notice_lists' %}" target=”_blank” rel=”noopener”> -->
+    <a href="{% url 'tasks:notice_lists' %}"  onclick="window.open(this.href, 'newwin', 'left=200,top=20,width=1280,height=720,toolbar=no,resizable=yes,menubar=no,scrollbars=yes'); return false;">
+      <span class="grad-trigger_maintenace">もっと見る</span>
+    </a>
+  {% endif %}
+
+</div>
+</div>
+
+<!-- 試用申し込みモーダル用 -->
+<div class="modal fade" id="trialModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <span class="service-name">サービス名</span>の試用を申し込みますか？<br />
+        <span>試用期間：<span class="start_date"></span>〜<span class="end_date"></span></span>
+
+        <!-- 情報をhiddenでPOSTで送信する。 -->
+        <form id="trialform" class="d-none">
+          <div class="form-group">
+            <input class="form-control" name="service" type="hidden">
+          </div>
+          <div class="form-group">
+            <input class="form-control" name="sdate" type="hidden">
+          </div>
+          <div class="form-group">
+            <input class="form-control" name="edate" type="hidden">
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="my-btn my-btn-egypt-1 my-btn-sm my-btn-w6" id="trialbutton">申し込む</button>
+        <button type="button" class="my-btn my-btn-cancel my-btn-sm my-btn-w6" data-dismiss="modal">キャンセル</button>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<!-- レスポンス用 -->
+<div class="modal fade" id="result_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>XXX</p>
+      </div>
+      <div class="modal-footer">
+        <a href="./" class="my-btn my-btn-egypt-1 my-btn-sm my-btn-w6">OK</a>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+{% endblock %}
+{% block extra_js %}
+<script>
+  $(document).ready(function() {
+
+      // お知らせタブ
+      // ①タブをクリックしたら発動
+      $('.tab li').click(function() {
+
+        // ②クリックされたタブの順番を変数に格納
+        var index = $('.tab li').index(this);
+
+        // ③クリック済みタブのデザインを設定したcssのクラスを一旦削除
+        $('.tab li').removeClass('active');
+
+        // ④クリックされたタブにクリック済みデザインを適用する
+        $(this).addClass('active');
+
+        // ⑤コンテンツを一旦非表示にし、クリックされた順番のコンテンツのみを表示
+        $('.area ul').removeClass('show').eq(index).addClass('show');
+
+      });
+
+      // もっと見るボタン
+      $(".grad-item").each(function(){ //ターゲット(縮めるアイテム)
+        var thisHeight = $(this).height(); //ターゲットの高さを取得
+        itemHeights.push(thisHeight); //それぞれの高さを配列に入れる
+        $(this).addClass("is-hide"); //CSSで指定した高さにする
+        returnHeight = $(this).height(); //is-hideの高さを取得
+      });
+
+      $(".grad-trigger").click(function(){ //トリガーをクリックしたら
+        if(!$(this).hasClass("is-show")) {
+          var index = $(this).index(".grad-trigger"); //トリガーが何個目か
+          var addHeight = itemHeights[index]; //個数に対応する高さを取得
+          $(this).addClass("is-show").next().animate({height: addHeight},200).removeClass("is-hide"); //高さを元に戻す
+        } else {
+          $(this).removeClass("is-show").next().animate({height: returnHeight},200).addClass("is-hide"); //高さを制限する
+        }
+      });
+
+
+    // 　試用ボタンをクリックでモーダル表示
+      $('#trialModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // モーダル切替えボタン
+        var service = button.data('whatever') // data-* 属性から情報を抽出
+        // 必要に応じて、ここでAJAXリクエストを開始可能（コールバックで更新することも可能）
+        // モーダルの内容を更新。ここではjQueryを使用するが、代わりにデータ・バインディング・ライブラリまたは他のメソッドを使用することも可能
+        var modal = $(this)
+        // 試用ボタンに定義した配列データ(サービス名とサービスID)を取得してモーダルとinputフォームのnameにセット
+        modal.find('.service-name').text(service[0])
+        $('input[name="service"]').attr('value', service[1]);
+
+        var now = moment();
+        // 日付をフォーマット
+        day = now.format('YYYY/MM/DD');
+        after2week = now.add(14, 'days').format('YYYY/MM/DD');
+        // console.log(after2week);
+        // 取得した日付をモーダル上に表示
+        modal.find('.start_date').text(day)
+        modal.find('.end_date').text(after2week)
+
+        // 取得した日付をinputフォームのnameにセット(POST送信のため)
+        $('input[name="sdate"]').attr('value', day);
+        $('input[name="edate"]').attr('value', after2week);
+
+      })
+
+      // 申し込むボタンをクリックでPOST送信
+      $('#trialbutton').click(function() {
+        console.log("申し込むボタンクリック")
+        var service = $('input[name="service"]').val();
+        var start_date = $('input[name="sdate"]').val();
+        var end_date = $('input[name="edate"]').val();
+
+        console.log(service)
+        console.log(start_date)
+        console.log(end_date)
+
+        var data = { service : service, start_date : start_date, end_date : end_date };
+        console.log(data)
+
+        $.ajax({
+          type: "POST",
+          {% comment %} url: "{% url 'contracts:trial_contract_reg' %}", {% endcomment %}
+          data: data,
+          dataType: 'json',
+          success: function (data) {
+            if (data.is_created) {
+
+              // モーダルの表示
+              $('#result_modal').on('show.bs.modal', function (e) {
+                var modal = $(this);
+                modal.find('.modal-body').text(data.messages);
+              });
+              $('#result_modal').modal('show')
+            }
+          }
+        });
+          $('#trialModal').modal('hide');
+      });
+
+  });
+</script>
+{% endblock %}

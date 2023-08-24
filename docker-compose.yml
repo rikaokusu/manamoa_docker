@@ -5,7 +5,9 @@ services:
         container_name: web
         image: nginx:1.16
         ports:
-            - "8000:8000"
+            # - "8000:8000"
+            #(上原)ホストのブラウザからアクセスするポート番号。すでにホストで稼働中のポートと被ってはいけない。
+            - "${WEB_PORT}:8000"
         volumes:
             - ./nginx/conf:/etc/nginx/conf.d
             - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
@@ -14,13 +16,17 @@ services:
             # mediaファイルはローカルと同期を取るためにバインドマウントとする
             - ./media:/media
         depends_on:
-            - python
+            - python_manamoa
         environment:
             TZ: 'Asia/Tokyo'
+        # 追加
+        networks:
+          - shared-network
 
-    db:
+    db_manamoa: #(上原)DjnagoのDB接続先として設定する名前。同一NWに所属するコンテナ内でユニークである必要がある。
       container_name: mysql8
-      image: mysql:8.0.30
+      # image: mysql:8.0.30
+      image: mysql:8.0.34
       volumes:
         - db-store:/var/lib/mysql
         - ./logs:/var/log/mysql
@@ -31,11 +37,15 @@ services:
         - MYSQL_PASSWORD=${DB_PASS}
         - MYSQL_ROOT_PASSWORD=${DB_PASS}
         - TZ=${TZ}
-      ports:
+      ports: #(上原)ホスト上のDBクライアントから直接アクセスするため必要。
         - ${DB_PORT}:3306
+      # (上原)追加
+      networks:
+        - shared-network
 
     db-testing:
-      image: mysql:8.0.30
+      # image: mysql:8.0.30
+      image: mysql:8.0.34
       volumes:
         - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       tmpfs:
@@ -47,24 +57,40 @@ services:
         - MYSQL_PASSWORD=${DB_PASS}
         - MYSQL_ROOT_PASSWORD=${DB_PASS}
         - TZ=${TZ}
+      # (上原)追加
+      networks:
+        - shared-network
 
-    python:
+    python_manamoa: #(上原)nginxのアップストリーム接続先として設定する名前。同一NWに所属するコンテナ内でユニークである必要がある。
         container_name: django
         # build: ./python
         build:
           context: .
           dockerfile: python/Dockerfile
-        command: gunicorn -b 0.0.0.0:8001 --env DJANGO_SETTINGS_MODULE=portal.config.settings.production portal.config.wsgi
+        # command: gunicorn -b 0.0.0.0:8001 --env DJANGO_SETTINGS_MODULE=training.config.settings.production training.config.wsgi
+        #(上原)あくまでもマナモアのDjangoコンテナのポート番号なので他コンテナのポート番号と被っても問題ない
+        # 修正に伴い、app_nginx.confの設定も「server python_manamoa:8001 fail_timeout=0;」へ修正
+        command: gunicorn -b 0.0.0.0:8001 --env DJANGO_SETTINGS_MODULE=config.settings.production config.wsgi
         volumes:
             - ./src:/code
             - ./static:/static
             # mediaファイルはローカルと同期を取るためにバインドマウントとする
             - ./media:/media
-        expose:
-            - "8001"
+        #(上原)外部に公開する必要がないので不要。この設定がnginxのポート番号が被っていたから不安定だった。
+        # expose:
+        #     - "8001"
         depends_on:
-            - db
+            - db_manamoa
         environment:
             TZ: 'Asia/Tokyo'
+      # (上原)追加
+        networks:
+          - shared-network
+
 volumes:
   db-store:
+
+# (上原)追加
+networks:
+  shared-network:
+    external: true
