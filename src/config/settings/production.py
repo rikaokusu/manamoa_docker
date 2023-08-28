@@ -166,7 +166,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # プロジェクト直下にmediaフォルダが作成される BASE_DIR(C:\Users\user\Dropbox\08.開発\training_pj)
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/media/'
 
 # ファイル削除用にパスを作成 MEDIA_ROOT(C:\Users\user\Dropbox\08.開発\training_pj\media)
 FULL_MEDIA_ROOT = os.path.join(MEDIA_ROOT, 'uploads')
