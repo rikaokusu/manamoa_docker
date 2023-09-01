@@ -286,6 +286,7 @@ class CreateTrainingForm(forms.Form):
             format='%Y/%m/%d %H:%M:%S', options={
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
+                'minDate' : datetime.datetime.now().strftime('%Y-%m-%d'),
                 'tooltips': {
                             'close': '閉じる',
 
@@ -334,7 +335,7 @@ class CreateTrainingForm(forms.Form):
             format='%Y/%m/%d %H:%M:%S', options={
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
-
+                'minDate' : datetime.datetime.now().strftime('%Y-%m-%d'),
                 'tooltips': {
                             'close': '閉じる',
 
@@ -1542,6 +1543,7 @@ class TrainingUpdateForm(forms.Form):
             format='%Y/%m/%d %H:%M:%S', options={
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
+                'minDate' : datetime.datetime.today().strftime('%Y-%m-%d'),
                 'tooltips': {
                             'close': '閉じる',
 
@@ -1590,6 +1592,7 @@ class TrainingUpdateForm(forms.Form):
             format='%Y/%m/%d %H:%M:%S', options={
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
+                'minDate' : datetime.datetime.today().strftime('%Y-%m-%d'),
                 'tooltips': {
                             'close': '閉じる',
 
