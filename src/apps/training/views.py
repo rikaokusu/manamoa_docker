@@ -4362,8 +4362,6 @@ class TrainingManagementView(LoginRequiredMixin, ListView, CommonView, TraningSt
         resource_management = ResourceManagement.objects.filter(reg_company_name=current_user.company.id).first()
 
         if resource_management is not None:
-            # print("3333333333333")
-
             # BをMBに変換
             total_file_size = resource_management.total_file_size / 1024 / 1024
             # 小数第2位を切り捨て
@@ -4374,8 +4372,18 @@ class TrainingManagementView(LoginRequiredMixin, ListView, CommonView, TraningSt
             # 残容量がマイナスの値なら0にする
             if remaining_capacity < 0:
                 remaining_capacity = 0
-
             context["remaining_capacity"] = remaining_capacity
+
+        # デフォルトの科目を取得
+        default_subject = SubjectManagement.objects.filter(subject_name="デフォルト").first()
+
+        # デフォルトの科目がない場合は新しく作成
+        if default_subject is None:
+            default_subject, created = SubjectManagement.objects.get_or_create(
+                subject_name = "デフォルト",
+            )
+            # 保存
+            default_subject.save()
 
         # 完了済みのトレーニングの非表示 おそらく使っていない
         # if current_user.is_training_done:
