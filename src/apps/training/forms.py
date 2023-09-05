@@ -277,13 +277,13 @@ class CreateTrainingForm(forms.Form):
                 }
         )
     )
-
+    
     start_date = forms.DateTimeField(
         required=False,
         label="開始日",
         widget=datetimepicker.DateTimePickerInput(
-
-            format='%Y/%m/%d %H:%M:%S', options={
+            # format='%Y/%m/%d %H:%M:%S', options={
+            format='%Y/%m/%d %H:%M', options={
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
                 'minDate' : datetime.datetime.now().strftime('%Y-%m-%d'),
@@ -318,13 +318,26 @@ class CreateTrainingForm(forms.Form):
 
                             'today':'今日の日付',
 
-                            'clear':'削除'
+                            'clear':'削除',
+                            
+                            'pickHour': '時間を選択',
+                            
+                            'incrementHour': '時間を増加',
+                
+                            'decrementHour': '時間を減少',
+                
+                            'pickMinute': '分を選択',
+                
+                            'incrementMinute': '分を増加',
+                
+                            'decrementMinute': '分を減少'
 
                             }
 
             }
         ),
-        input_formats=['%Y/%m/%d %H:%M:%S']
+        # input_formats=['%Y/%m/%d %H:%M:%S']
+        input_formats=['%Y/%m/%d %H:%M']       
     )
 
     end_date = forms.DateTimeField(
@@ -332,10 +345,12 @@ class CreateTrainingForm(forms.Form):
         label="終了日",
         widget=datetimepicker.DateTimePickerInput(
 
-            format='%Y/%m/%d %H:%M:%S', options={
+            # format='%Y/%m/%d %H:%M:%S', options={
+            format='%Y/%m/%d %H:%M', options={
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
                 'minDate' : datetime.datetime.now().strftime('%Y-%m-%d'),
+                # 'defaultTime' : '00:00',
                 'tooltips': {
                             'close': '閉じる',
 
@@ -367,12 +382,25 @@ class CreateTrainingForm(forms.Form):
 
                             'today':'今日の日付',
 
-                            'clear':'削除'
+                            'clear':'削除',
+                            
+                            'pickHour': '時間を選択',
+                            
+                            'incrementHour': '時間を増加',
+                
+                            'decrementHour': '時間を減少',
+                
+                            'pickMinute': '分を選択',
+                
+                            'incrementMinute': '分を増加',
+                
+                            'decrementMinute': '分を減少'
 
                             }
             }
         ),
-        input_formats=['%Y/%m/%d %H:%M:%S']
+        input_formats=['%Y/%m/%d %H:%M']
+        # input_formats=['%Y/%m/%d %H:%M:%S']
     )
 
 
@@ -1539,11 +1567,13 @@ class TrainingUpdateForm(forms.Form):
         required=False,
         label="開始日",
         widget=datetimepicker.DateTimePickerInput(
-
-            format='%Y/%m/%d %H:%M:%S', options={
+            format='%Y/%m/%d %H:%M', options={
+            # format='%Y/%m/%d %H:%M:%S', options={
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
                 'minDate' : datetime.datetime.today().strftime('%Y-%m-%d'),
+                # 'defaultTime' : '00:00',
+                # 'defaultDate : moment(datetime.datetime.today()).hours(0).minutes(0).seconds(0).milliseconds(0)',
                 'tooltips': {
                             'close': '閉じる',
 
@@ -1575,24 +1605,39 @@ class TrainingUpdateForm(forms.Form):
 
                             'today':'今日の日付',
 
-                            'clear':'削除'
+                            'clear':'削除',
+                            
+                            'pickHour': '時間を選択',
+                            
+                            'incrementHour': '時間を増加',
+                
+                            'decrementHour': '時間を減少',
+                
+                            'pickMinute': '分を選択',
+                
+                            'incrementMinute': '分を増加',
+                
+                            'decrementMinute': '分を減少'
 
                             }
 
             }
         ),
-        input_formats=['%Y/%m/%d %H:%M:%S']
+        input_formats=['%Y/%m/%d %H:%M']
+        # input_formats=['%Y/%m/%d %H:%M:%S']
     )
 
     end_date = forms.DateTimeField(
         required=True,
         label="終了日",
         widget=datetimepicker.DateTimePickerInput(
-
-            format='%Y/%m/%d %H:%M:%S', options={
+            format='%Y/%m/%d %H:%M', options={
+            # format='%Y/%m/%d %H:%M:%S', options={
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
                 'minDate' : datetime.datetime.today().strftime('%Y-%m-%d'),
+                # 'defaultTime' : '00:00',
+                # 'defaultDate : moment(datetime.datetime.today()).hours(0).minutes(0).seconds(0).milliseconds(0)',
                 'tooltips': {
                             'close': '閉じる',
 
@@ -1624,13 +1669,26 @@ class TrainingUpdateForm(forms.Form):
 
                             'today':'今日の日付',
 
-                            'clear':'削除'
+                            'clear':'削除',
+                            
+                            'pickHour': '時間を選択',
+                            
+                            'incrementHour': '時間を増加',
+                
+                            'decrementHour': '時間を減少',
+                
+                            'pickMinute': '分を選択',
+                
+                            'incrementMinute': '分を増加',
+                
+                            'decrementMinute': '分を減少'
 
                             }
 
             }
         ),
-        input_formats=['%Y/%m/%d %H:%M:%S']
+        input_formats=['%Y/%m/%d %H:%M']
+        # input_formats=['%Y/%m/%d %H:%M:%S']
     )
 
 
