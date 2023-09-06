@@ -515,7 +515,7 @@ for btn
                                 <th>
 
                                     <div class="option_box">
-                                        <div class="label option_label">開始時刻</div>
+                                        <div class="label option_label">開始時刻<br><small> 現在の日時の場合、15分後の時間を登録します</small></div>
                                     </div>
 
                                 </th>
@@ -533,7 +533,7 @@ for btn
                                     <div class="contents">{% render_field form.start_date class="form-control" id="training_start_date" %}</div>
 
                                     <div class="d-flex align-items-center">
-                                        <p class="mt-2 mb-1" style="font-size: 13px;">※設定しない場合は現在の日時が設定されます</p>
+                                        <p class="mt-2 mb-1" style="font-size: 13px; text-align:left;">※設定しない場合は現在の日時の15分後の時間が<br>　設定されます</p>
                                     </div>
 
                                 </td>
@@ -1169,7 +1169,8 @@ $(document).ready(function() {
         day_str = ('0' + day_str).slice(-2);
         console.log("day_str2", day_str)
 
-        a_3d_day_str = 'YYYY/MM/DD hh:mm:ss'; // フォーマットを決める
+        //yano a_3d_day_str = 'YYYY/MM/DD hh:mm:ss'; // フォーマットを決める
+        a_3d_day_str = 'YYYY/MM/DD hh:mm'; // フォーマットを決める
         a_3d_day_str = a_3d_day_str.replace(/YYYY/g, year_str); // フォーマットに対して書き換え、年
         a_3d_day_str = a_3d_day_str.replace(/MM/g, month_str); // 月
         a_3d_day_str = a_3d_day_str.replace(/DD/g, day_str); // 日
@@ -1180,8 +1181,8 @@ $(document).ready(function() {
         a_3d_day_str = a_3d_day_str.replace(/mm/g, '59'); // 分
         console.log("a_3d_day_str, 分", a_3d_day_str)// 23:mm:ss
 
-        a_3d_day_str = a_3d_day_str.replace(/ss/g, '59'); // 秒
-        console.log("a_3d_day_str", a_3d_day_str)// 23:59:ss
+        //yano a_3d_day_str = a_3d_day_str.replace(/ss/g, '59'); // 秒
+        //yano console.log("a_3d_day_str", a_3d_day_str)// 23:59:ss
 
 
         $('#training_start_date').val(a_3d_day_str) // フォームのidを指定して値をセット
@@ -1200,13 +1201,14 @@ $(document).ready(function() {
         month_str = ('0' + month_str).slice(-2);
         day_str = ('0' + day_str).slice(-2);
 
-        a_7d_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        //yano a_7d_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        a_7d_day_str = 'YYYY/MM/DD hh:mm ';
         a_7d_day_str = a_7d_day_str.replace(/YYYY/g, year_str);
         a_7d_day_str = a_7d_day_str.replace(/MM/g, month_str);
         a_7d_day_str = a_7d_day_str.replace(/DD/g, day_str);
         a_7d_day_str = a_7d_day_str.replace(/hh/g, '23');
         a_7d_day_str = a_7d_day_str.replace(/mm/g, '59');
-        a_7d_day_str = a_7d_day_str.replace(/ss/g, '59');
+        //yano a_7d_day_str = a_7d_day_str.replace(/ss/g, '59');
 
         $('#training_start_date').val(a_7d_day_str)
 
@@ -1224,13 +1226,14 @@ $(document).ready(function() {
         month_str = ('0' + month_str).slice(-2);
         day_str = ('0' + day_str).slice(-2);
 
-        a_14d_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        //yano a_14d_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        a_14d_day_str = 'YYYY/MM/DD hh:mm ';
         a_14d_day_str = a_14d_day_str.replace(/YYYY/g, year_str);
         a_14d_day_str = a_14d_day_str.replace(/MM/g, month_str);
         a_14d_day_str = a_14d_day_str.replace(/DD/g, day_str);
         a_14d_day_str = a_14d_day_str.replace(/hh/g, '23');
         a_14d_day_str = a_14d_day_str.replace(/mm/g, '59');
-        a_14d_day_str = a_14d_day_str.replace(/ss/g, '59');
+        //yano a_14d_day_str = a_14d_day_str.replace(/ss/g, '59');
 
         $('#training_start_date').val(a_14d_day_str)
 
@@ -1249,13 +1252,14 @@ $(document).ready(function() {
         month_str = ('0' + month_str).slice(-2);
         day_str = ('0' + day_str).slice(-2);
 
-        a_1m_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        //yano a_1m_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        a_1m_day_str = 'YYYY/MM/DD hh:mm ';
         a_1m_day_str = a_1m_day_str.replace(/YYYY/g, year_str);
         a_1m_day_str = a_1m_day_str.replace(/MM/g, month_str);
         a_1m_day_str = a_1m_day_str.replace(/DD/g, day_str);
         a_1m_day_str = a_1m_day_str.replace(/hh/g, '23');
         a_1m_day_str = a_1m_day_str.replace(/mm/g, '59');
-        a_1m_day_str = a_1m_day_str.replace(/ss/g, '59');
+        //yano a_1m_day_str = a_1m_day_str.replace(/ss/g, '59');
 
         $('#training_start_date').val(a_1m_day_str)
 
@@ -1292,7 +1296,8 @@ $(document).ready(function() {
         day_str = ('0' + day_str).slice(-2);
         console.log("day_str2", day_str)
 
-        a_3d_day_str = 'YYYY/MM/DD hh:mm:ss'; // フォーマットを決める
+        //yano a_3d_day_str = 'YYYY/MM/DD hh:mm:ss'; // フォーマットを決める
+        a_3d_day_str = 'YYYY/MM/DD hh:mm'; // フォーマットを決める
         a_3d_day_str = a_3d_day_str.replace(/YYYY/g, year_str); // フォーマットに対して書き換え、年
         a_3d_day_str = a_3d_day_str.replace(/MM/g, month_str); // 月
         a_3d_day_str = a_3d_day_str.replace(/DD/g, day_str); // 日
@@ -1303,8 +1308,8 @@ $(document).ready(function() {
         a_3d_day_str = a_3d_day_str.replace(/mm/g, '59'); // 分
         console.log("a_3d_day_str, 分", a_3d_day_str)// 23:mm:ss
 
-        a_3d_day_str = a_3d_day_str.replace(/ss/g, '59'); // 秒
-        console.log("a_3d_day_str", a_3d_day_str)// 23:59:ss
+        //yano a_3d_day_str = a_3d_day_str.replace(/ss/g, '59'); // 秒
+        //yano console.log("a_3d_day_str", a_3d_day_str)// 23:59:ss
 
 
         $('#training_end_date').val(a_3d_day_str) // フォームのidを指定して値をセット
@@ -1323,13 +1328,14 @@ $(document).ready(function() {
         month_str = ('0' + month_str).slice(-2);
         day_str = ('0' + day_str).slice(-2);
 
-        a_7d_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        //yano a_7d_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        a_7d_day_str = 'YYYY/MM/DD hh:mm ';
         a_7d_day_str = a_7d_day_str.replace(/YYYY/g, year_str);
         a_7d_day_str = a_7d_day_str.replace(/MM/g, month_str);
         a_7d_day_str = a_7d_day_str.replace(/DD/g, day_str);
         a_7d_day_str = a_7d_day_str.replace(/hh/g, '23');
         a_7d_day_str = a_7d_day_str.replace(/mm/g, '59');
-        a_7d_day_str = a_7d_day_str.replace(/ss/g, '59');
+        //yano a_7d_day_str = a_7d_day_str.replace(/ss/g, '59');
 
         $('#training_end_date').val(a_7d_day_str)
 
@@ -1347,13 +1353,14 @@ $(document).ready(function() {
         month_str = ('0' + month_str).slice(-2);
         day_str = ('0' + day_str).slice(-2);
 
-        a_14d_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        //yano a_14d_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        a_14d_day_str = 'YYYY/MM/DD hh:mm ';
         a_14d_day_str = a_14d_day_str.replace(/YYYY/g, year_str);
         a_14d_day_str = a_14d_day_str.replace(/MM/g, month_str);
         a_14d_day_str = a_14d_day_str.replace(/DD/g, day_str);
         a_14d_day_str = a_14d_day_str.replace(/hh/g, '23');
         a_14d_day_str = a_14d_day_str.replace(/mm/g, '59');
-        a_14d_day_str = a_14d_day_str.replace(/ss/g, '59');
+        //yano a_14d_day_str = a_14d_day_str.replace(/ss/g, '59');
 
         $('#training_end_date').val(a_14d_day_str)
 
@@ -1372,13 +1379,14 @@ $(document).ready(function() {
         month_str = ('0' + month_str).slice(-2);
         day_str = ('0' + day_str).slice(-2);
 
-        a_1m_day_str = 'YYYY/MM/DD hh:mm:ss ';
+        //yano a_1m_day_str = 'YYYY/MM/DD hh:mm ';
+        a_1m_day_str = 'YYYY/MM/DD hh:mm ';
         a_1m_day_str = a_1m_day_str.replace(/YYYY/g, year_str);
         a_1m_day_str = a_1m_day_str.replace(/MM/g, month_str);
         a_1m_day_str = a_1m_day_str.replace(/DD/g, day_str);
         a_1m_day_str = a_1m_day_str.replace(/hh/g, '23');
         a_1m_day_str = a_1m_day_str.replace(/mm/g, '59');
-        a_1m_day_str = a_1m_day_str.replace(/ss/g, '59');
+        //yano a_1m_day_str = a_1m_day_str.replace(/ss/g, '59');
 
         $('#training_end_date').val(a_1m_day_str)
 
