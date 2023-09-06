@@ -178,6 +178,7 @@ class CSVUploadForm(forms.Form):
 """
 トレーニング作成画面
 """
+
 # class CreateTrainingForm(forms.ModelForm):
 class CreateTrainingForm(forms.Form):
 
@@ -277,7 +278,7 @@ class CreateTrainingForm(forms.Form):
                 }
         )
     )
-    
+
     start_date = forms.DateTimeField(
         required=False,
         label="開始日",
@@ -350,7 +351,6 @@ class CreateTrainingForm(forms.Form):
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
                 'minDate' : datetime.datetime.now().strftime('%Y-%m-%d'),
-                # 'defaultTime' : '00:00',
                 'tooltips': {
                             'close': '閉じる',
 
@@ -1572,6 +1572,7 @@ class TrainingUpdateForm(forms.Form):
                 'locale': 'ja',
                 'dayViewHeaderFormat': 'YYYY年 MMMM',
                 'minDate' : datetime.datetime.today().strftime('%Y-%m-%d'),
+                # 'minTime' : datetime.datetime.now().strftime('%Y-%m-%d'),
                 # 'defaultTime' : '00:00',
                 # 'defaultDate : moment(datetime.datetime.today()).hours(0).minutes(0).seconds(0).milliseconds(0)',
                 'tooltips': {
