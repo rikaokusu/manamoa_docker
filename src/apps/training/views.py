@@ -1272,11 +1272,9 @@ class TestConfirmView(LoginRequiredMixin, FormView, CommonView):
             # user = current_user,
         )
 
-
         # querysetを管理テーブルと紐付ける
         question_manage.question_result.set(tmp_question_result)
         question_manage.save()
-
 
         # セッションに「_(アンダースコア)以外のセッション情報があった場合削除
         self.request.session['check_list'] = check_list
@@ -1288,17 +1286,17 @@ class TestConfirmView(LoginRequiredMixin, FormView, CommonView):
 
         # ユーザーのPartsManageを取得
         current_user_testmanage = PartsManage.objects.filter(user=current_user.id, parts=parts).first()
-        print("---------- current_user_testmanage ---------", current_user_testmanage)
+        # print("---------- current_user_testmanage ---------", current_user_testmanage)
 
         # ユーザーのPartsManageとTrainingManageを紐づける
         training = Training.objects.filter(parts=parts).first()
-        print("---------- training ---------", training)
+        # print("---------- training ---------", training)
         user_training_manage = TrainingManage.objects.filter(training=training, user=self.request.user.id).first()
-        print("---------- user_training_manage ---------", user_training_manage)
-        print("---------- parts_manage ---------", user_training_manage.parts_manage.all())
+        # print("---------- user_training_manage ---------", user_training_manage)
+        # print("---------- parts_manage ---------", user_training_manage.parts_manage.all())
 
         user_training_manage.parts_manage.add(current_user_testmanage)
-        print("---------- parts_manage.all ---------", current_user_testmanage.parts_manage.all())
+        # print("---------- parts_manage.all ---------", current_user_testmanage.parts_manage.all())
 
 
         # check_listのTrueの数がpass_line以上で合格
@@ -1458,7 +1456,7 @@ class FileDownloadStatus(LoginRequiredMixin, View):
         else:
             print("なにもない")
 
-        print("------ file_ids", file_ids)
+        # print("------ file_ids", file_ids)
 
         current_user = User.objects.filter(pk=self.request.user.id).select_related().first()
 
@@ -1475,24 +1473,27 @@ class FileDownloadStatus(LoginRequiredMixin, View):
                 file_manage.save()
 
                 # パーツのステータスを更新する
-                parts_manage, created = PartsManage.objects.get_or_create(
-                    order = parts.order,
-                    type = parts.type,
-                    parts = parts,
-                    # user = current_user,
-                    user = self.request.user.id,
-                )
+                # parts_manage, created = PartsManage.objects.get_or_create(
+                #     order = parts.order,
+                #     type = parts.type,
+                #     parts = parts,
+                #     # user = current_user,
+                #     user = self.request.user.id,
+                # )
+
+                parts_manage = PartsManage.objects.filter(user=self.request.user.id, parts=parts).first()
+                # print("---------- ファイルパーツのパーツマネージ ---------", parts_manage)
 
                 # ダウンロードファイル管理オブジェクトを追加する
                 parts_manage.file_manage.add(file_manage)
 
                 # ユーザーのPartsManageとTrainingManageを紐づける
                 training = Training.objects.filter(parts=parts).first()
-                print("---------- training ---------", training)
+                # print("---------- training ---------", training)
                 user_training_manage = TrainingManage.objects.filter(training=training, user=self.request.user.id).first()
-                print("---------- user_training_manage ---------", user_training_manage)
+                # print("---------- user_training_manage ---------", user_training_manage)
                 user_training_manage.parts_manage.add(parts_manage)
-                print("---------- parts_manage.all ---------", user_training_manage.parts_manage.all())
+                # print("---------- parts_manage.all ---------", user_training_manage.parts_manage.all())
 
 
             # 全てのファイルがダウンロード済みか確認
@@ -1573,26 +1574,28 @@ class MoviePlayStatus(LoginRequiredMixin, View):
 
         try:
             # パーツのステータスを更新する
-            movie_play_manage, created = PartsManage.objects.get_or_create(
-                order = parts.order,
-                type = parts.type,
-                parts = parts,
-                # user = current_user,
-                user = self.request.user.id,
-                movie_duration = duration,
-                movie_file_id = file_id,
-            )
-            print("---------- movie_play_manage ---------", movie_play_manage)
+            # movie_play_manage, created = PartsManage.objects.get_or_create(
+            #     order = parts.order,
+            #     type = parts.type,
+            #     parts = parts,
+            #     # user = current_user,
+            #     user = self.request.user.id,
+            #     movie_duration = duration,
+            #     movie_file_id = file_id,
+            # )
+            # print("---------- movie_play_manage ---------", movie_play_manage)
+
+            movie_play_manage = PartsManage.objects.filter(user=self.request.user.id, parts=parts).first()
+            print("---------- 動画パーツのパーツマネージ ---------", movie_play_manage)
 
             # ユーザーのPartsManageとTrainingManageを紐づける
             training = Training.objects.filter(parts=parts).first()
-            print("---------- training ---------", training)
+            # print("---------- training ---------", training)
             user_training_manage = TrainingManage.objects.filter(training=training, user=self.request.user.id).first()
-            print("---------- user_training_manage ---------", user_training_manage)
-            print("---------- parts_manage ---------", user_training_manage.parts_manage.all())
+            # print("---------- user_training_manage ---------", user_training_manage)
+            # print("---------- parts_manage ---------", user_training_manage.parts_manage.all())
             user_training_manage.parts_manage.add(movie_play_manage)
-            print("---------- parts_manage.all ---------", movie_play_manage.parts_manage.all())
-
+            # print("---------- parts_manage.all ---------", movie_play_manage.parts_manage.all())
 
             # 再生開始時の時間
             movie_play_manage.play_start_date = datetime.now()
@@ -1841,22 +1844,28 @@ class QuestionnaireConfirmView(LoginRequiredMixin, FormView, CommonView):
 
         current_user = User.objects.filter(pk=self.request.user.id).select_related().first()
 
-        questionnaire_manage, created = PartsManage.objects.get_or_create(
-            order = parts.order,
-            type = parts.type,
-            parts = parts,
-            user = self.request.user.id,
-            # user = current_user,
-            status = 3
-        )
+        # questionnaire_manage, created = PartsManage.objects.get_or_create(
+        #     order = parts.order,
+        #     type = parts.type,
+        #     parts = parts,
+        #     user = self.request.user.id,
+        #     # user = current_user,
+        #     status = 3
+        # )
+
+        questionnaire_manage = PartsManage.objects.filter(user=self.request.user.id, parts=parts).first()
+        # print("---------- アンケートパーツのパーツマネージ ---------", questionnaire_manage)
+
+        # PartsManageのステータスを更新
+        questionnaire_manage.status = 3
 
         # ユーザーのPartsManageとTrainingManageを紐づける
         training = Training.objects.filter(parts=parts).first()
-        print("---------- training ---------", training)
+        # print("---------- training ---------", training)
         user_training_manage = TrainingManage.objects.filter(training=training, user=self.request.user.id).first()
-        print("---------- user_training_manage ---------", user_training_manage)
+        # print("---------- user_training_manage ---------", user_training_manage)
         user_training_manage.parts_manage.add(questionnaire_manage)
-        print("---------- parts_manage.all ---------", user_training_manage.parts_manage.all())
+        # print("---------- parts_manage.all ---------", user_training_manage.parts_manage.all())
 
 
         # querysetを管理テーブルに紐付ける
@@ -2750,17 +2759,17 @@ class UserStatusView(LoginRequiredMixin, View):
         for group_uuid in group_lists_raw:
             group_uuid_string = str(group_uuid)
             group_list.append(group_uuid_string)
-        print("---------- group_list ---------", group_list)# ['6a9faafb-3fd8-4a2e-a096-9d1327b4397c', '76d54969-96ad-4485-ac02-e38612d5c070']
+        # print("---------- group_list ---------", group_list)# ['6a9faafb-3fd8-4a2e-a096-9d1327b4397c', '76d54969-96ad-4485-ac02-e38612d5c070']
 
         group_users = UserCustomGroupRelation.objects.filter(group_id__in=group_list)
-        print("---------- group_users ---------", group_users)
+        # print("---------- group_users ---------", group_users)
 
         group_user_lists_raw = list(group_users.values_list('group_user', flat=True))
         # IDをstrに直してリストに追加
         for group_user_uuid in group_user_lists_raw:
             group_user_uuid_string = str(group_user_uuid)
             users.append(group_user_uuid_string)
-        print("---------- users ---------", users)# ['6a9faafb-3fd8-4a2e-a096-9d1327b4397c', '76d54969-96ad-4485-ac02-e38612d5c070']
+        # print("---------- users ---------", users)# ['6a9faafb-3fd8-4a2e-a096-9d1327b4397c', '76d54969-96ad-4485-ac02-e38612d5c070']
 
 
 
@@ -2773,10 +2782,10 @@ class UserStatusView(LoginRequiredMixin, View):
 
         for index, user in enumerate(set(users)):
 
-            print("--------- user", user)
+            # print("--------- user", user)
 
             user_obj = User.objects.filter(id=user).first()
-            print("--------- user_obj", user_obj)
+            # print("--------- user_obj", user_obj)
 
             # トレーニングに紐づくパーツ数を出力
             parts_count = training.parts.all().count()
@@ -2787,23 +2796,22 @@ class UserStatusView(LoginRequiredMixin, View):
             for parts in partss:
                 parts_manage = PartsManage.objects.filter(parts=parts, user=user)
                 # parts_manage = user.parts_manage_user.filter(parts=parts)
-                print("--------- parts_manage", parts_manage)
+                # print("--------- parts_manage", parts_manage)
                 parts_manage_tmp |= parts_manage
 
             # user_status = parts_manage_tmp.all().order_by("order").values_list('status', flat=True)
             user_status = parts_manage_tmp.all().order_by("parts__order").values_list('status', flat=True)
-            print("--------- user_status", user_status)
+            # print("--------- user_status", user_status)
 
             # トレーニングステータスを出力
             user_training_manage = TrainingManage.objects.filter(training=training, user=user).first()
             # user_training_manage = user.training_manage_user.filter(training=training).first()
-            print("--------- user_training_manage", user_training_manage)
+            # print("--------- user_training_manage", user_training_manage)
 
             if user_training_manage:
                 training_status = user_training_manage.status
             else:
                 training_status = 1
-
 
             # 上限10に足りない数を算出
             lack_count = 10 - parts_count
@@ -2814,17 +2822,17 @@ class UserStatusView(LoginRequiredMixin, View):
                 lack_list.append("")
 
             # パーツマネージの不足数を算出
-            parts_lack_count = parts_count -len(user_status)
+            # parts_lack_count = parts_count -len(user_status)
 
-            parts_lack_list = []
-            for i in range(parts_lack_count):
-                parts_lack_list.append(1)
-
+            # parts_lack_list = []
+            # for i in range(parts_lack_count):
+            #     parts_lack_list.append(1)
 
             user_status_list = list(user_status)
 
             # リストを結合
-            user_status_list2 = user_status_list + parts_lack_list + lack_list
+            # user_status_list2 = user_status_list + parts_lack_list + lack_list
+            user_status_list2 = user_status_list + lack_list
             print("--------- user_status_list2", user_status_list2)
 
 
@@ -4565,6 +4573,35 @@ class TestPartsCreateView(LoginRequiredMixin, CommonView, CreateView):
 
         training_obj.save()
 
+        # トレーニングに紐づくグループを取得
+        training_relations = TrainingRelation.objects.filter(training_id=training_id)
+        # print("------------ training_relations", training_relations)
+
+        # グループをリスト化
+        group_list = []
+        group_lists_raw = list(training_relations.values_list('group_id', flat=True))
+        # IDをstrに直してリストに追加
+        for group_uuid in group_lists_raw:
+            group_uuid_string = str(group_uuid)
+            group_list.append(group_uuid_string)
+        # print("---------- group_list ---------", group_list)
+
+        group_users = UserCustomGroupRelation.objects.filter(group_id__in=group_list)
+        # print("---------- group_users ---------", group_users)
+
+        # グループに所属しているユーザーを取り出す
+        for group_user in group_users:
+            # print("---------- group_user ---------", group_user)# UserCustomGroupRelation object (2)
+            # print("---------- group_user ---------", group_user.group_user)
+            # ユーザーのPartsManageを作成する
+            parts_manage, created = PartsManage.objects.get_or_create(
+                order = test_parts.order,
+                type = test_parts.type,
+                parts = test_parts,
+                user = group_user.group_user,
+            )
+            parts_manage.save()
+
         # テストパーツのIDを取得
         parts_id = test_parts.pk
         parts_id_str = str(parts_id)
@@ -4645,6 +4682,35 @@ class QuestionnairePartsCreateView(LoginRequiredMixin, CommonView, CreateView):
         training_obj.parts.add(questionnaire_parts_obj)
 
         training_obj.save()
+
+        # トレーニングに紐づくグループを取得
+        training_relations = TrainingRelation.objects.filter(training_id=training_id)
+        # print("------------ training_relations", training_relations)
+
+        # グループをリスト化
+        group_list = []
+        group_lists_raw = list(training_relations.values_list('group_id', flat=True))
+        # IDをstrに直してリストに追加
+        for group_uuid in group_lists_raw:
+            group_uuid_string = str(group_uuid)
+            group_list.append(group_uuid_string)
+        # print("---------- group_list ---------", group_list)
+
+        group_users = UserCustomGroupRelation.objects.filter(group_id__in=group_list)
+        # print("---------- group_users ---------", group_users)
+
+        # グループに所属しているユーザーを取り出す
+        for group_user in group_users:
+            # print("---------- group_user ---------", group_user)# UserCustomGroupRelation object (2)
+            # print("---------- group_user ---------", group_user.group_user)
+            # ユーザーのPartsManageを作成する
+            parts_manage, created = PartsManage.objects.get_or_create(
+                order = questionnaire_parts.order,
+                type = questionnaire_parts.type,
+                parts = questionnaire_parts,
+                user = group_user.group_user,
+            )
+            parts_manage.save()
 
         parts_id = questionnaire_parts.id
         questionnaire_parts_id_str = str(parts_id)
@@ -4751,6 +4817,35 @@ class FilePartsCreateView(LoginRequiredMixin, CommonView, CreateView):
 
         training_obj.save()
 
+        # トレーニングに紐づくグループを取得
+        training_relations = TrainingRelation.objects.filter(training_id=training_id)
+        # print("------------ training_relations", training_relations)
+
+        # グループをリスト化
+        group_list = []
+        group_lists_raw = list(training_relations.values_list('group_id', flat=True))
+        # IDをstrに直してリストに追加
+        for group_uuid in group_lists_raw:
+            group_uuid_string = str(group_uuid)
+            group_list.append(group_uuid_string)
+        # print("---------- group_list ---------", group_list)
+
+        group_users = UserCustomGroupRelation.objects.filter(group_id__in=group_list)
+        # print("---------- group_users ---------", group_users)
+
+        # グループに所属しているユーザーを取り出す
+        for group_user in group_users:
+            # print("---------- group_user ---------", group_user)# UserCustomGroupRelation object (2)
+            # print("---------- group_user ---------", group_user.group_user)
+            # ユーザーのPartsManageを作成する
+            parts_manage, created = PartsManage.objects.get_or_create(
+                order = file_parts.order,
+                type = file_parts.type,
+                parts = file_parts,
+                user = group_user.group_user,
+            )
+            parts_manage.save()
+
         # セッションの中にup_file_idがれば取り出す
         if 'up_file_id' in self.request.session:
 
@@ -4778,7 +4873,7 @@ class FilePartsCreateView(LoginRequiredMixin, CommonView, CreateView):
 
             # リソース管理テーブルからトレーニングを作成した会社のレコードを取得
             this_resource_manage = ResourceManagement.objects.filter(reg_company_name=current_user.company.id).first()
-            print("---------- this_resource_manage ---------", this_resource_manage)
+            # print("---------- this_resource_manage ---------", this_resource_manage)
 
             for file in files:
                 # print("---------- file ---------", file)# 変更前.PNG
@@ -4914,9 +5009,6 @@ class ImageUploadView(View):
         return HttpResponse("OK")
 
 
-
-
-
 """
 動画パーツ作成画面
 """
@@ -4967,6 +5059,35 @@ class MoviePartsCreateView(LoginRequiredMixin, CommonView, CreateView):
 
         # リソース管理テーブルからトレーニングを作成した会社のレコードを取得
         this_resource_manage = ResourceManagement.objects.filter(reg_company_name=self.request.user.company.id).first()
+
+        # トレーニングに紐づくグループを取得
+        training_relations = TrainingRelation.objects.filter(training_id=training_id)
+        print("------------ training_relations", training_relations)
+
+        # グループをリスト化
+        group_list = []
+        group_lists_raw = list(training_relations.values_list('group_id', flat=True))
+        # IDをstrに直してリストに追加
+        for group_uuid in group_lists_raw:
+            group_uuid_string = str(group_uuid)
+            group_list.append(group_uuid_string)
+        # print("---------- group_list ---------", group_list)
+
+        group_users = UserCustomGroupRelation.objects.filter(group_id__in=group_list)
+        # print("---------- group_users ---------", group_users)
+
+        # グループに所属しているユーザーを取り出す
+        for group_user in group_users:
+            # print("---------- group_user ---------", group_user)# UserCustomGroupRelation object (2)
+            # print("---------- group_user ---------", group_user.group_user)
+            # ユーザーのPartsManageを作成する
+            parts_manage, created = PartsManage.objects.get_or_create(
+                order = movie_parts.order,
+                type = movie_parts.type,
+                parts = movie_parts,
+                user = group_user.group_user,
+            )
+            parts_manage.save()
 
         # セッションの中にup_poster_idがれば取り出す ※ポスターがない場合はデフォルトの画像が適用される
         if 'up_poster_id' in self.request.session:

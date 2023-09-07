@@ -525,7 +525,7 @@
                                                     <th colspan="2">受講者の進捗状況をCSV形式で出力します。</th>
 
                                                     <td class="td_btn table_td" colspan="1">
-                                                        <button type="button" class="my-btn my-btn-egypt-1 my-btn-sl my-btn-w24" onclick="window.location.href='{% url 'training:user_status' training.id %}'" disabled>進捗状況の出力</button>
+                                                        <button type="button" class="my-btn my-btn-egypt-1 my-btn-sl my-btn-w24" onclick="window.location.href='{% url 'training:user_status' training.id %}'">進捗状況の出力</button>
                                                         <!-- ボタン -->
                                                         <button type="button" class="my-btn my-btn-gray-1 my-btn-sl my-btn-w24" id="" data-toggle="modal" data-target="#csv_training_modal{{forloop.counter}}" data-pk="{{ training.id }}">CSV凡例</button>
                                                     </td>
