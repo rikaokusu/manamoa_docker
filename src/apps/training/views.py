@@ -4435,6 +4435,14 @@ class TrainingManagementView(LoginRequiredMixin, ListView, CommonView, TraningSt
         #     if not key.startswith("_"):
         #         del self.request.session[key]
 
+        training = Training.objects.filter(reg_company=current_user.company.id)
+        if training:
+            context["training"] = training
+        
+        # グループが存在するかチェック（トレーニング作成ボタン制御用）
+        groups = CustomGroup.objects.filter(group_reg_user=current_user.id,tempo_flg=False)
+        if groups:
+            context["groups"] = groups
 
         return context
 
