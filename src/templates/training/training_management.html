@@ -339,13 +339,22 @@
                             </div>
                         </div>
                     {% else %}
-                        <div class="flex_test-item" id="input_training_btn">
-                            <div class="wrap pattern-1">
-                                <!-- トレーニング作成ページへ遷移 -->
-                                <a href="{% url 'training:training_create' %}" class="link_btn"></a>
-                                <i class="fas fa-plus-circle mb-3" style="font-size: 70px;"></i><br>トレーニングの新規作成<p class="subtitle">新しいトレーニングを作成します</p></span>
+                        {% if groups %}                       
+                            <div class="flex_test-item" id="input_training_btn">
+                                <div class="wrap pattern-1">
+                                    <!-- トレーニング作成ページへ遷移 -->
+                                    <a href="{% url 'training:training_create' %}" class="link_btn"></a>
+                                    <i class="fas fa-plus-circle mb-3" style="font-size: 70px;"></i><br>トレーニングの新規作成<p class="subtitle">新しいトレーニングを作成します</p></span>
+                                </div>
                             </div>
-                        </div>
+                        {% else %}
+                            <div class="flex_test-item" id="input_training_btn" style="opacity: 0.33;" title="グループが登録されていません。グループを作成してください。">
+                                <div class="wrap pattern-1" style="pointer-events:none;">
+                                    <a href="" class="link_btn"></a>
+                                    <i class="fas fa-plus-circle mb-3" style="font-size: 70px;"></i><br>トレーニングの新規作成<p class="subtitle">新しいトレーニングを作成します</p></span>
+                                </div>
+                            </div>
+                        {% endif %}
                     {%  endif %}
 
                 {%  endif %}
@@ -372,13 +381,22 @@
 
 
                 <!-- 管理者、共同管理者アクセス可能 -->
-                <div class="flex_test-item cancel_btn" id="training_update_btn">
-                    <div class="wrap pattern-1">
-                        <!-- トレーニング一覧ページへ遷移 -->
-                        <a href="{% url 'training:training_change_management_all' %}" class="link_btn"></a>
-                        <i class="fas fa-edit mb-3" style="font-size: 70px;"></i><br>トレーニングの変更<p class="subtitle">既存のトレーニングを変更します</p></span>
+                {% if training %}
+                    <div class="flex_test-item cancel_btn" id="training_update_btn">
+                        <div class="wrap pattern-1">
+                            <!-- トレーニング一覧ページへ遷移 -->
+                            <a href="{% url 'training:training_change_management_all' %}" class="link_btn"></a>
+                            <i class="fas fa-edit mb-3" style="font-size: 70px;"></i><br>トレーニングの変更<p class="subtitle">既存のトレーニングを変更します</p></span>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="flex_test-item cancel_btn" id="training_update_btn" style="opacity: 0.33;" title="トレーニングが登録されていません。トレーニングを作成してください。">
+                        <div class="wrap pattern-1" style="pointer-events:none;">
+                            <a href="" class="link_btn"></a>
+                            <i class="fas fa-edit mb-3" style="font-size: 70px;"></i><br>トレーニングの変更<p class="subtitle">既存のトレーニングを変更します</p></span>
+                        </div>
+                    </div>
+                {% endif %}
 
 
                 <!-- 共同管理者の場合 -->
