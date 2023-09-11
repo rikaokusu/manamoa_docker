@@ -138,7 +138,22 @@
     }
 
 
+    /*---------------------------------
 
+    設問が登録されていない場合の
+    メッセージ
+
+---------------------------------*/
+
+    .fa-file {
+        color: #afafaf;
+        font-size: 100px;
+    }
+
+    .box2 {
+        display: inline-block;
+        text-align: center;
+    }
 
 </style>
 
@@ -207,191 +222,197 @@
 
             </div>
 
+                <!-- 設問が登録されていない場合 -->
+                {% if test.questionnairequestion_set.all|length == 0 %}
+                    <div class="box1 d-flex align-items-center justify-content-center">
+                        <div class="box2 mt-5">
+                            <i class="far fa-file"></i>
+                            <h4 class="card-title font-weight-bold text-black-50 mt-3">設問が登録されていません</h4>
+                        </div>
+                    </div>
 
+                <!-- 設問が登録されている場合 -->
+                {% else %}
 
-                {% for question in test.questionnairequestion_set.all %}
+                    {% for question in test.questionnairequestion_set.all %}
 
-                    <div class="form-group hoge position-relative">
+                        <div class="form-group hoge position-relative">
 
-                        <!-- questionとchoiceの変更・削除 -->
-                        <div class="delete-button">
+                            <!-- questionとchoiceの変更・削除 -->
+                            <div class="delete-button">
 
-                            <a href="{% url 'training:questionnaire_update' question.id %}">
-                                <button type="button" class="my-btn my-btn-egypt-1 my-btn-w8 "><span class="my_btn_text">変更</span></button>
-                            </a>
+                                <a href="{% url 'training:questionnaire_update' question.id %}">
+                                    <button type="button" class="my-btn my-btn-egypt-1 my-btn-w8 "><span class="my_btn_text">変更</span></button>
+                                </a>
 
-                            {% if current_user|get_co_admin_user %}
-                            <!-- 共同管理者の場合 -->
-                                {% if question.questionnair_register_user.display_name == login_user.display_name %}
-                                    <!-- 設問の作成者が共同管理者の場合 -->
-                                    <button type="button" class="btn my-btn-danger-1 my-btn-w8" data-toggle="modal" data-target="#questionnaire_delete_modal{{question.id}}" data-pk="{{ question.id }}">
-                                        削除
-                                    </button>
+                                {% if current_user|get_co_admin_user %}
+                                <!-- 共同管理者の場合 -->
+                                    {% if question.questionnair_register_user.display_name == login_user.display_name %}
+                                        <!-- 設問の作成者が共同管理者の場合 -->
+                                        <button type="button" class="btn my-btn-danger-1 my-btn-w8" data-toggle="modal" data-target="#questionnaire_delete_modal{{question.id}}" data-pk="{{ question.id }}">
+                                            削除
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn my-btn-danger-1 my-btn-w8" data-toggle="modal" data-target="#questionnaire_delete_modal{{question.id}}" data-pk="{{ question.id }}" style="pointer-events: none; opacity: 0.5;">
+                                            削除
+                                        </button>
+                                    {% endif %}
+
                                 {% else %}
-                                    <button type="button" class="btn my-btn-danger-1 my-btn-w8" data-toggle="modal" data-target="#questionnaire_delete_modal{{question.id}}" data-pk="{{ question.id }}" style="pointer-events: none; opacity: 0.5;">
+                                    <!-- 管理者の場合 -->
+                                    <button type="button" class="btn my-btn-danger-1 my-btn-w8" data-toggle="modal" data-target="#questionnaire_delete_modal{{question.id}}" data-pk="{{ question.id }}">
                                         削除
                                     </button>
                                 {% endif %}
 
-                            {% else %}
-                                <!-- 管理者の場合 -->
-                                <button type="button" class="btn my-btn-danger-1 my-btn-w8" data-toggle="modal" data-target="#questionnaire_delete_modal{{question.id}}" data-pk="{{ question.id }}">
-                                    削除
-                                </button>
-                            {% endif %}
-
-                        </div>
-                        <!-- questionとchoiceの変更・削除 -->
+                            </div>
+                            <!-- questionとchoiceの変更・削除 -->
 
 
 
-                        <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center">
 
-                            {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
-                            <div class="d-md-inline-block mt-3 ml-4 mb-3">
-                                <div class="test_question_text_size">{{ forloop.counter }}.{{question.text|safe}}</div>
+                                {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
+                                <div class="d-md-inline-block mt-3 ml-4 mb-3">
+                                    <div class="test_question_text_size">{{ forloop.counter }}.{{question.text|safe}}</div>
+                                </div>
+
+                            </div>
+
+                            <div class="card-box">
+
+                                <!-- ラジオボタン -->
+                                {% if question.is_multiple_questionnaire == 1 %}
+
+                                    {% for choice in question.questionnairechoice_set.all %}
+
+                                        <div class="card mt-1">
+
+                                            <div class="d-flex align-items-center test_chice_box">
+
+                                                {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
+                                                <div class="d-md-inline-block mt-3 ml-4 mb-3">
+                                                    <div class="test_chice_text_size"><input class="input_check" type="radio" name="{{ question.id }}" id="{{ choice.id }}" value="{{ choice.id }}" required></div>
+                                                </div>
+
+                                                <!-- ア、イ、ウ、エ -->
+                                                {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
+                                                <div class="d-md-inline-block mt-3 ml-4 mb-3">
+                                                    <div class="test_chice_text_size">{{choice_num|index:forloop.counter0}}.</div>
+                                                </div>
+
+                                                <!-- 選択肢の値 -->
+                                                {% comment %} <div class="d-none d-md-inline-block mt-3 ml-1 mb-3"> {% endcomment %}
+                                                <div class="d-md-inline-block mt-3 ml-1 mb-3">
+                                                    <label class="test_chice_text_size mb-0" for={{ choice.id }}>{{choice}}</label>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                <!-- チェックボックス -->
+                                {% elif question.is_multiple_questionnaire == 2 %}
+
+                                    {% for choice in question.questionnairechoice_set.all %}
+
+                                        <div class="card mt-1">
+
+                                            <div class="d-flex align-items-center test_chice_box">
+
+                                                {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
+                                                <div class="d-md-inline-block mt-3 ml-4 mb-3">
+                                                    <div class="test_chice_text_size"><input class="input_check" type="checkbox" name="{{ question.id }}" id="{{ choice.id }}" value="{{ choice.id }}" required></div>
+                                                </div>
+
+                                                <!-- ア、イ、ウ、エ -->
+                                                {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
+                                                <div class="d-md-inline-block mt-3 ml-4 mb-3">
+                                                    <div class="test_chice_text_size">{{choice_num|index:forloop.counter0}}.</div>
+                                                </div>
+
+                                                <!-- 選択肢の値 -->
+                                                {% comment %} <div class="d-none d-md-inline-block mt-3 ml-1 mb-3"> {% endcomment %}
+                                                <div class="d-md-inline-block mt-3 ml-1 mb-3">
+                                                    <label class="test_chice_text_size mb-0" for={{ choice.id }}>{{choice}}</label>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                <!-- 記述式 -->
+                                {% elif question.is_multiple_questionnaire == 3 %}
+
+                                    <div class="d-flex align-items-center test_chice_box">
+
+                                        {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
+                                        <div class="d-md-inline-block mt-3 ml-4 mb-3">
+                                            <div class="test_chice_text_size"><textarea class="text_form_confirm" cols="40" rows="2" name="{{ question.id }}" id="{{ choice.id }}" value="{{ choice.id }}" required>記入用フォーム</textarea></div>
+                                        </div>
+
+                                    </div>
+
+                                {% endif %}
+
                             </div>
 
                         </div>
 
-                        <div class="card-box">
 
-                            <!-- ラジオボタン -->
-                            {% if question.is_multiple_questionnaire == 1 %}
 
-                                {% for choice in question.questionnairechoice_set.all %}
 
-                                    <div class="card mt-1">
+                        <!-- 削除モーダルの設定 -->
+                        <div class="modal fade" id="questionnaire_delete_modal{{question.id}}" tabindex="-1" aria-labelledby="exampleModalLabel">
 
-                                        <div class="d-flex align-items-center test_chice_box">
+                            <div class="modal-dialog modal-dialog-centered">
 
-                                            {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
-                                            <div class="d-md-inline-block mt-3 ml-4 mb-3">
-                                                <div class="test_chice_text_size"><input class="input_check" type="radio" name="{{ question.id }}" id="{{ choice.id }}" value="{{ choice.id }}" required></div>
-                                            </div>
+                                <div class="modal-content">
 
-                                            <!-- ア、イ、ウ、エ -->
-                                            {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
-                                            <div class="d-md-inline-block mt-3 ml-4 mb-3">
-                                                <div class="test_chice_text_size">{{choice_num|index:forloop.counter0}}.</div>
-                                            </div>
+                                    <div class="modal-header">
 
-                                            <!-- 選択肢の値 -->
-                                            {% comment %} <div class="d-none d-md-inline-block mt-3 ml-1 mb-3"> {% endcomment %}
-                                            <div class="d-md-inline-block mt-3 ml-1 mb-3">
-                                                <label class="test_chice_text_size mb-0" for={{ choice.id }}>{{choice}}</label>
-                                            </div>
+                                        <h5 class="modal-title" id="exampleModalLabel">アンケート削除</h5>
 
-                                        </div>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
 
                                     </div>
 
-                                {% endfor %}
-
-                            <!-- チェックボックス -->
-                            {% elif question.is_multiple_questionnaire == 2 %}
-
-                                {% for choice in question.questionnairechoice_set.all %}
-
-                                    <div class="card mt-1">
-
-                                        <div class="d-flex align-items-center test_chice_box">
-
-                                            {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
-                                            <div class="d-md-inline-block mt-3 ml-4 mb-3">
-                                                <div class="test_chice_text_size"><input class="input_check" type="checkbox" name="{{ question.id }}" id="{{ choice.id }}" value="{{ choice.id }}" required></div>
-                                            </div>
-
-                                            <!-- ア、イ、ウ、エ -->
-                                            {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
-                                            <div class="d-md-inline-block mt-3 ml-4 mb-3">
-                                                <div class="test_chice_text_size">{{choice_num|index:forloop.counter0}}.</div>
-                                            </div>
-
-                                            <!-- 選択肢の値 -->
-                                            {% comment %} <div class="d-none d-md-inline-block mt-3 ml-1 mb-3"> {% endcomment %}
-                                            <div class="d-md-inline-block mt-3 ml-1 mb-3">
-                                                <label class="test_chice_text_size mb-0" for={{ choice.id }}>{{choice}}</label>
-                                            </div>
-
-                                        </div>
-
+                                    <div class="modal-body">
+                                        <!-- 警告メッセージ内で表示する設問は30文字でカット -->
+                                        <h6><i class="fas fa-exclamation-circle" style="color: #dc3e45;"></i>「{{ question.text|truncatechars:30 }}」を削除しますか？</h6>
                                     </div>
 
-                                {% endfor %}
+                                    <div class="modal-footer justify-content-center">
 
-                            <!-- 記述式 -->
-                            {% elif question.is_multiple_questionnaire == 3 %}
+                                        <form action="{% url 'training:questionnaire_delete' question.id %}" method="POST" id="delete-form">
 
-                                <div class="d-flex align-items-center test_chice_box">
+                                            {% csrf_token %}
 
-                                    {% comment %} <div class="d-none d-md-inline-block mt-3 ml-4 mb-3"> {% endcomment %}
-                                    <div class="d-md-inline-block mt-3 ml-4 mb-3">
-                                        <div class="test_chice_text_size"><textarea class="text_form_confirm" cols="40" rows="2" name="{{ question.id }}" id="{{ choice.id }}" value="{{ choice.id }}" required>記入用フォーム</textarea></div>
-                                    </div>
+                                            <div class="btn_group">
+                                                <button type="button" class="my-btn my-btn-gray-2 my-btn-w7 mr-3" data-dismiss="modal">閉じる</button>
+                                                <button type="submit" class="my-btn my-btn-egypt-1 my-btn-w7">削除</button>
+                                            </div>
 
-                                </div>
+                                        </form>
 
-                            {% endif %}
+                                    </div><!-- /.modal-footer -->
 
-                        </div>
+                                </div><!-- /.modal-content -->
 
-                    </div>
+                            </div><!-- /.modal-card -->
 
+                        </div><!-- /.modal -->
 
+                    {% endfor %}
 
+                {% endif %}
 
-                    <!-- 削除モーダルの設定 -->
-                    <div class="modal fade" id="questionnaire_delete_modal{{question.id}}" tabindex="-1" aria-labelledby="exampleModalLabel">
-
-                        <div class="modal-dialog modal-dialog-centered">
-
-                            <div class="modal-content">
-
-                                <div class="modal-header">
-
-                                    <h5 class="modal-title" id="exampleModalLabel">アンケート削除</h5>
-
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-
-                                </div>
-
-                                <div class="modal-body">
-                                    <!-- 警告メッセージ内で表示する設問は30文字でカット -->
-                                    <h6><i class="fas fa-exclamation-circle" style="color: #dc3e45;"></i>「{{ question.text|truncatechars:30 }}」を削除しますか？</h6>
-                                </div>
-
-                                <div class="modal-footer justify-content-center">
-
-                                    <form action="{% url 'training:questionnaire_delete' question.id %}" method="POST" id="delete-form">
-
-                                        {% csrf_token %}
-
-                                        <div class="btn_group">
-                                            <button type="button" class="my-btn my-btn-gray-2 my-btn-w7 mr-3" data-dismiss="modal">閉じる</button>
-                                            <button type="submit" class="my-btn my-btn-egypt-1 my-btn-w7">削除</button>
-                                        </div>
-
-                                    </form>
-
-                                </div><!-- /.modal-footer -->
-
-                            </div><!-- /.modal-content -->
-
-                        </div><!-- /.modal-card -->
-
-                    </div><!-- /.modal -->
-
-
-
-
-
-
-
-
-                {% endfor %}
 
 
 <!-- baseで定義している id="wrapper"とcontents-wrapperのDiv閉じ -->
