@@ -210,12 +210,17 @@
                             <span id="{{ test.id }}" class="fas_button btn_test_create btn_management_test mr-2">設問登録</span>
                         </a>
 
-                        <!-- 設問の並び替えページへ遷移 -->
-                        <a href="{% url 'training:questionnaire_sort_top' test.id %}">
-                            {% comment %} <button type="submit" class="my-btn my-btn-egypt-1 btn_management_test my-btn-w9"><span class="my_btn_text">設問の並び替え</span></button> {% endcomment %}
-                            <span class="fas_button btn_oder_chg btn_management_test">設問の並び替え</span>
-                        </a>
-
+                        {% if test.questionnairequestion_set.all|length < 2 %}
+                            <!-- 設問の並び替えページへ遷移 -->
+                            <a href="" style="pointer-events: none; opacity: 0.4;">
+                                <span class="fas_button btn_oder_chg btn_management_test">設問の並び替え</span>
+                            </a>
+                        {% else %}
+                            <!-- 設問の並び替えページへ遷移 -->
+                            <a href="{% url 'training:questionnaire_sort_top' test.id %}">
+                                <span class="fas_button btn_oder_chg btn_management_test">設問の並び替え</span>
+                            </a>
+                        {% endif %}
                     </div>
 
                 </div>
