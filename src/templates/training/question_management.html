@@ -228,11 +228,15 @@
                         </a>
 
                         <!-- 設問の並び替えページへ遷移 -->
-                        <a href="{% url 'training:question_sort_top' test.id %}">
-                            {% comment %} <button type="submit" class="my-btn btn_oder_chg btn_management_test my-btn-w9"><span class="my_btn_text">設問の並び替え</span></button> {% endcomment %}
-                            <span class="fas_button btn_oder_chg btn_management_test">設問の並び替え</span>
-                        </a>
-
+                        {% if test.question_parts.all|length < 2 %}
+                            <a href="" style="pointer-events: none; opacity: 0.4;">
+                                <span class="fas_button btn_oder_chg btn_management_test">設問の並び替え</span>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'training:question_sort_top' test.id %}">
+                                <span class="fas_button btn_oder_chg btn_management_test">設問の並び替え</span>
+                            </a>
+                        {% endif %}
                     </div>
 
                 </div>
