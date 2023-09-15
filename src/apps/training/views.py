@@ -8737,22 +8737,25 @@ class PartsDeleteView(DeleteView):
         print("---------- パーツの削除 ---------")
 
         parts_id = self.kwargs['pk']
-        print("---------- parts_id ---------", parts_id)
+        # print("---------- parts_id ---------", parts_id)
 
         training = Training.objects.filter(parts=parts_id).first()
 
         # リソース管理テーブルからトレーニングを作成した会社のレコードを取得
         this_resource_manage = ResourceManagement.objects.filter(reg_company_name=self.request.user.company.id).first()
-        print("---------- this_resource_manage ---------", this_resource_manage)
+        # print("---------- this_resource_manage ---------", this_resource_manage)
 
         # トレーニングに紐づいているパーツを取得
         parts = training.parts.all()
-        print("---------- all_parts ---------", parts)
+        # print("---------- all_parts ---------", parts)
+
+        # パーツの数を取得
+        parts_count = training.parts.all().count()
 
         for parts in parts:
             # 依存元を取得
             parts_origin_objs = ControlConditions.objects.filter(parts_destination=parts.id)
-            print("------------- parts_origin_objs 1", parts_origin_objs)
+            # print("------------- parts_origin_objs 1", parts_origin_objs)
 
             # 該当するものを削除する
             parts_origin_objs.delete()
@@ -8901,9 +8904,15 @@ class PartsDeleteView(DeleteView):
                             # 設問に紐づく画像を削除
                             image.delete()
 
+        # トレーニングに紐づいているパーツから削除した分のパーツの数を引く
+        parts_after_del = parts_count - 1
 
-        # パーツの削除が済んだことがわかるようにセッションを持たせる
-        self.request.session['parts_delete_done'] = 'parts_delete_done'
+        if parts_after_del >= 2:
+            # パーツの削除が済んだことがわかるようにセッションを持たせる
+            self.request.session['parts_delete_done'] = 'parts_delete_done'
+
+        # # パーツの削除が済んだことがわかるようにセッションを持たせる
+        # self.request.session['parts_delete_done'] = 'parts_delete_done'
 
         # メッセージを返す
         messages.success(self.request, "パーツを削除しました。")
