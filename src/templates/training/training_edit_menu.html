@@ -1106,24 +1106,28 @@
 
                             <!-- パーツが存在する場合 -->
                             {% if training.parts.all %}
-                                <!-- 順番変更ボタンを有効化 -->
-                                <button type="button" title="パーツの並び替え" id="" class="fas_button_partsoder_change mr-2" onclick="window.location.href='{% url 'training:parts_sorting' training.pk %}'"></button>
 
-                                <!-- ボタン有効化制御、制御条件登録ボタン -->
-                                <button type="button" title="ボタン有効化制御、制御条件登録" class="fas_button_activate_ctl mr-2" onclick="window.location.href='{% url 'training:button_activate_ctl' training.pk %}'"></button>
+                                <!-- パーツの数が2個以上の場合 -->
+                                {% if training.parts.all|length >= 2 %}
+                                    <!-- 順番変更ボタンを有効化 -->
+                                    <button type="button" title="パーツの並び替え" id="" class="fas_button_partsoder_change mr-2" onclick="window.location.href='{% url 'training:parts_sorting' training.pk %}'"></button>
 
-                                <!-- ボタン有効化制御、制御条件変更ボタン -->
-                                {% comment %} <button type="button" title="ボタン有効化制御、制御条件変更" class="fas_button_activate_ctl_edit mr-2" onclick="window.location.href='{% url 'training:button_activate_ctl_edit' training.pk %}'"></button> {% endcomment %}
+                                    <!-- ボタン有効化制御、制御条件登録ボタン -->
+                                    <button type="button" title="ボタン有効化制御、制御条件登録" class="fas_button_activate_ctl mr-2" onclick="window.location.href='{% url 'training:button_activate_ctl' training.pk %}'"></button>
+                                {% else %}
+                                    <!-- 順番変更ボタンを有効化 無効化 -->
+                                    <button type="button" title="パーツの並び替え" id="" class="fas_button_partsoder_change mr-2" onclick="window.location.href=''" style="pointer-events: none; opacity: 0.5;"></button>
+
+                                    <!-- ボタン有効化制御、制御条件登録ボタン 無効化 -->
+                                    <button type="button" title="ボタン有効化制御、制御条件登録" class="fas_button_activate_ctl mr-2" onclick="window.location.href=''" style="pointer-events: none; opacity: 0.5;"></button>
+                                {% endif %}
 
                             {% else %}
                                 <!-- 順番変更ボタンを無効化 -->
-                                <button type="button" title="パーツの並び替え" id="" class="fas_button_partsoder_change mr-2" onclick="window.location.href='{% url 'training:parts_sorting' training.pk %}'" style="pointer-events: none; opacity: 0.5;"></button>
+                                <button type="button" title="パーツの並び替え" id="" class="fas_button_partsoder_change mr-2" onclick="window.location.href=''" style="pointer-events: none; opacity: 0.5;"></button>
 
-                                <!-- ボタン有効化制御、制御条件登録ボタン -->
-                                <button type="button" title="ボタン有効化制御、制御条件登録" class="fas_button_activate_ctl mr-2" onclick="window.location.href='{% url 'training:button_activate_ctl' training.pk %}'" style="pointer-events: none; opacity: 0.5;"></button>
-
-                                <!-- ボタン有効化制御、制御条件変更ボタン -->
-                                {% comment %} <button type="button" title="ボタン有効化制御、制御条件変更" class="fas_button_activate_ctl_edit mr-2" onclick="window.location.href='{% url 'training:button_activate_ctl_edit' training.pk %}'" style="pointer-events: none; opacity: 0.5;"></button> {% endcomment %}
+                                <!-- ボタン有効化制御、制御条件登録ボタン 無効化 -->
+                                <button type="button" title="ボタン有効化制御、制御条件登録" class="fas_button_activate_ctl mr-2" onclick="window.location.href=''" style="pointer-events: none; opacity: 0.5;"></button>
 
                             {% endif %}
 
