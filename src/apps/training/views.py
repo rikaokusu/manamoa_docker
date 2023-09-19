@@ -3699,13 +3699,22 @@ class TrainingCreateView(LoginRequiredMixin, CommonView, FormView):
 
         # 選択したstart_dateを取得
         # start_date = form.cleaned_data['start_date']
-
+        now1 = datetime.now()
+        # 登録時刻との比較用
+        now2 = datetime.now() - timedelta(hours=9)
+        now3 = now2.strftime("%Y-%m-%d %H:%M:%S")
+        sd = create_training.start_date.strftime("%Y-%m-%d %H:%M:%S")
+        fifteen = now1 + timedelta(minutes=15)
         # if training.start_date is None:
         if create_training.start_date is None:
-            # start_dateが未入力の場合、現在時刻を代入する
-            now = datetime.now()
+            # start_dateが未入力の場合、15分後の時刻を代入する
+            # now = datetime.now()
             # training.start_date = now.strftime("%Y-%m-%d %H:%M:%S")
-            create_training.start_date = now.strftime("%Y-%m-%d %H:%M:%S")
+            create_training.start_date = fifteen.strftime("%Y-%m-%d %H:%M:%S")
+        elif sd < now3:
+            create_training.start_date = fifteen.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            pass
 
         # Noneの場合、デフォルトのコースと紐づける
         if create_training.subject is None:
@@ -4374,7 +4383,7 @@ class TrainingManagementView(LoginRequiredMixin, ListView, CommonView, TraningSt
             total_file_size = resource_management.total_file_size / 1024 / 1024
             # 小数第2位を切り捨て
             total_file_size = round(total_file_size, 2)
-            # 残容量
+            # 残容量                                                             
             remaining_capacity = 500 - total_file_size
 
             # 残容量がマイナスの値なら0にする
@@ -7894,11 +7903,21 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
 
         # start_dateの変更がある場合
         # if training_update.start_date is None:
+        now1 = datetime.now()
+
+        # 登録時刻との比較用
+        now2 = now1.strftime("%Y-%m-%d %H:%M:%S")
+        sd = training.start_date.strftime("%Y-%m-%d %H:%M:%S")
+        fifteen = now1 + timedelta(minutes=15)
         if training.start_date is None:
             print("------ training.start_date is None -------")
-            # 現在時刻を代入する
-            now = datetime.now()
-            training.start_date = now.strftime("%Y-%m-%d %H:%M:%S")
+            # 15分後の時刻を代入する
+            # now = datetime.now()
+            training.start_date = fifteen.strftime("%Y-%m-%d %H:%M:%S")
+        elif sd < now2:
+            training.start_date = fifteen.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            pass
         training.save()
 
         # コースを変更してもTrainingManageに更新した内容が反映されなかったため追加

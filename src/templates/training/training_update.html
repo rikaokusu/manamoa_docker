@@ -515,7 +515,7 @@ for btn
                                 <th>
 
                                     <div class="option_box">
-                                        <div class="label option_label">開始時刻<br><small> 現在の日時の場合、15分後の時間を登録します</small></div>
+                                        <div class="label option_label">開始時刻<br><small> 現在時刻の場合、変更時の15分後の時間を登録します</small></div>
                                     </div>
 
                                 </th>
@@ -533,7 +533,7 @@ for btn
                                     <div class="contents">{% render_field form.start_date class="form-control" id="training_start_date" %}</div>
 
                                     <div class="d-flex align-items-center">
-                                        <p class="mt-2 mb-1" style="font-size: 13px; text-align:left;">※設定しない場合は現在の日時の15分後の時間が<br>　設定されます</p>
+                                        <p class="mt-2 mb-1" style="font-size: 13px; text-align:left;">※設定しない場合は変更時の15分後の時間が設定されます</p>
                                     </div>
 
                                 </td>
@@ -1175,11 +1175,11 @@ $(document).ready(function() {
         a_3d_day_str = a_3d_day_str.replace(/MM/g, month_str); // 月
         a_3d_day_str = a_3d_day_str.replace(/DD/g, day_str); // 日
 
-        a_3d_day_str = a_3d_day_str.replace(/hh/g, '23'); // 時間
-        console.log("a_3d_day_str, 時間", a_3d_day_str)
+        a_3d_day_str = a_3d_day_str.replace(/hh/g, '00'); // 時間
+        console.log("a_3d_day_str, 開始時間", a_3d_day_str)
 
-        a_3d_day_str = a_3d_day_str.replace(/mm/g, '59'); // 分
-        console.log("a_3d_day_str, 分", a_3d_day_str)// 23:mm:ss
+        a_3d_day_str = a_3d_day_str.replace(/mm/g, '00'); // 分
+        console.log("a_3d_day_str, 開始分", a_3d_day_str)// 23:mm:ss
 
         //yano a_3d_day_str = a_3d_day_str.replace(/ss/g, '59'); // 秒
         //yano console.log("a_3d_day_str", a_3d_day_str)// 23:59:ss
@@ -1206,8 +1206,8 @@ $(document).ready(function() {
         a_7d_day_str = a_7d_day_str.replace(/YYYY/g, year_str);
         a_7d_day_str = a_7d_day_str.replace(/MM/g, month_str);
         a_7d_day_str = a_7d_day_str.replace(/DD/g, day_str);
-        a_7d_day_str = a_7d_day_str.replace(/hh/g, '23');
-        a_7d_day_str = a_7d_day_str.replace(/mm/g, '59');
+        a_7d_day_str = a_7d_day_str.replace(/hh/g, '00');
+        a_7d_day_str = a_7d_day_str.replace(/mm/g, '00');
         //yano a_7d_day_str = a_7d_day_str.replace(/ss/g, '59');
 
         $('#training_start_date').val(a_7d_day_str)
@@ -1231,8 +1231,8 @@ $(document).ready(function() {
         a_14d_day_str = a_14d_day_str.replace(/YYYY/g, year_str);
         a_14d_day_str = a_14d_day_str.replace(/MM/g, month_str);
         a_14d_day_str = a_14d_day_str.replace(/DD/g, day_str);
-        a_14d_day_str = a_14d_day_str.replace(/hh/g, '23');
-        a_14d_day_str = a_14d_day_str.replace(/mm/g, '59');
+        a_14d_day_str = a_14d_day_str.replace(/hh/g, '00');
+        a_14d_day_str = a_14d_day_str.replace(/mm/g, '00');
         //yano a_14d_day_str = a_14d_day_str.replace(/ss/g, '59');
 
         $('#training_start_date').val(a_14d_day_str)
@@ -1257,8 +1257,8 @@ $(document).ready(function() {
         a_1m_day_str = a_1m_day_str.replace(/YYYY/g, year_str);
         a_1m_day_str = a_1m_day_str.replace(/MM/g, month_str);
         a_1m_day_str = a_1m_day_str.replace(/DD/g, day_str);
-        a_1m_day_str = a_1m_day_str.replace(/hh/g, '23');
-        a_1m_day_str = a_1m_day_str.replace(/mm/g, '59');
+        a_1m_day_str = a_1m_day_str.replace(/hh/g, '00');
+        a_1m_day_str = a_1m_day_str.replace(/mm/g, '00');
         //yano a_1m_day_str = a_1m_day_str.replace(/ss/g, '59');
 
         $('#training_start_date').val(a_1m_day_str)
