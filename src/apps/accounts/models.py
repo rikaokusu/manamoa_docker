@@ -214,6 +214,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     created_date = models.DateTimeField(_('created date'), default=timezone.now)
     # メール送信可否
     is_send_mail = models.BooleanField(_('is_send_mail'), default=True)
+    # ユーザーカラー
+    color_num = models.IntegerField("color_num", default=0,blank=True)
     # 画像のアップロード
     # photo = models.ImageField(upload_to="avater", default='',blank=True)
 

@@ -597,6 +597,138 @@ button:focus,
   width: 456px !important;
 }
 
+
+.c0 {
+    color: #fff;
+    border: 4px solid #8000f0;
+    background: #8000f0;
+}
+.c1 {
+    color: #fff;
+    border: 4px solid #ff0000;
+    background: #ff0000;
+}
+.c2 {
+    color: #ff0000;
+    border: 4px solid #FFCCCC;
+    background: #FFCCCC;
+}
+.c3 {
+    color: #fff;
+    border: 4px solid #ff8000;
+    background: #ff8000;
+}
+.c4 {
+    color: #ff8000;
+    border: 4px solid #FFE5CC;
+    background: #FFE5CC;
+}
+.c5 {
+    color: #7c2222;
+    border: 4px solid #ffff00;
+    background: #ffff00;
+}
+.c6 {
+    color: #ffff00;
+    border: 4px solid #FFFECC;
+    background: #FFFECC;
+}
+.c7 {
+    color: #fff;
+    border: 4px solid #8FC31F;
+    background: #8FC31F;
+}
+.c8 {
+    color: #8FC31F;
+    border: 4px solid #E6FFCC;
+    background: #E6FFCC;
+}
+.c9 {
+    color: #fff;
+    border: 4px solid #009944;
+    background: #009944;
+}
+.c10 {
+    color: #009944;
+    border: 4px solid #CCFFCC;
+    background: #CCFFCC;
+}
+.c11 {
+    color: #fff;
+    border: 4px solid #009E96;
+    background: #009E96;
+}
+.c12 {
+    color: #009E96;
+    border: 4px solid #CCFFE5;
+    background: #CCFFE5;
+}
+.c13 {
+    color: #fff;
+    border: 4px solid #00ffff;
+    background: #00ffff;
+}
+.c14 {
+    color: #00ffff;
+    border: 4px solid #CCFFFF;
+    background: #CCFFFF;
+}
+.c15 {
+    color: #fff;
+    border: 4px solid #0080ff;
+    background: #0080ff;
+}
+.c16 {
+    color: #0080ff;
+    border: 4px solid #CCE6FF;
+    background: #CCE6FF;
+}
+.c17 {
+    color: #fff;
+    border: 4px solid #0000ff;
+    background: #0000ff;
+}
+.c18 {
+    color: #0000ff;
+    border: 4px solid #CCCCFF;
+    background: #CCCCFF;
+}
+.c19 {
+    color: #fff;
+    border: 4px solid #8000ff;
+    background: #8000ff;
+}
+.c20 {
+    color: #8000ff;
+    border: 4px solid #E5CCFF;
+    background: #E5CCFF;
+}
+.c21 {
+    color: #fff;
+    border: 4px solid #ff00ff;
+    background: #ff00ff;
+}
+.c22 {
+    color: #c812c8;
+    border: 4px solid #FFCCFF;
+    background: #FFCCFF;
+}
+.c23 {
+    color: #fff;
+    border: 4px solid #ff0080;
+    background: #ff0080;
+}
+.c24 {
+    color: #ff0080;
+    border: 4px solid #FFCCE6;
+    background: #FFCCE6;
+}
+.c25 {
+    color: #d4cbcf;
+    border: 4px solid #654f5a;
+    background: #654f5a;
+}
+
 /*---------------------------------
 
 for Header
@@ -974,14 +1106,14 @@ for Notification Modal
 }
 
 .base-d-item:focus, .base-d-item:hover {
-  color: #201d1c;
-  background-color: #ffc3a6;
+  color: #fff;
+  background-color: #294A6A;
   transition: background-color 1.1s;
 }
 
 .d-item:focus, .d-item:hover {
-  color: #201d1c;
-  background-color: #ffc3a6;
+  color: #fff;
+  background-color: #294A6A;
   max-width: 100vw;
   width: 100vw;
   margin-right: calc(50% - 50vw);
