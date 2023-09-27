@@ -3703,7 +3703,8 @@ class TrainingCreateView(LoginRequiredMixin, CommonView, FormView):
         # 登録時刻との比較用
         now2 = datetime.now() - timedelta(hours=9)
         now3 = now2.strftime("%Y-%m-%d %H:%M:%S")
-        sd = create_training.start_date.strftime("%Y-%m-%d %H:%M:%S")
+        if create_training.start_date:
+            sd = create_training.start_date.strftime("%Y-%m-%d %H:%M:%S")
         fifteen = now1 + timedelta(minutes=15)
         # if training.start_date is None:
         if create_training.start_date is None:
@@ -7907,7 +7908,8 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
 
         # 登録時刻との比較用
         now2 = now1.strftime("%Y-%m-%d %H:%M:%S")
-        sd = training.start_date.strftime("%Y-%m-%d %H:%M:%S")
+        if training.start_date:
+            sd = training.start_date.strftime("%Y-%m-%d %H:%M:%S")
         fifteen = now1 + timedelta(minutes=15)
         if training.start_date is None:
             print("------ training.start_date is None -------")
