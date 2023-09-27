@@ -151,10 +151,11 @@ a.my-btn.disabled, fieldset:disabled a.my-btn {
 }
 .my-btn-accept{
   color: #fff !important;
-  background:#f15a24;
+  /* background:#f15a24; */
+  background: #294a6a;
 }
 .my-btn-accept:hover{
-  background:#e55723;
+  background:#1f364e;
 }
 .my-btn-outline-egypt-1 {
   color: #0073a8;

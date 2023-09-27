@@ -6,7 +6,7 @@ from django.views.generic import View, ListView, DetailView, TemplateView, FormV
 from django.views.generic.base import ContextMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 
-from accounts.forms import LoginForm, CompanyUpdateForm, MyUserCreationForm, MyUserChangeForm, CustomPasswordChangeForm, MultiAddInfoForm, UserCompanyMultiForm, MyPasswordResetForm, MySetPasswordForm, UserChangeForm, UserSettingsForm, ContactForm, CompanyConfirmForm
+from accounts.forms import LoginForm, CompanyUpdateForm, MyUserCreationForm, MyUserChangeForm, CustomPasswordChangeForm, MultiAddInfoForm, UserCompanyMultiForm, MyPasswordResetForm, MySetPasswordForm, UserChangeForm, UserSettingsForm, ContactForm, CompanyConfirmForm, MyPasswordChangeForm
 # from accounts.forms import ServerSettingForm
 from django.urls import reverse_lazy
 
@@ -23,7 +23,7 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.hashers import make_password, check_password
 
-from accounts.models import User, Company, Messages, Service
+from accounts.models import User, Company, Messages, Service, Notification, Read
 # from contracts.models import Contract
 
 from training.models import GuestUserManagement
@@ -101,26 +101,56 @@ class CommonView(ContextMixin):
         # services = Service.objects.filter(number__in=current_user.service_admin)
         # context["services"] = services
 
-        # リマインダーを取得
-        reminder = current_user.target_user.all()
-        logger.debug("リマインダー")
-        logger.debug(reminder)
-        context["all_informations"] = reminder[:5]
+        #9/22コメントアウト-----------------------------------
+        # # リマインダーを取得
+        # reminder = current_user.target_user.all()
+        # logger.debug("リマインダー")
+        # logger.debug(reminder)
+        # context["all_informations"] = reminder[:5]
 
-        # リマインダー未読数
-        non_read_count = current_user.target_user.filter(is_read = False).count()
-        logger.debug("リマイリマインダー未読数ンダー")
-        logger.debug(non_read_count)
+        # # リマインダー未読数
+        # non_read_count = current_user.target_user.filter(is_read = False).count()
+        # logger.debug("リマイリマインダー未読数ンダー")
+        # logger.debug(non_read_count)
 
-        # リマインダー未読数は最大99件とする
-        if non_read_count > 99:
-            non_read_count = 99
+        # # リマインダー未読数は最大99件とする
+        # if non_read_count > 99:
+        #     non_read_count = 99
 
-        context["non_read_count"] = non_read_count
+        # context["non_read_count"] = non_read_count
 
-        is_app_admin = current_user.service_admin.filter(name=settings.TRAINING).exists()
+        # is_app_admin = current_user.service_admin.filter(name=settings.TRAINING).exists()
 
-        context["is_app_admin"] = is_app_admin
+        # context["is_app_admin"] = is_app_admin
+        #----------------------------------------------ここまで
+        today = datetime.now(timezone.utc)
+        all_informations = Notification.objects.filter(start_date__lte = today)
+        notice_informations = Notification.objects.filter(Q(target_user_id = None)|Q(target_user_id = current_user),Q(category = 'メッセージ')|Q(category = 'お知らせ'),start_date__lte = today).distinct().values()
+        maintenance_informations = Notification.objects.filter(Q(target_user_id = None)|Q(target_user_id = current_user),start_date__lte = today, category__contains = 'メンテナンス').distinct().values()
+        read = Read.objects.filter(read_user=current_user).count()
+        read_info = Read.objects.filter(read_user=current_user).values_list('notification_id', flat=True)
+        if read > 0:
+            info_all = Notification.objects.filter(Q(target_user_id = None)|Q(target_user_id = current_user),start_date__lte = today).distinct().count()
+            no_read = info_all - read
+        else:
+            no_read = Notification.objects.filter(Q(target_user_id = None)|Q(target_user_id = current_user),start_date__lte = today).distinct().count()
+
+        email_list = current_user.email.rsplit('@', 1)
+        # メールアドレスをユーザ名とドメインに分割
+        email_domain = email_list[1]
+
+        url_name = self.request.resolver_match.url_name
+        app_name = self.request.resolver_match.app_name
+        if no_read > 99 :
+            context["no_read"] = "99+"
+
+        else:
+            context["no_read"] = no_read
+        
+        context["read_info"] = read_info
+        context["all_informations"] = all_informations
+        context["maintenance_informations"] = maintenance_informations
+        context["notice_informations"] = notice_informations
 
 
         return context
@@ -702,7 +732,7 @@ class UserUpdateInfoView(LoginRequiredMixin, UpdateView, CommonView):
         service_admin = form.cleaned_data['service_admin']
         user.service_admin.set(service_admin)
 
-        return redirect('accounts:user_infomation')
+        return redirect('training:training')
 
 
 """
@@ -936,7 +966,6 @@ class UserCreateSetpasswordDone(TemplateView):
 
 """
 ユーザー編集画面
-管理者がユーザーを編集する際に使う画面
 """
 # @method_decorator(login_required(login_url='/manager/login/'), name = 'dispatch')
 # @method_decorator(user_is_entry_author, name = 'dispatch')
@@ -989,7 +1018,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView, CommonView):
 
         # 保存
         user.save()
-        return redirect('accounts:user')
+        return redirect('training:training')
 
 """
 管理者がユーザーのパスワードを変更する画面
@@ -1017,6 +1046,32 @@ class UserChangePassword(LoginRequiredMixin, PasswordChangeView, CommonView):
 """
 class UserChangePasswordDone(LoginRequiredMixin, TemplateView, CommonView):
     template_name = 'accounts/user_change_password_done_for_admin.html'
+    login_url = '/login/'
+
+"""
+ユーザーが自身のパスワード変更
+"""
+class PasswordChange(LoginRequiredMixin, PasswordChangeView, CommonView):
+    template_name = "accounts/password_change_for_self.html"
+    form_class = MyPasswordChangeForm
+    success_url = reverse_lazy('accounts:password_change_done')
+    login_url = '/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        # 不正遷移check
+        if not self.request.user.is_staff:
+            if self.request.user.company.pass_change == '2':
+                return render(request, '403.html', status=403)
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+
+"""
+ユーザー自身のパスワード変更完了
+"""
+class PasswordChangeDone(LoginRequiredMixin, PasswordChangeDoneView, CommonView):
+    template_name = 'accounts/password_change_done_for_self.html'
     login_url = '/login/'
 
 

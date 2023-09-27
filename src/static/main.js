@@ -34,7 +34,7 @@ import 'dropzone/dist/dropzone.css';
 
 import "bootstrap-datetimepicker-npm/build/css/bootstrap-datetimepicker.min.css";
 
-// import '../static/common/css/validate.css';
+import '../static/common/css/validate.css';
 
 import '../static/accounts/css/accounts.css';
 
