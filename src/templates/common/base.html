@@ -216,7 +216,7 @@
                                     <img src="/media/{{ current_user.image.file }}" class="user_icon_mini"/>
                                     <!--ユーザのアイコン画像が存在しない-->
                                 {% else %}
-                                    <div class="maru size_s c{{current_user.color_num}} ml-1 mt-1">
+                                    <div class="maru size_s c{{current_user.color_num}} ml-1">
                                         <div class="letter_two_company_s">{{current_user.company.pic_company_name|get_first_char}}</div>
                                         <div class="letter_two_personal_s">{{current_user.display_name|get_first_char}}</div>
                                     </div>
@@ -239,7 +239,7 @@
                                     <a class="dropdown-item" href="{% url 'accounts:login' %}">ログイン</a>
                                 {% else %}
                                     <div class="point-box">
-                                        <div class="point-title">ユーザープロファイル&nbsp;</div>
+                                        <div class="point-title">ユーザープロファイル&nbsp;<a href="{% url 'accounts:user_update' current_user.id %}"><i class="fas fa-edit edit_icon" data-target="#change_profile_modal" data-toggle="modal"></i></a></div>
                                         <div class="warning-box">
                                             <ul class="sample1">
                                                 <li class="text-center mb-2">
@@ -315,6 +315,8 @@
                                     {% endif %}
 
                                     {% comment %} <a class="dropdown-item" href="{% url 'training:training_management' %}">トレーニング設定</a> {% endcomment %}
+                                    <a class="dropdown-item base-d-item" href="{% url 'accounts:password_change' %}">パスワード変更</a>
+                                    
                                     <a class="dropdown-item base-d-item" href="{% url 'accounts:logout' %}" data-toggle="modal" data-target="#logoutModal">ログアウト</a>
                                 {% endif %}
                             </div><!--dropdown-menu-->

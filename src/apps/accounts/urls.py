@@ -89,6 +89,9 @@ urlpatterns = [
     # """
     # パスワードを忘れた方
     # """
+    # ユーザーのパスワード変更（ユーザープロファイルから）
+    path('password_change/', views.PasswordChange.as_view(), name='password_change'),
+    path('password_change/done/', views.PasswordChangeDone.as_view(), name='password_change_done'),
     # ユーザーのパスワードリセット（ログイン画面にて）
     path('password_reset/', views.PasswordReset.as_view(), name='password_reset'),
     path('password_reset/done/', views.PasswordResetDone.as_view(), name='password_reset_done'),

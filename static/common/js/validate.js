@@ -95,23 +95,28 @@ $(function(){
 
     $("#user-password1").pwdMeasure({
       minScore: 50,
+      minlength: 8,
       indicator: "#pm-indicator",
       confirm: "#user-password2",
-      indicatorTemplate: "<%= label %>",
-      events: "change",
+      indicatorTemplate: "パスワード判定: <%= label %>",
+      events: "keyup",
       labels: [
-        {score:10, label:"とても弱い", className:"very-weak"},
-        {score:30, label:"弱い", className:"weak"},
-        {score:50, label:"平均", className:"average"},
-        {score:70, label:"強い", className:"strong"},
-        {score:100, label:"とても強い", className:"very-strong"}
+        {score:45, label:"NG", className:"weak"},
+        {score:100, label:"OK", className:"strong"},
+        {score:"notMatch", label:"不一致", className:"not-match"},
+        {score:"empty", label:"未入力", className:"empty"}
       ],
       onValid: function(percentage, label, className){
+        $form.off("submit");
+        $('#send').prop("disabled", false)
         $form.off("submit");
       },
       onInvalid: function(percentage, label, className){
         formCancelSubmit();
-      }
+      },
+      onNotMatch: function(label,className){
+        $('#send').prop("disabled", true)
+      },
     });
 
     // フロントエンドでemailの重複チェック

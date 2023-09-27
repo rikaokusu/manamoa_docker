@@ -269,19 +269,19 @@ class MyUserChangeForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super(MyUserChangeForm, self).__init__(*args, **kwargs)
-        self.fields['service'] = forms.ModelMultipleChoiceField(label="利用サービス",
-                                                                # Service_Checkboxにuser_idを渡し、Service_Checkbox側で、サービスの契約状況をフィルタする際の条件で利用
-                                                                widget=Service_Checkbox(attrs = {'user_id': self.user.id}),
-                                                                queryset=Service.objects.annotate(num_contract=Count('contract', filter=Q(contract__user_id=self.user))),
-                                                                required=False,
-                                                            )
+        # self.fields['service'] = forms.ModelMultipleChoiceField(label="利用サービス",
+        #                                                         # Service_Checkboxにuser_idを渡し、Service_Checkbox側で、サービスの契約状況をフィルタする際の条件で利用
+        #                                                         widget=Service_Checkbox(attrs = {'user_id': self.user.id}),
+        #                                                         queryset=Service.objects.annotate(num_contract=Count('contract', filter=Q(contract__user_id=self.user))),
+        #                                                         required=False,
+        #                                                     )
 
-        self.fields['service_admin'] = forms.ModelMultipleChoiceField(label="サービス管理者",
-                                                                # Service_Checkboxにuser_idを渡し、Service_Checkbox側で、サービスの契約状況をフィルタする際の条件で利用
-                                                                # widget=Service_Admin_Checkbox(attrs = {'user_id': self.user.id}),
-                                                                queryset=Service.objects.annotate(num_contract=Count('contract', filter=Q(contract__user_id=self.user))),
-                                                                required=False,
-                                                            )
+        # self.fields['service_admin'] = forms.ModelMultipleChoiceField(label="サービス管理者",
+        #                                                         # Service_Checkboxにuser_idを渡し、Service_Checkbox側で、サービスの契約状況をフィルタする際の条件で利用
+        #                                                         # widget=Service_Admin_Checkbox(attrs = {'user_id': self.user.id}),
+        #                                                         queryset=Service.objects.annotate(num_contract=Count('contract', filter=Q(contract__user_id=self.user))),
+        #                                                         required=False,
+        #                                                     )
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                                 管理者登録(初めてのかた)
@@ -544,6 +544,15 @@ class UserSettingsForm(forms.ModelForm):
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                                 パスワードを忘れた方
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""
+パスワード変更フォーム（old password あり）
+ユーザーが自身のパスワードを変更する際に使用
+"""
+class MyPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
 """
 パスワードリセットフォーム
 ユーザーが自身のパスワードをリセットする際に使用
