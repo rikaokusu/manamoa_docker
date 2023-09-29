@@ -234,39 +234,23 @@ class TraningStatusCheckView(ContextMixin):
         context = super().get_context_data(**kwargs)
 
         # 一般ユーザー
-        # current_user = User.objects.filter(pk=self.request.user.id).select_related().get()
         current_user = User.objects.filter(pk=self.request.user.id).first()
-        # print("--------------- current_user", current_user)
-        # print("--------------- current_user.is_staff", current_user.is_staff)
-
-        # ゲストユーザー
-        # current_guest_user = GuestUserManagement.objects.filter(pk=self.request.user.id).first()
-        # current_guest_user = GuestUserManagement.objects.filter(email='tanaka@test.com').first()
-        # print("--------------- current_guest_user", current_guest_user)
-
-        # if current_user:
-            # print("--------------- 一般ユーザーです")
 
         # ログインしているユーザーが所属しているグループを取得
-        # groups = CustomGroup.objects.filter(group_user__in=[current_user.id])
         groups = UserCustomGroupRelation.objects.filter(group_user__in=[current_user.id])
-        # print("--------------- groups", groups)# <QuerySet [<UserCustomGroupRelation: UserCustomGroupRelation object (78)>, <UserCustomGroupRelation: UserCustomGroupRelation object (79)>]>
 
         group_lists = []
 
         # グループのIDを取得
-        # group_lists_raw = list(groups.values_list('pk', flat=True))
         group_lists_raw = list(groups.values_list('group_id', flat=True))
 
         # IDをstrに直してリストに追加
         for group_uuid in group_lists_raw:
             group_uuid_string = str(group_uuid)
             group_lists.append(group_uuid_string)
-        # print("--------------- group_lists", group_lists)
 
         # グループリストに一致するグループが紐づくトレーニングを取得
         trainings = TrainingRelation.objects.filter(group_id__in=group_lists)
-        # print("--------------- trainings", trainings)
 
         training_list = []
         training_lists_raw = list(trainings.values_list('training_id', flat=True))
@@ -274,28 +258,12 @@ class TraningStatusCheckView(ContextMixin):
         for training_uuid in training_lists_raw:
             training_uuid_string = str(training_uuid)
             training_list.append(training_uuid_string)
-        # print("--------------- training_list", training_list)
-
-        # trainings = Training.objects.filter(destination_group__in=group_lists).order_by('status','end_date') \
-        # .prefetch_related(Prefetch("parts", queryset=Parts.objects.all().order_by('order')))
 
         trainings = Training.objects.filter(id__in=training_list).order_by('status','end_date') \
         .prefetch_related(Prefetch("parts", queryset=Parts.objects.all().order_by('order')))
 
-        # if current_guest_user:
-        #     print("--------------- ゲストユーザーです")
-
-        #     # グループリストに一致するグループが紐づくトレーニングを取得
-        #     trainings = Training.objects.filter(destination_guest_user=current_guest_user).order_by('status','end_date') \
-        #     .prefetch_related(Prefetch("parts", queryset=Parts.objects.all().order_by('order')))
-        #     print("--------------- trainings", trainings)
-
-        # if current_guest_user or current_user:
         if current_user:
-            # print("--------------- 一般ユーザー/ゲストユーザーです")
-
             for training in trainings:
-                # print("--------------- training", training)
 
                 # 初期化
                 parts_status = []
@@ -306,20 +274,10 @@ class TraningStatusCheckView(ContextMixin):
                 # print("----------------- parts_count", parts_count)
 
                 for parts in training.parts.all():
-                    # print("----------------- parts", parts)
-
-                    # ログインユーザーのparts_manageを取得
-                    # if current_user:
 
                     # 一般ユーザー
-                    # parts_manage = parts.parts_manage.filter(user=current_user).first()
                     parts_manage = parts.parts_manage.filter(user=current_user.id).first()
                     print("----------------- parts_manage", parts_manage)
-
-                    # else:
-                    #     # ゲストユーザー
-                    #     parts_manage = parts.parts_manage.filter(parts_manage_guest_user=current_guest_user).first()
-                    #     print("----------------- parts_manage", parts_manage)
 
                     if parts_manage:
                         # print("----------------- parts_manageあったよ")
@@ -329,29 +287,13 @@ class TraningStatusCheckView(ContextMixin):
                         parts_status.append(1)
 
                 # トレーニングごとのユーザーのTrainingManageを取得
-                # if current_user:
-                # training_manage = training.training_manage.filter(user=current_user).first()
                 training_manage = training.training_manage.filter(user=current_user.id).first()
-                # print("------------ training_manage", training_manage)
 
                 # ユーザーのTrainingHistoryを取得
-                # training_history = TrainingHistory.objects.filter(user=current_user).first()
-                # training_history = training.training_history.filter(user=current_user).first()
                 training_history = training.training_history.filter(user=current_user.id).first()
-                # print("------------ training_history", training_history)
-
-                # else:
-                #     training_manage = training.training_manage.filter(guest_user_manage=current_guest_user).first()
-                #     print("------------ training_manage ゲストユーザー", training_manage)
-
-                #     # ユーザーのTrainingHistoryを取得
-                #     training_history = training.training_history.filter(guest_user_history=current_guest_user).first()
-                #     print("------------ training_history ゲストユーザー", training_history)
-
 
                 # training_manageのチェック
                 if training_manage:
-                    # print("------------ training_manageがあったよ")
 
                     # パーツの数とparts_manageのstatusの数を比較
                     if (parts_count == parts_status.count(0)):
@@ -4617,6 +4559,7 @@ class TestPartsCreateView(LoginRequiredMixin, CommonView, CreateView):
                 type = test_parts.type,
                 parts = test_parts,
                 user = group_user.group_user,
+                is_parts_required = test_parts.is_required
             )
             parts_manage.save()
 
@@ -4727,6 +4670,7 @@ class QuestionnairePartsCreateView(LoginRequiredMixin, CommonView, CreateView):
                 type = questionnaire_parts.type,
                 parts = questionnaire_parts,
                 user = group_user.group_user,
+                is_parts_required = questionnaire_parts.is_required
             )
             parts_manage.save()
 
@@ -4861,6 +4805,7 @@ class FilePartsCreateView(LoginRequiredMixin, CommonView, CreateView):
                 type = file_parts.type,
                 parts = file_parts,
                 user = group_user.group_user,
+                is_parts_required = file_parts.is_required
             )
             parts_manage.save()
 
@@ -5104,6 +5049,7 @@ class MoviePartsCreateView(LoginRequiredMixin, CommonView, CreateView):
                 type = movie_parts.type,
                 parts = movie_parts,
                 user = group_user.group_user,
+                is_parts_required = movie_parts.is_required
             )
             parts_manage.save()
 
@@ -9205,6 +9151,13 @@ class PartsTestUpdateView(LoginRequiredMixin, CommonView, UpdateView):
         # 保存
         parts_test_update.save()
 
+        # PartsManageに更新した内容を反映
+        parts_manages = PartsManage.objects.filter(parts=parts_test_update)
+
+        for parts_manage in parts_manages:
+            parts_manage.is_parts_required = parts_test_update.is_required
+            parts_manage.save()
+
         # メッセージを返す
         messages.success(self.request, "テストパーツを編集しました。")
 
@@ -9239,6 +9192,13 @@ class PartsQuestionnaireUpdateView(LoginRequiredMixin, CommonView, UpdateView):
 
         # 保存
         parts_questionnaire_update.save()
+
+        # PartsManageに更新した内容を反映
+        parts_manages = PartsManage.objects.filter(parts=parts_questionnaire_update)
+
+        for parts_manage in parts_manages:
+            parts_manage.is_parts_required = parts_questionnaire_update.is_required
+            parts_manage.save()
 
         # メッセージを返す
         messages.success(self.request, "アンケートパーツを編集しました。")
@@ -9317,6 +9277,13 @@ class PartsMovieUpdateView(LoginRequiredMixin, CommonView, UpdateView):
 
         # 保存
         parts_movie_update.save()
+
+        # PartsManageに更新した内容を反映
+        parts_manages = PartsManage.objects.filter(parts=parts_movie_update)
+
+        for parts_manage in parts_manages:
+            parts_manage.is_parts_required = parts_movie_update.is_required
+            parts_manage.save()
 
         # セッションの中にup_poster_idがれば取り出す ※ポスターがない場合はデフォルトの画像が適用される
         if 'up_poster_id' in self.request.session:
@@ -9467,6 +9434,13 @@ class PartsFileUpdateView(LoginRequiredMixin, UpdateView, CommonView):
 
         # 保存
         parts_file_update.save()
+
+        # PartsManageに更新した内容を反映
+        parts_manages = PartsManage.objects.filter(parts=parts_file_update)
+
+        for parts_manage in parts_manages:
+            parts_manage.is_parts_required = parts_file_update.is_required
+            parts_manage.save()
 
         # セッションの中にup_file_idがれば取り出す
         if 'up_file_id' in self.request.session:
