@@ -314,7 +314,7 @@ class FileAdmin(ImportExportModelAdmin):
     resource_class = FileResource
 
 class PartsManageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'order', 'type', 'parts', 'user', 'parts_manage_guest_user', 'period_date', 'status', '_file_manage', 'play_start_date', 'movie_duration', 'movie_file_id', 'expected_end_date', 'current_time', '_questionnaire_result', '_question_result', 'del_parts_manage_flg')
+    list_display = ('id', 'order', 'type', 'parts', 'user', 'parts_manage_guest_user', 'period_date', 'status', '_file_manage', 'play_start_date', 'movie_duration', 'movie_file_id', 'expected_end_date', 'current_time', '_questionnaire_result', '_question_result', 'del_parts_manage_flg', 'is_parts_required')
     list_display_links = ('id',)
     # search_fields = ('user__display_name', 'parts__title')
     search_fields = ('user', 'parts__title')

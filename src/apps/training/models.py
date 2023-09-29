@@ -636,6 +636,8 @@ class PartsManage(models.Model):
     period_date = models.DateTimeField(_('period date'), blank=True, null=True)
     # ステータス
     status = models.IntegerField(choices=STATUS_CHOICE, default=1)# koko
+    # 受講必須
+    is_parts_required = models.BooleanField(_('is_parts_required'), default=False)
 
     """-------ファイル用------"""
     # 配布ファイル
