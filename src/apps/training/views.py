@@ -269,22 +269,29 @@ class TraningStatusCheckView(ContextMixin):
                 parts_status = []
                 parts_count = ""
 
+                # 受講必須のパーツ用
+                parts_is_required_status = []
+                parts_is_required_count = ""
+
                 # パーツの数を取得
                 parts_count = training.parts.all().count()
-                # print("----------------- parts_count", parts_count)
+
+                # is_requiredがtrueになっているパーツの数を取得
+                qs = training.parts.all()
+                parts_is_required_count = qs.filter(is_required=True).count()
 
                 for parts in training.parts.all():
-
-                    # 一般ユーザー
+                    # ユーザーのPartsManageを取得
                     parts_manage = parts.parts_manage.filter(user=current_user.id).first()
-                    print("----------------- parts_manage", parts_manage)
 
                     if parts_manage:
-                        # print("----------------- parts_manageあったよ")
+                        # PartsManageのステータスを追加
                         parts_status.append(parts_manage.status)
                     else:
-                        # print("----------------- parts_manageなかったよ")
                         parts_status.append(1)
+
+                    if parts_manage.is_parts_required:
+                        parts_is_required_status.append(parts_manage.status)
 
                 # トレーニングごとのユーザーのTrainingManageを取得
                 training_manage = training.training_manage.filter(user=current_user.id).first()
@@ -295,60 +302,122 @@ class TraningStatusCheckView(ContextMixin):
                 # training_manageのチェック
                 if training_manage:
 
-                    # パーツの数とparts_manageのstatusの数を比較
-                    if (parts_count == parts_status.count(0)):
+                    if parts_is_required_count:
+                        # print("is_required_count")
 
-                        training_manage.status = 1 #未対応
+                        # パーツの数とparts_manageのstatusの数を比較
+                        if (parts_is_required_count == parts_is_required_status.count(0)):
+                            # print("----------------- 未対応 aaa")
+
+                            training_manage.status = 1 #未対応
+                            training_manage.save()
+
+                            if training_history:
+                                # TrainingHistoryを更新
+                                training_history.status = 1 #未対応
+                                training_history.save()
+
+                        # パーツの数とparts_manageのstatusの数を比較
+                        elif (parts_is_required_count == parts_is_required_status.count(3)):
+                            # print("----------------- 完了")
+
+                            training_manage.status = 3 #完了
+                            training_manage.done_date = datetime.now()
+                            training_manage.save()
+
+                            if training_history:
+                                # TrainingHistoryを更新
+                                training_history.status = 3 #完了
+                                training_history.done_date = datetime.now()
+                                training_history.save()
+
+                        # 全パーツの数と未対応パーツ数が同じ場合は未対応
+                        elif (parts_is_required_count == parts_is_required_status.count(1)):
+                            # print("----------------- 未対応")
+
+                            training_manage.status = 1 #未対応
+                            training_manage.save()
+
+                            if training_history:
+                                # TrainingHistoryを更新
+                                training_history.status = 1 #未対応
+                                training_history.done_date = datetime.now()
+                                training_history.save()
+
+                        # それ以外は対応中
+                        else:
+                            # print("------------ それ以外は対応中")
+
+                            training_manage.status = 2 #対応中
+                            training_manage.save()
+
+                            if training_history:
+                                # TrainingHistoryを更新
+                                training_history.status = 2 #対応中
+                                training_history.done_date = datetime.now()
+                                training_history.save()
+
                         training_manage.save()
 
                         if training_history:
-                            # TrainingHistoryを更新
-                            training_history.status = 1 #未対応
+                            # print("------------ training_historyがあったよ")
                             training_history.save()
 
-                    # パーツの数とparts_manageのstatusの数を比較
-                    elif (parts_count == parts_status.count(3)):
 
-                        training_manage.status = 3 #完了
-                        training_manage.done_date = datetime.now()
-                        training_manage.save()
-
-                        if training_history:
-                            # TrainingHistoryを更新
-                            training_history.status = 3 #完了
-                            training_history.done_date = datetime.now()
-                            training_history.save()
-
-                    # 全パーツの数と未対応パーツ数が同じ場合は未対応
-                    elif (parts_count == parts_status.count(1)):
-
-                        training_manage.status = 1 #未対応
-                        training_manage.save()
-
-                        if training_history:
-                            # TrainingHistoryを更新
-                            training_history.status = 1 #未対応
-                            training_history.done_date = datetime.now()
-                            training_history.save()
-
-                    # それ以外は対応中
                     else:
-                        # print("------------ それ以外は対応中")
+                        # print("not is_required_count")
 
-                        training_manage.status = 2 #対応中
+                        # パーツの数とparts_manageのstatusの数を比較
+                        if (parts_count == parts_status.count(0)):
+
+                            training_manage.status = 1 #未対応
+                            training_manage.save()
+
+                            if training_history:
+                                # TrainingHistoryを更新
+                                training_history.status = 1 #未対応
+                                training_history.save()
+
+                        # パーツの数とparts_manageのstatusの数を比較
+                        elif (parts_count == parts_status.count(3)):
+
+                            training_manage.status = 3 #完了
+                            training_manage.done_date = datetime.now()
+                            training_manage.save()
+
+                            if training_history:
+                                # TrainingHistoryを更新
+                                training_history.status = 3 #完了
+                                training_history.done_date = datetime.now()
+                                training_history.save()
+
+                        # 全パーツの数と未対応パーツ数が同じ場合は未対応
+                        elif (parts_count == parts_status.count(1)):
+
+                            training_manage.status = 1 #未対応
+                            training_manage.save()
+
+                            if training_history:
+                                # TrainingHistoryを更新
+                                training_history.status = 1 #未対応
+                                training_history.done_date = datetime.now()
+                                training_history.save()
+
+                        # それ以外は対応中
+                        else:
+                            training_manage.status = 2 #対応中
+                            training_manage.save()
+
+                            if training_history:
+                                # TrainingHistoryを更新
+                                training_history.status = 2 #対応中
+                                training_history.done_date = datetime.now()
+                                training_history.save()
+
                         training_manage.save()
 
                         if training_history:
-                            # TrainingHistoryを更新
-                            training_history.status = 2 #対応中
-                            training_history.done_date = datetime.now()
                             training_history.save()
-
-                    training_manage.save()
-
-                    if training_history:
-                        # print("------------ training_historyがあったよ")
-                        training_history.save()
 
         return context
 
