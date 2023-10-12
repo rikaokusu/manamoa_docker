@@ -7805,8 +7805,8 @@ class TrainingDeleteView(DeleteView):
 """
 トレーニング変更
 
-※グループが外された場合、所属ユーザーのTrainingManageは削除される
-※グループが追加された場合、所属ユーザー分のTrainingManageが作成される
+※グループが外された場合、所属ユーザーのTrainingManage/PartsManageは削除される
+※グループが追加された場合、所属ユーザー分のTrainingManage/PartsManageが作成される
 """
 # class TrainingUpdateView(LoginRequiredMixin, CommonView, UpdateView):
 class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
@@ -7895,7 +7895,7 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
         training = Training.objects.filter(pk=self.kwargs['pk']).first()
 
         group_user_brfore_changes = TrainingRelation.objects.filter(training_id=training.id)
-        print("---------- group_brfore_changes ---------", group_user_brfore_changes)
+        # print("---------- group_brfore_changes ---------", group_user_brfore_changes)
 
         # リスト化
         group_brfore_change_list = []
@@ -7904,7 +7904,7 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
         for group_uuid_1 in group_lists_raw_1:
             group_uuid_string_1 = str(group_uuid_1)
             group_brfore_change_list.append(group_uuid_string_1)
-        print("---------- group_brfore_change_list ---------", group_brfore_change_list)
+        # print("---------- group_brfore_change_list ---------", group_brfore_change_list)
 
         # フォームからDBオブジェクトを仮生成
         # training_update = form.save(commit=False)
@@ -7927,7 +7927,6 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
             sd = training.start_date.strftime("%Y-%m-%d %H:%M:%S")
         fifteen = now1 + timedelta(minutes=15)
         if training.start_date is None:
-            print("------ training.start_date is None -------")
             # 15分後の時刻を代入する
             # now = datetime.now()
             training.start_date = fifteen.strftime("%Y-%m-%d %H:%M:%S")
@@ -7944,6 +7943,17 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
         for training_manage in training_manages:
             training_manage.subject_manage = training.subject
             training_manage.save()
+
+        # トレーニングに紐づいているパーツを取得
+        parts_all = training.parts.all()
+        # print("---------- トレーニングに紐づいてる全てのparts ---------", parts_all)
+        # リスト化
+        parts_all_list = []
+        parts_all_lists_raw = list(parts_all.values_list('id', flat=True))
+        for parts_all_uuid in parts_all_lists_raw:
+            parts_all_uuid_string = str(parts_all_uuid)
+            parts_all_list.append(parts_all_uuid_string)
+        # print("---------- parts_all_list ---------", parts_all_list)
 
 
         # セッションの中にcreate_tempo_groupがあればテンポフラグの処理をする
@@ -8059,7 +8069,6 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
             add_group_list = list(add_group_set)
             print("---------- add_group_list ---------", add_group_list)# ['88196b65-a8f7-4c9a-ba35-ed8c69a51cbb']
 
-            # add_groups = CustomGroup.objects.filter(pk__in=add_group_list)
             add_groups = UserCustomGroupRelation.objects.filter(group_id__in=add_group_list)
             print("---------- add_groups ---------", add_groups)#  <QuerySet [<UserCustomGroupRelation: UserCustomGroupRelation object (159)>, <UserCustomGroupRelation: UserCustomGroupRelation object (160)>]>
 
@@ -8077,9 +8086,6 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
                     )
                     training_destination_group_group_relation.save()
 
-                # users = destination_group.group_user.all()# エラー　all()は使えない
-                # print("---------- users ---------", users)
-
                 if not TrainingManage.objects.filter(user=destination_group.group_user, training=training):
                     print("---------- TrainingManageがないよ ---------")
                     # 新しく追加したグループのユーザー分のTrainingManagesを作成する
@@ -8091,10 +8097,31 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
                     )
                     training_manage.save()
 
-                # 追加したユーザーの対応履歴が存在しない場合
+                # 新しく追加したグループのユーザー分のPartsManageを作成する
+                for parts in parts_all:
+                    # print("------------------ parts", parts)
+
+                    parts_manage = PartsManage.objects.filter(parts=parts, user=destination_group.group_user)
+                    # print("------------------ parts_manage", parts_manage)
+
+                    user = User.objects.filter(id=destination_group.group_user).first()
+
+                    # PartManageが存在しない場合は作成する
+                    if not parts_manage:
+                        # print("------------------ parts_manageが存在しない")
+                        parts_manage, created = PartsManage.objects.get_or_create(
+                            order = parts.order,
+                            type = parts.type,
+                            parts = parts,
+                            # user = destination_group.group_user,
+                            user = user.id
+                        )
+                        parts_manage.save()
+
+                # 追加したユーザーの対応履歴が存在しない場合作成する
                 if not TrainingHistory.objects.filter(user=destination_group.group_user, training=training):
                     print("---------- TrainingHistoryがないよ ---------")
-                    # 対応履歴を作成する
+
                     training_history, created = TrainingHistory.objects.get_or_create(
                         training = training,
                         reg_user = training.reg_user,
@@ -8104,23 +8131,12 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
                     training_history.save()
 
 
-                    # createdがTrueの場合
-                    # if created:
-                    #     # 未対応で作成する
-                    #     training_manage.status = 1
-                    # else:
-                    #     # 対応中/完了のステータスのままで残す
-                    #     print("---------- 何もしない ---------")
-
-                # ユーザーのTrainingManageを保存する
-                # training_manage.save()
-
                 # 追加するグループとトレーニングのTrainingRelationを作成
-                training_destination_group_group_relation, created = TrainingRelation.objects.get_or_create(
-                    group_id = destination_group.group_id,
-                    training_id = training.id,
-                )
-                training_destination_group_group_relation.save()
+                # training_destination_group_group_relation, created = TrainingRelation.objects.get_or_create(
+                #     group_id = destination_group.group_id,
+                #     training_id = training.id,
+                # )
+                # training_destination_group_group_relation.save()
 
 
         if delete_group_set:
@@ -8172,6 +8188,13 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
                 # TrainingManageを削除
                 user_training_manages_qs.delete()
 
+                # 重複ユーザーを除いたユーザーと一致するPartsManageを取得
+                user_parts_manages_qs = PartsManage.objects.filter(user__in=delete_user_list, parts__in=parts_all_list).exclude(user__in=repetitive_user_list)
+                print("--------------- 一致するユーザーのPartsManageを取得(削除) --------------", user_parts_manages_qs)
+
+                # PartsManageを削除
+                user_parts_manages_qs.delete()
+
             else:
                 print("---------- 重複ユーザーはいません ---------")
 
@@ -8179,6 +8202,12 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
                 print("--------------- 一致するユーザーのTrainingManageを取得(削除) --------------", user_training_manages_qs)
 
                 user_training_manages_qs.delete()
+
+                user_parts_manages_qs = PartsManage.objects.filter(user__in=delete_user_list, parts__in=parts_all_list)
+                print("--------------- 一致するユーザーのPartsManageを取得(削除) --------------", user_parts_manages_qs)
+
+                user_parts_manages_qs.delete()
+
 
             # TrainingRelationから削除するグループと一致するものを削除
             training_relation_qs = TrainingRelation.objects.filter(group_id__in=delete_group_list, training_id=training.id)
@@ -8283,11 +8312,6 @@ class TrainingUpdateView(LoginRequiredMixin, CommonView, FormView):
 
             # セッションデータを削除する
             del self.request.session['deletion_user_id_json']
-
-
-
-
-
 
 
         # セッションの中にadd_user_id_jsonがれば取り出す(=CustomGroupUpdateViewでメンバーを追加)
